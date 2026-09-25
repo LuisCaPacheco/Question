@@ -1,0 +1,11 @@
+# Caché de importación de Godot (se regenera al abrir el proyecto)
+.godot/
+*.tmp
+
+# Pack de Quaternius (CC0, 214 MB): el juego actual no lo usa, solo _backup_v1
+Ultimate Monsters/
+
+# Salidas del autotest y de Python
+autotest*/
+__pycache__/
+*.pyc

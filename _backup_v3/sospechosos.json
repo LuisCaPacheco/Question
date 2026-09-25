@@ -1,0 +1,564 @@
+{
+  "sospechosos": [
+    {
+      "id": "danner",
+      "nivel": 1,
+      "nombre": "Danner 'Rata' Cole",
+      "alias": "La Rata",
+      "especie": "Humano, 38 años",
+      "rol": "Informante del puerto bajo",
+      "resistencia_base": 55,
+      "estrategia": {
+        "mult": {"confrontar": 1.2, "minimizar": 0.8, "empatia": 0.3, "evidencia": 1.25},
+        "emp_evidencia": 0.5,
+        "clave": {"grabacion": 1.4}
+      },
+      "rasgos": {
+        "tipo": "humano",
+        "piel": "#B39A7A",
+        "mancha": "#6E4A3A",
+        "vena": "#4A3F5E",
+        "manchas": 0.75,
+        "venas": 0.45,
+        "suciedad": 0.55,
+        "ropa": "#B5470F",
+        "mancha_ropa": "#2A0C05",
+        "ojos": "#E8C23A",
+        "esclera": "#C9B27A",
+        "brillo_ojos": 1.6,
+        "cabeza": [0.95, 1.02, 1.0],
+        "cuerpo": [0.85, 1.0, 0.9],
+        "dientes": "podridos",
+        "dientes_color": "#9C8750",
+        "peinado": "grasiento",
+        "pelo": "#1A1510",
+        "cicatriz": "sonrisa",
+        "puntadas": true,
+        "largo_dedos": 1.25,
+        "grosor_manos": 0.9,
+        "unas": "#3A2A18",
+        "placa": "3045-117",
+        "semilla": 5
+      },
+      "intro": "Puerto bajo. Seis agentes encubiertos muertos en una semana. Alguien vendió sus nombres... y guardó recuerdos.",
+      "briefing": "La lista de 40 agentes encubiertos terminó en manos del cártel Molk. Danner Cole nadó en créditos esa misma noche. En su escondite había fotos de los cadáveres, ordenadas por fecha. 34 agentes siguen vivos... por ahora.",
+      "pista": "Es un cobarde que se cree listo. Si lo aprietas fuerte con las pruebas, se quiebra. No pierdas turnos siendo amable.",
+      "secreto": "Vendió la lista y pidió al cártel fotos de cada ejecución como 'bono'. La lista era falsa: el cártel sigue matando para encontrar la verdadera.",
+      "perfil": "Narcisista y sádico de bajo nivel. Disfruta del sufrimiento ajeno siempre que no pueda tocarle. Miente con facilidad y se ríe cuando está nervioso.",
+      "antecedentes": ["Extorsión (2 condenas)", "Tráfico de polvo rojo", "Profanación de tumbas"],
+      "verdad_final": "¡ESTÁ BIEN! ¡Yo vendí la lista! ¿Y qué? Pedí las fotos, sí... me gustaba ver sus caras de sorpresa. Pero escúchame, la lista era FALSA. Esos animales siguen buscando. Te doy los 34 nombres reales... si me sacas de aquí antes de que vengan por mí.",
+      "testigos": [
+        {
+          "nombre": "Flint (camarero)",
+          "texto": "Danner pagó una ronda para todo el bar con créditos nuevos. Enseñaba fotos en el móvil y se reía.",
+          "danio_verdad": 12,
+          "texto_exito": "Danner se lame los labios. '¿Flint? Ese borracho no distingue una foto de una servilleta.'"
+        },
+        {
+          "nombre": "Agente Vega",
+          "texto": "Seis de los nuestros. A uno le arrancaron las uñas antes. La lista es real, detective. Date prisa.",
+          "danio_verdad": 12,
+          "texto_exito": "Danner sonríe un segundo de más. Luego traga saliva. 'No conozco a ningún Vega.'"
+        }
+      ],
+      "evidencias": [
+        {
+          "id": "transfer",
+          "nombre": "Transferencia de 200.000 créditos",
+          "descripcion": "Del cártel Molk a su cuenta, la noche de la primera ejecución.",
+          "danio_verdad": 30,
+          "texto_exito": "Se ríe, nervioso. '¿Eso? Un premio de apuestas. Soy un tipo con suerte.' Se seca el sudor con la manga."
+        },
+        {
+          "id": "fotos",
+          "nombre": "Álbum de fotos de las víctimas",
+          "descripcion": "Seis fotos impresas bajo su colchón. Cada una con fecha y un corazón dibujado.",
+          "danio_verdad": 30,
+          "texto_exito": "Deja de sonreír. Tamborilea la mesa. 'Eso... alguien lo puso ahí. Yo solo... colecciono cosas.'"
+        },
+        {
+          "id": "grabacion",
+          "nombre": "Grabación del comprador",
+          "descripcion": "'Si nos mentiste, rata, empezamos por tu hija. -K'.",
+          "danio_verdad": 25,
+          "texto_exito": "Se queda blanco. Por primera vez parece humano. 'No... mi hija no... no, no, no...'"
+        }
+      ],
+      "dialogos": {
+        "saludo": "Vaya, vaya. Un poli nuevo. ¿Te mandaron a ti porque los otros ya no pueden hablar? Je.",
+        "presionado": "¡Eh, eh, sin tocar! Grita más, me encanta cuando os ponéis rojos.",
+        "empatia": "...Tengo una hija, ¿sabes? No me deja verla. Dice que huelo a muerto. Tiene razón, je.",
+        "niega": "Listas, agentes, fotos... ves demasiadas películas, detective.",
+        "alternativa": "¿Planeado o improvisado? Ninguna. Yo solo estaba ahí. Mirando.",
+        "victoria": "Tic, tac, detective. Mientras jugabas conmigo, murió el séptimo. Me voy a casa a revelarlo.",
+        "bloqueado": "Je... je. No pienso decir ni una palabra más. Grita todo lo que quieras, poli.",
+        "evidencia_calmado": "¿Y eso qué prueba? Tengo una explicación para todo, detective. Siguiente."
+      }
+    },
+    {
+      "id": "sara",
+      "nivel": 2,
+      "nombre": "Sara 'La Viuda' Vidal",
+      "alias": "La Viuda",
+      "especie": "Humana, 34 años, ex-piloto militar",
+      "rol": "Contrabandista de armas biológicas",
+      "genero": "f",
+      "resistencia_base": 60,
+      "estrategia": {
+        "mult": {"confrontar": 0.5, "minimizar": 1.1, "empatia": 1.3},
+        "emp_evidencia": 2.2,
+        "duda_extra": {"confrontar": 18}
+      },
+      "rasgos": {
+        "tipo": "humano",
+        "piel": "#A8A39C",
+        "mancha": "#5C4B55",
+        "vena": "#3A3F6A",
+        "manchas": 0.45,
+        "venas": 0.7,
+        "suciedad": 0.25,
+        "ropa": "#9E3B10",
+        "mancha_ropa": "#1A0805",
+        "ojos": "#A9D8F0",
+        "esclera": "#D8D2C4",
+        "brillo_ojos": 2.2,
+        "pupila_rendija": false,
+        "cabeza": [0.93, 1.03, 0.98],
+        "cuerpo": [0.9, 1.0, 0.9],
+        "dientes": "afilados",
+        "dientes_color": "#D8D0B8",
+        "peinado": "largo",
+        "pelo": "#0B0A0C",
+        "cicatriz": "ojo",
+        "puntadas": true,
+        "largo_dedos": 1.3,
+        "grosor_manos": 0.85,
+        "unas": "#1A0A0C",
+        "labios": "#3A1418",
+        "placa": "3045-209",
+        "semilla": 12
+      },
+      "intro": "Sector 9. Un contenedor de esporas desaparece. Una colonia entera tose sangre. Solo una piloto pudo volar esa ruta.",
+      "briefing": "Robo del contenedor biológico del sector 9. 312 colonos infectados. Sara Vidal voló esa noche 'por un encargo legal'. Dice que la chantajean con su hermano. Nadie ha visto al hermano en meses.",
+      "pista": "Juega a la víctima. Si la tratas con empatía se relaja y las pruebas le pegan el doble. No la confrontes al principio: se cierra.",
+      "secreto": "No la chantajean: vendió su propia colonia al mejor postor. Su hermano descubrió el plan y ella lo encerró en la bodega del carguero. Sigue vivo... por ahora.",
+      "perfil": "Fría, calculadora, sin culpa. Imita las emociones que cree que esperas ver. Sonríe con los ojos quietos. Extremadamente peligrosa.",
+      "antecedentes": ["Deserción con agravantes", "Contrabando de armas (sin condena)", "Sospechosa de 3 desapariciones"],
+      "verdad_final": "Está bien. Fui yo. Nadie me chantajeó, detective: me pagaron, y bien. ¿Mi hermano? Hizo demasiadas preguntas. Está en la bodega 4 del carguero Garza... si todavía respira, que le den agua. Y el contenedor ya no está en el sector 9. Está en tu ciudad.",
+      "testigos": [
+        {
+          "nombre": "Guardia Pérez",
+          "texto": "Su nave salió del sector 9 a las 04:00. Sin plan de vuelo. Me miró y se rio.",
+          "danio_verdad": 15,
+          "texto_exito": "Sara ladea la cabeza. 'Pérez siempre me tuvo ganas. Pobre hombre.'"
+        },
+        {
+          "nombre": "Vecina Olga",
+          "texto": "Oí golpes en su bodega durante semanas. Alguien gritaba un nombre: 'Sara, por favor'.",
+          "danio_verdad": 12,
+          "texto_exito": "Por un instante la sonrisa se le congela. 'Olga oye cosas. Vive sola, ¿sabe?'"
+        }
+      ],
+      "evidencias": [
+        {
+          "id": "ticket",
+          "nombre": "Registro de acceso al sector 9",
+          "descripcion": "Acceso con su código de piloto la noche del robo. 03:47.",
+          "danio_verdad": 25,
+          "texto_exito": "'Yo vuelo, detective. Es mi trabajo entrar y salir.' Sus dedos largos acarician la mesa."
+        },
+        {
+          "id": "cuenta",
+          "nombre": "Cuenta cifrada en Kthar",
+          "descripcion": "Dos millones ingresados por un comprador anónimo. El pago llegó ANTES del supuesto chantaje.",
+          "danio_verdad": 30,
+          "texto_exito": "Se le borra la sonrisa. 'Eso... eso no significa nada.' Por primera vez parpadea."
+        },
+        {
+          "id": "guante",
+          "nombre": "Guante con esporas",
+          "descripcion": "Esporas del contenedor en su guante... y sangre de su hermano en el otro.",
+          "danio_verdad": 30,
+          "texto_exito": "Mira el guante mucho rato. 'Siempre fue torpe. Se cortaba con todo.'"
+        }
+      ],
+      "dialogos": {
+        "saludo": "Qué ojos tan cansados, detective. ¿Duerme mal? Yo duermo como un bebé.",
+        "presionado": "Grite todo lo que quiera. Cuanto más grita, más me aburro.",
+        "empatia": "...Mi hermano era lo único que tenía. Era. Es. Perdón, es.",
+        "niega": "Transporto piezas legales. Revise mis manifiestos. Le espero.",
+        "alternativa": "¿Por dinero o por miedo? Qué pregunta tan tierna, detective.",
+        "victoria": "Se le acabó el tiempo. Qué pena. ¿Sabe cuánto tarda una espora en llegar a un pulmón? Pronto lo sabrá.",
+        "bloqueado": "Estoy cansada y asustada. No voy a decir nada más sin mi abogado.",
+        "evidencia_calmado": "Qué interesante. Seguro que tiene una explicación muy sencilla. ¿Me trae un vaso de agua?"
+      }
+    },
+    {
+      "id": "vex",
+      "nivel": 3,
+      "nombre": "Vex'ahl",
+      "alias": "El Carroñero",
+      "especie": "Alien Kthar (piel gris verdosa, ojos negros)",
+      "rol": "Mecánico del puerto orbital",
+      "resistencia_base": 70,
+      "estrategia": {
+        "mult": {"confrontar": 0.8, "alternativa": 1.1, "evidencia": 1.2},
+        "duda_extra": {"confrontar": 22},
+        "clave": {"llave": 1.5},
+        "pronto": 4
+      },
+      "rasgos": {
+        "tipo": "kthar",
+        "piel": "#6F7F72",
+        "mancha": "#3B4A3A",
+        "vena": "#2C5A3A",
+        "manchas": 0.8,
+        "venas": 0.65,
+        "suciedad": 0.4,
+        "ropa": "#A6410F",
+        "mancha_ropa": "#1E2A10",
+        "ojos": "#FF2A10",
+        "brillo_ojos": 4.0,
+        "cabeza": [0.92, 1.05, 1.0],
+        "cuerpo": [0.85, 1.05, 0.85],
+        "garras": true,
+        "largo_dedos": 1.6,
+        "grosor_manos": 0.85,
+        "unas": "#15120E",
+        "placa": "K-3045-88",
+        "semilla": 33
+      },
+      "intro": "Puerto orbital. 03:12. El carguero Meridian se despresuriza. 212 tripulantes. Las compuertas se sellaron desde fuera.",
+      "briefing": "Sabotaje del Meridian. Alguien selló las compuertas y abrió la válvula de oxígeno. Después, alguien entró a 'rescatar' piezas de los cuerpos. Vex'ahl tiene una cría enferma, una deuda imposible... y un congelador lleno.",
+      "pista": "Los Kthar respetan la fuerza pero odian que les griten. Usa las pruebas pronto: la llave inglesa lo hace temblar.",
+      "secreto": "Saboteó la nave para cobrar el seguro, y luego vendió los órganos de la tripulación en el mercado negro Kthar. La cura de su cría fue la excusa.",
+      "perfil": "Depredador paciente. Ve a los humanos como carne con opiniones. Su cría es real, pero también lo es su gusto por el trabajo.",
+      "antecedentes": ["Tráfico de tejidos (archivado)", "Agresión a un inspector", "Desaparición de 2 compañeros de turno"],
+      "verdad_final": "Sí. Yo sellé las compuertas. Escuché cómo golpeaban el metal, humano. 212 corazones. Mi cría vivirá con los mejores, y el resto... se vendió muy bien. El comprador se llama Ossk. Muelle 12. Ve por él, si tienes estómago.",
+      "testigos": [
+        {
+          "nombre": "Drok (compañero)",
+          "texto": "Vi a Vex salir del hangar 7 de madrugada. Llevaba cajas refrigeradas. Goteaban.",
+          "danio_verdad": 15,
+          "texto_exito": "Las pinzas de Vex chasquean. 'Drok bebe disolvente. Ve cosas.'"
+        },
+        {
+          "nombre": "Dra. Ilsa",
+          "texto": "Pagó el tratamiento de su cría en efectivo, al día siguiente. Olía a sangre fría.",
+          "danio_verdad": 12,
+          "texto_exito": "Vex se queda inmóvil. Sus ojos brillan más. 'No metas a mi cría en esto, humano.'"
+        }
+      ],
+      "evidencias": [
+        {
+          "id": "llave",
+          "nombre": "Llave inglesa con residuo de válvula",
+          "descripcion": "Residuo verde idéntico al de la válvula saboteada. Huellas de garra Kthar.",
+          "danio_verdad": 35,
+          "texto_exito": "Vex tiembla. Sus ojos negros se dilatan. '¿Dónde... dónde encontraste eso?'"
+        },
+        {
+          "id": "video",
+          "nombre": "Vídeo del hangar 7",
+          "descripcion": "Figura alta sellando las compuertas a las 03:12. Luego vuelve con cajas.",
+          "danio_verdad": 25,
+          "texto_exito": "'Ese no soy yo...' Sus pinzas se abren y se cierran, despacio. '...Bueno. Quizá sí.'"
+        },
+        {
+          "id": "congelador",
+          "nombre": "Inventario del congelador",
+          "descripcion": "Encontrado en su taller: 38 recipientes etiquetados con nombres humanos.",
+          "danio_verdad": 25,
+          "texto_exito": "Vex inspira hondo. 'Carne es carne, humano. Vosotros hacéis lo mismo con los animales.'"
+        }
+      ],
+      "dialogos": {
+        "saludo": "Otra vez tú, humano. Hueles a miedo y café. Ya dije todo. Yo no toqué ese carguero.",
+        "presionado": "¡No me grites, carne blanda! Los Kthar recordamos cada voz que nos amenaza.",
+        "empatia": "...Nadie pregunta por mi cría. Se llama Nii. Se muere. ¿Tú sabes lo que es eso?",
+        "niega": "Yo dormía en mi litera. Pregunta a quien quieras. Si los encuentras.",
+        "alternativa": "¿Mi idea u orden de otro? Hmm. Eres más listo que el último.",
+        "victoria": "Se acabó tu tiempo. Qué lástima. Tenía hambre de verdad, humano. Nos veremos... pronto.",
+        "bloqueado": "*Sisea y aparta la mirada* Los Kthar no hablan con quien les grita.",
+        "evidencia_calmado": "*Ladea la cabeza, tranquilo* Un objeto. Los humanos adoran sus objetos."
+      }
+    },
+    {
+      "id": "elena",
+      "nivel": 4,
+      "nombre": "Elena Marsh",
+      "alias": "El Ángel de la Nave Piedad",
+      "especie": "Humana, 41 años, enfermera jefe",
+      "rol": "Enfermera de la nave-hospital Piedad",
+      "genero": "f",
+      "resistencia_base": 75,
+      "estrategia": {
+        "mult": {"empatia": 2.5, "confrontar": 0.6},
+        "emp_evidencia": 1.6,
+        "clave": {"helix": 1.3, "jeringa": 1.3}
+      },
+      "rasgos": {
+        "tipo": "humano",
+        "piel": "#CDB9A8",
+        "mancha": "#8A5A5A",
+        "vena": "#4A4A8A",
+        "manchas": 0.35,
+        "venas": 0.85,
+        "suciedad": 0.1,
+        "ropa": "#B04A14",
+        "mancha_ropa": "#3A0A08",
+        "ojos": "#8FB8FF",
+        "esclera": "#E0D9CC",
+        "brillo_ojos": 2.6,
+        "cabeza": [0.94, 1.04, 0.98],
+        "cuerpo": [0.88, 1.0, 0.88],
+        "dientes": "normal",
+        "dientes_color": "#E6E0D0",
+        "peinado": "moño",
+        "pelo": "#4A3A30",
+        "cicatriz": "mejilla",
+        "puntadas": false,
+        "largo_dedos": 1.2,
+        "grosor_manos": 0.85,
+        "unas": "#8A6060",
+        "labios": "#6A2A30",
+        "placa": "3045-404",
+        "semilla": 18
+      },
+      "intro": "Nave-hospital Piedad. 02:40. Un embajador muere dormido. Es el paciente número doce este año. La enfermera de turno sonríe demasiado.",
+      "briefing": "Muerte del embajador T'Kaan por sobredosis de K-9. Elena Marsh, enfermera intachable, estaba de guardia en las doce muertes 'naturales' del año. Todas en su turno. Todas a las 02:40.",
+      "pista": "Se cree una santa. La empatía la hace hablar de más; luego remata con el mensaje de Helix y la jeringa.",
+      "secreto": "Mató a doce pacientes 'para liberarlos'. Helix Corp lo descubrió y, en vez de denunciarla, le encargó el decimotercero: el embajador. Ella aceptó encantada.",
+      "perfil": "Asesina en serie con complejo mesiánico. Tranquila, maternal, meticulosa. Habla de sus víctimas como de niños dormidos.",
+      "antecedentes": ["Sin antecedentes", "12 muertes en su turno (no investigadas)", "Colecciona pulseras de pacientes"],
+      "verdad_final": "Sí... fui yo. Y los otros once también. Les sostenía la mano mientras se iban, ¿sabe? Nadie merece sufrir. Helix lo supo y me pidió uno más: el embajador. Dijeron que la paz les arruinaba el negocio. Yo solo quería dormirlo. Las pulseras están en mi taquilla. Doce. Trece, ahora.",
+      "testigos": [
+        {
+          "nombre": "Celadora Reyes",
+          "texto": "Elena entró a la sala del embajador a las 02:40. Siempre a las 02:40. Tarareaba.",
+          "danio_verdad": 15,
+          "texto_exito": "Elena tararea bajito, sin darse cuenta. Se detiene. 'Reyes confunde las horas.'"
+        },
+        {
+          "nombre": "Dr. Osei",
+          "texto": "Faltan viales de K-9 cada mes desde hace un año. Solo ella y yo tenemos llave.",
+          "danio_verdad": 15,
+          "texto_exito": "Elena se toca el cuello. 'Osei debería revisar sus cuentas... y su conciencia.'"
+        }
+      ],
+      "evidencias": [
+        {
+          "id": "jeringa",
+          "nombre": "Jeringa con sedante K-9",
+          "descripcion": "Triple dosis letal. Restos en su taquilla, junto a doce pulseras de pacientes.",
+          "danio_verdad": 30,
+          "texto_exito": "Mira la jeringa sin parpadear. Casi con cariño. 'Cualquiera pudo tomarla...'"
+        },
+        {
+          "id": "turno",
+          "nombre": "Registros de turno borrados",
+          "descripcion": "Doce accesos a las 02:40, borrados del sistema con su clave.",
+          "danio_verdad": 25,
+          "texto_exito": "'Yo... estaba en la farmacia. Siempre estoy en la farmacia.' Suda. Sonríe."
+        },
+        {
+          "id": "helix",
+          "nombre": "Mensaje de Helix Corp",
+          "descripcion": "'Sabemos lo de tus angelitos. Uno más y lo olvidamos. Te cubrimos.'",
+          "danio_verdad": 30,
+          "texto_exito": "Lee el mensaje y la sonrisa se le rompe. 'Me prometieron... que nadie lo sabría...'"
+        }
+      ],
+      "dialogos": {
+        "saludo": "Soy enfermera, detective. Cuido a la gente. ¿Quiere que le tome el pulso? Lo tiene alto.",
+        "presionado": "Baje la voz. Aquí hay gente descansando. Para siempre, algunos.",
+        "empatia": "...Mi hija tenía ocho años. Nadie le sostuvo la mano. Yo no dejo que eso pase. Nunca.",
+        "niega": "Esa noche hice mi ronda normal. Revise el registro de farmacia, cielo.",
+        "alternativa": "¿Por compasión o por encargo? Qué palabras tan feas para un acto de amor.",
+        "victoria": "Se acabó, ¿verdad? Descanse, detective. Tiene cara de necesitarlo. Yo sé mucho de descansar.",
+        "bloqueado": "Shhh. Está usted muy alterado. Así no podemos conversar, cariño.",
+        "evidencia_calmado": "Ay, detective. Eso lo explica cualquier auditoría. Siéntese y respire."
+      }
+    },
+    {
+      "id": "gruul",
+      "nivel": 5,
+      "nombre": "Gruul",
+      "alias": "El Molino",
+      "especie": "Alien Molk (2,3 m, roca viva, núcleo de magma)",
+      "rol": "Ejecutor del mercado negro",
+      "resistencia_base": 80,
+      "estrategia": {
+        "mult": {"confrontar": 0.3, "minimizar": 0.6, "alternativa": 0.8, "testigo": 1.4, "evidencia": 1.1},
+        "clave": {"amenaza": 1.6},
+        "requiere": {"arma": "testigo", "amenaza": "testigo"}
+      },
+      "rasgos": {
+        "tipo": "molk",
+        "piel": "#3E3833",
+        "mancha": "#1E1A18",
+        "manchas": 0.9,
+        "venas": 0.0,
+        "suciedad": 0.6,
+        "grietas": 1.0,
+        "grieta_col": "#FF5A10",
+        "ropa": "#8A3610",
+        "mancha_ropa": "#140805",
+        "ojos": "#FF7A18",
+        "brillo_ojos": 5.0,
+        "cabeza": [1.25, 1.0, 1.2],
+        "cuerpo": [1.45, 1.1, 1.3],
+        "garras": true,
+        "largo_dedos": 0.95,
+        "grosor_manos": 1.7,
+        "unas": "#1A1612",
+        "placa": "M-3045-01",
+        "semilla": 9
+      },
+      "intro": "Un embajador aplastado en un callejón. Huesos convertidos en polvo. Un gigante de piedra que dice no haber visto nada.",
+      "briefing": "Asesinato del embajador Ruel: lo molieron vivo. Gruul, ejecutor Molk del mercado negro, estaba allí. Culpa a su jefe Karg. Karg lleva tres días desaparecido. Necesitarás todo: pruebas, testigos y presión.",
+      "pista": "Es duro como la roca: la confrontación sola rebota. Primero los testigos, luego la garra. El mensaje de 'K' es la clave.",
+      "secreto": "Mató al embajador por diversión y después mató a su jefe Karg para cargarle el crimen. Escribió él mismo las amenazas firmadas con 'K'.",
+      "perfil": "Violencia pura con paciencia geológica. Finge ser lento y estúpido. No lo es. Disfruta del sonido del hueso.",
+      "antecedentes": ["7 homicidios atribuidos (sin testigos vivos)", "Guardián de fosas de la colonia Molk", "Desaparición de su jefe Karg"],
+      "verdad_final": "Grrr... Karg no mató a nadie. Karg está en el fondo del pozo 9, junto a los otros. Gruul mató al embajador. Gruul escribió las notas. Gruul escuchó cada hueso. ¿Sabes cómo suena un humano? Como grava mojada. Busca en el pozo 9, pequeño. Lleva una linterna grande.",
+      "testigos": [
+        {
+          "nombre": "Zia (camarera)",
+          "texto": "Karg no discutió con Gruul esa noche. Karg ya no venía por el bar desde hacía días.",
+          "danio_verdad": 15,
+          "texto_exito": "Gruul gruñe. El magma de su pecho late. 'Zia habla mucho para ser tan pequeña. Tan frágil.'"
+        },
+        {
+          "nombre": "Hobb (comerciante)",
+          "texto": "Vi una sombra enorme junto al cuerpo. Se estaba riendo. Un ruido como piedras rodando.",
+          "danio_verdad": 12,
+          "texto_exito": "Gruul esconde las manos bajo la mesa. Las grietas de su piel brillan. 'Hobb vende humo.'"
+        }
+      ],
+      "evidencias": [
+        {
+          "id": "foto",
+          "nombre": "Foto del callejón",
+          "descripcion": "Una sola silueta Molk junto al cuerpo. Nadie más. Ningún jefe.",
+          "danio_verdad": 25,
+          "texto_exito": "Las rocas de su espalda crujen. 'Gruul solo... pasaba por ahí. Gruul pasea mucho.'"
+        },
+        {
+          "id": "arma",
+          "nombre": "Fragmento de garra",
+          "descripcion": "Encajado en el cráneo de la víctima. Coincide con la garra rota de Gruul, no con la de Karg.",
+          "danio_verdad": 30,
+          "texto_exito": "Mira su mano, donde falta un trozo de garra. Silencio. Luego, una risa grave. 'Buen ojo.'"
+        },
+        {
+          "id": "amenaza",
+          "nombre": "Notas firmadas con 'K'",
+          "descripcion": "La caligrafía coincide con la de Gruul. Hay polvo de su piel en el papel.",
+          "danio_verdad": 25,
+          "texto_exito": "Gruul cierra los puños. El calor del magma se siente desde tu silla. '¿Cómo...?'"
+        }
+      ],
+      "dialogos": {
+        "saludo": "Gruul no habla con polis humanos. Gruul no vio nada. Gruul tiene hambre.",
+        "presionado": "¡GRRR! Pequeño humano ruidoso. Gruul podría cerrar la mano... y tú serías arena.",
+        "empatia": "...Colonia Molk... Gruul cuidaba los pozos. Muchos pozos. Muy hondos. Nadie sale de los pozos.",
+        "niega": "Gruul dormía. Gruul siempre duerme de noche. Como piedra.",
+        "alternativa": "¿Gruul solo o Gruul mandado? Hmm... ¿por qué no las dos, humano?",
+        "victoria": "Tu tiempo se rompió, pequeño. Gruul se va. Gruul recuerda tu olor. Gruul visita pronto.",
+        "bloqueado": "*Cruza los brazos. Silencio. Solo se oye el crujido de sus nudillos.*",
+        "evidencia_calmado": "*Mira la prueba sin parpadear* ...Gruul no sabe leer, pequeño."
+      }
+    },
+    {
+      "id": "yul",
+      "nivel": 6,
+      "nombre": "Yul'Keth",
+      "alias": "El Profeta Hueco",
+      "especie": "Alien Kthar (sacerdote, túnica ceremonial)",
+      "rol": "Sumo sacerdote del templo mixto",
+      "resistencia_base": 85,
+      "estrategia": {
+        "mult": {"confrontar": 0.6, "minimizar": 0.7, "testigo": 1.3},
+        "clave": {"testigo:1": 1.7, "mensaje_iss": 1.6},
+        "requiere": {"mensaje_iss": "testigo:1"}
+      },
+      "rasgos": {
+        "tipo": "kthar",
+        "piel": "#8C9488",
+        "mancha": "#4A3A44",
+        "vena": "#5A2A4A",
+        "manchas": 0.6,
+        "venas": 0.8,
+        "suciedad": 0.2,
+        "ropa": "#2A2025",
+        "mancha_ropa": "#4A0A10",
+        "ojos": "#7AF0FF",
+        "brillo_ojos": 5.0,
+        "cabeza": [0.95, 1.1, 1.0],
+        "cuerpo": [0.95, 1.05, 0.95],
+        "capucha": true,
+        "tunica": true,
+        "garras": true,
+        "largo_dedos": 1.8,
+        "grosor_manos": 0.8,
+        "unas": "#2A1020",
+        "semilla": 41
+      },
+      "intro": "El templo arde. Doce muertos. Un sacerdote se entrega sonriendo. Dice que los dioses tenían hambre.",
+      "briefing": "Atentado del templo mixto. Yul'Keth confiesa al instante, demasiado contento. Los fieles lo llaman profeta. Hay rumores de una segunda bomba en el templo nuevo, lleno de niños. Contrarreloj.",
+      "pista": "Confiesa lo que no importa para ocultar lo que sí. Lee las declaraciones: la de la limpiadora lo desarma. El mensaje de Iss es el golpe final.",
+      "secreto": "No puso la bomba: convenció a su hermano menor Iss de ponerla, 'para purificar el templo'. Planeó la segunda con él. Quiere ser mártir antes de que estalle.",
+      "perfil": "Líder de culto. Carismático, paciente, convencido. Usa la fe como cuchillo. Sonríe más cuanto peor es la noticia.",
+      "antecedentes": ["Fundador de la secta del Fuego Hueco", "3 fieles desaparecidos en 'retiros'", "Expulsado de dos templos"],
+      "verdad_final": "¡Basta! ...Está bien. Yo no puse la bomba. La puso Iss, mi hermano pequeño. Yo le enseñé a amar el fuego. Le dije que los dioses lo abrazarían. Hay otra en el templo nuevo, bajo el altar de los niños. Estalla al amanecer. Iss está en el nivel 3... si llegas antes que los dioses.",
+      "testigos": [
+        {
+          "nombre": "Acólito Paz",
+          "texto": "Vi a Iss, el hermano de Yul, con el báculo del sacerdote bajando al sótano. Lloraba.",
+          "danio_verdad": 15,
+          "texto_exito": "Yul se levanta a medias. Las cadenas lo frenan. '¡Paz miente! ¡Es un niño, un niño tonto!'"
+        },
+        {
+          "nombre": "Limpiadora Mara",
+          "texto": "Los oí en la sacristía. Yul decía: 'El fuego te hará santo, Iss. El segundo será más grande.'",
+          "danio_verdad": 15,
+          "texto_exito": "Yul reza en voz alta para no escuchar. Falla. Sus ojos pierden brillo un instante."
+        }
+      ],
+      "evidencias": [
+        {
+          "id": "residuo",
+          "nombre": "Residuo en su túnica",
+          "descripcion": "Explosivo en el pecho. Patrón de abrazo, no de manipulación.",
+          "danio_verdad": 25,
+          "texto_exito": "Yul cierra los ojos. 'Abrazo a muchos fieles.' Pero reza en voz baja, rápido."
+        },
+        {
+          "id": "video_templo",
+          "nombre": "Vídeo del templo",
+          "descripcion": "Figura joven con su báculo entrando al sótano. Yul lo espera arriba, sonriendo.",
+          "danio_verdad": 30,
+          "texto_exito": "'Ese báculo...' Se levanta a medias. Las cadenas lo frenan. Suda por primera vez."
+        },
+        {
+          "id": "mensaje_iss",
+          "nombre": "Mensaje de su hermano",
+          "descripcion": "'Tengo miedo, hermano mayor. ¿Seguro que el segundo es la voluntad de los dioses?'",
+          "danio_verdad": 30,
+          "texto_exito": "Yul se queda en silencio. Luego sonríe, muy despacio. 'Iss... siempre dudando. Pequeño Iss.'"
+        }
+      ],
+      "dialogos": {
+        "saludo": "Humano. Los dioses ven este cuarto. Fui yo. Castígame y terminemos. El amanecer se acerca.",
+        "presionado": "¡Mi fe no se grita! Haz lo que quieras con este cuerpo. Es solo leña.",
+        "empatia": "...Mi hermano pequeño le tenía miedo a la oscuridad. Yo le enseñé que el fuego la espanta.",
+        "niega": "Ya confesé. Fui yo. ¿Qué más quieres? ¿Mi alma? Ya la tienen ellos.",
+        "alternativa": "¿Mi mano o la de otro? Todas las manos son de los dioses, humano.",
+        "victoria": "Se acabó el tiempo. Escucha... ¿no oyes cantar a los niños? Pronto será de día.",
+        "bloqueado": "El silencio también es una plegaria, detective. Y hoy rezo mucho.",
+        "evidencia_calmado": "Cada prueba es un milagro malinterpretado. Rezaré por usted."
+      }
+    }
+  ]
+}

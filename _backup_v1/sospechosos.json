@@ -1,0 +1,472 @@
+{
+  "sospechosos": [
+    {
+      "id": "vex",
+      "nombre": "Vex'ahl",
+      "especie": "alien Kthar (piel gris, ojos negros)",
+      "rol": "Mecanico del puerto orbital",
+      "secreto": "Saboteo el carguero Meridian para cobrar el seguro y pagar la cura de su cria.",
+      "verdad_final": "Fui yo. Sabotee la valvula del Meridian. Mi cria se moria y nadie me ayudaba. Haz lo que quieras conmigo, pero salva a mi cria.",
+      "resistencia_base": 70,
+      "nivel": 3,
+      "avatar": {
+        "piel": "#8CA39A",
+        "ropa": "#C24614",
+        "cabeza": [
+          0.9,
+          1.3,
+          0.95
+        ],
+        "cuerpo": [
+          0.85,
+          1.0,
+          0.85
+        ],
+        "ojos": "#E8D44D",
+        "ojos_tam": 1.4,
+        "modelo": "res://Ultimate Monsters/Big/glTF/Alien.gltf",
+        "esc": 1.05,
+        "my": -0.5,
+        "rot": 0.0
+      },
+      "intro": "Puerto orbital. 03:12. El carguero Meridian sangra combustible. Alguien saboteó la válvula.",
+      "briefing": "Sabotaje del Meridian. Pérdidas millonarias. Un mecánico Kthar con una cría enferma y una deuda imposible. Rómpelo con la evidencia... o con el corazón.",
+      "testigos": [
+        {
+          "nombre": "Drok (compañero)",
+          "texto": "Vi a Vex salir del hangar 7 de madrugada. Llevaba su caja grande.",
+          "danio_verdad": 15,
+          "texto_exito": "Vex resopla. 'Drok bebe disolvente. Ve cosas.'"
+        },
+        {
+          "nombre": "Dra. Ilsa",
+          "texto": "Su cría morirá sin el tratamiento. Debe 40.000 y lloró en mi consulta.",
+          "danio_verdad": 12,
+          "texto_exito": "Vex se queda quieto. Sus ojos se humedecen. 'No metas a mi cría en esto.'"
+        }
+      ],
+      "evidencias": [
+        {
+          "id": "llave",
+          "nombre": "Llave inglesa con residuo de valvula",
+          "descripcion": "Residuo verde idéntico al de la válvula saboteada del Meridian.",
+          "danio_verdad": 35,
+          "texto_exito": "Vex tiembla. Sus ojos negros se dilatan. '¿Dónde... dónde encontraste eso?'",
+          "texto_fallo": ""
+        },
+        {
+          "id": "video",
+          "nombre": "Video del hangar 7",
+          "descripcion": "Figura alta entrando al Meridian a las 03:12.",
+          "danio_verdad": 25,
+          "texto_exito": "'¡Ese no soy yo! ...Bueno... quizá sí pasé por ahí.'",
+          "texto_fallo": ""
+        },
+        {
+          "id": "deuda",
+          "nombre": "Factura medica impagada",
+          "descripcion": "Clínica Xenobio: tratamiento para cría Kthar, 40.000 créditos.",
+          "danio_verdad": 20,
+          "texto_exito": "Vex aparta la mirada. 'Eso... eso no prueba nada. Cualquiera puede deber dinero.' (pero su voz se quiebra)",
+          "texto_fallo": ""
+        }
+      ],
+      "dialogos": {
+        "saludo": "¿Otra vez tú, humano? Ya dije todo. Yo no toqué ese carguero.",
+        "presionado": "¡No me grites! ¡Los Kthar no olvidamos a quien nos amenaza!",
+        "empatia": "...Nadie me había preguntado por mi cría antes. Se llama Nii. Está enferma.",
+        "niega": "Mientes. Yo estaba durmiendo en mi litera. Pregunta a quien quieras."
+      }
+    },
+    {
+      "id": "sara",
+      "nombre": "Sara Vidal",
+      "especie": "humana (ex-piloto)",
+      "rol": "Contrabandista sospechosa",
+      "secreto": "Escondió un arma biológica en el sector 9 por orden de un alien que la chantajea con su familia.",
+      "verdad_final": "Está bien... ¡Está bien! Escondí el contenedor en el sector 9. Me obligaron. Tienen a mi hermano. Por favor, protégelo.",
+      "resistencia_base": 60,
+      "nivel": 2,
+      "avatar": {
+        "piel": "#B98A62",
+        "ropa": "#C24614",
+        "cabeza": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "cuerpo": [
+          0.95,
+          1.0,
+          0.95
+        ],
+        "ojos": "#4A7AC9",
+        "ojos_tam": 1.0,
+        "modelo": "res://Ultimate Monsters/Blob/glTF/Ninja.gltf",
+        "esc": 1.0,
+        "my": -0.25,
+        "rot": 0.0
+      },
+      "intro": "Sector 9. Un contenedor biológico desaparece. Solo una piloto pudo volar esa ruta.",
+      "briefing": "Robo de arma biológica en el sector 9. Sara Vidal accedió esa noche y dice que fue legal. Su hermano lleva meses desaparecido. Alguien la chantajea.",
+      "testigos": [
+        {
+          "nombre": "Guardia Pérez",
+          "texto": "Su nave salió del sector 9 a las 04:00. Sin plan de vuelo.",
+          "danio_verdad": 15,
+          "texto_exito": "Sara aprieta los puños. 'Pérez siempre me tuvo rabia...'"
+        },
+        {
+          "nombre": "Vecina Olga",
+          "texto": "Sara llora por su hermano cada noche. Alguien la llama y cuelga.",
+          "danio_verdad": 10,
+          "texto_exito": "Sara baja la voz. 'Olga no debería hablar de mi familia.'"
+        }
+      ],
+      "evidencias": [
+        {
+          "id": "ticket",
+          "nombre": "Ticket de acceso sector 9",
+          "descripcion": "Acceso de Sara al sector 9 la noche del robo.",
+          "danio_verdad": 30,
+          "texto_exito": "Sara palidece. 'Yo... puedo explicarlo. Yo no quería...' ",
+          "texto_fallo": ""
+        },
+        {
+          "id": "llamada",
+          "nombre": "Llamada interceptada",
+          "descripcion": "Voz distorsionada: 'Hazlo o tu hermano paga'.",
+          "danio_verdad": 30,
+          "texto_exito": "'¿Cómo tienes eso? ¡Ellos me matarán! ¡Nos matarán a todos!'",
+          "texto_fallo": ""
+        },
+        {
+          "id": "guante",
+          "nombre": "Guante con esporas",
+          "descripcion": "Esporas del contenedor biológico en su guante.",
+          "danio_verdad": 20,
+          "texto_exito": "Sara se queda mirando el guante. Sus manos tiemblan.",
+          "texto_fallo": ""
+        }
+      ],
+      "dialogos": {
+        "saludo": "Abogado. Quiero un abogado. No voy a decir nada.",
+        "presionado": "¡Ya basta! ¡No sabes con quién te metes!",
+        "empatia": "...Mi hermano... hace meses que no lo veo. Dicen que está bien, pero no lo sé.",
+        "niega": "Yo solo transporto piezas legales. Revisa mis manifiestos."
+      }
+    },
+    {
+      "id": "gruul",
+      "nombre": "Gruul",
+      "especie": "alien Molk (2.3m, rocoso, lento)",
+      "rol": "Guardia del mercado negro",
+      "secreto": "Vio quién mató al embajador y lo calló por miedo; el asesino es su propio jefe.",
+      "verdad_final": "Yo vi... vi a mi jefe matar al embajador. Me dijo que si hablaba, mi colonia ardería. Pero ya no puedo callar. Fue Karg. Fue él.",
+      "resistencia_base": 80,
+      "nivel": 5,
+      "avatar": {
+        "piel": "#6B5E52",
+        "ropa": "#C24614",
+        "cabeza": [
+          1.3,
+          0.95,
+          1.25
+        ],
+        "cuerpo": [
+          1.5,
+          1.15,
+          1.3
+        ],
+        "ojos": "#FF8833",
+        "ojos_tam": 1.1,
+        "modelo": "res://Ultimate Monsters/Flying/glTF/Goleling_Evolved.gltf",
+        "esc": 1.25,
+        "my": -0.55,
+        "rot": 0.0
+      },
+      "intro": "Un embajador muerto en un callejón. Un gigante de piedra que dice no haber visto nada.",
+      "briefing": "Asesinato del embajador Ruel. Gruul, guardia Molk, estaba allí. Teme a su jefe Karg más que a ti. Necesitarás todo: evidencia, testigos y presión.",
+      "testigos": [
+        {
+          "nombre": "Zia (camarera)",
+          "texto": "Gruul y Karg discutieron esa noche. Karg dijo: 'las colonias arden'.",
+          "danio_verdad": 15,
+          "texto_exito": "Gruul gruñe y tiembla. 'Zia habla mucho para ser tan pequeña.'"
+        },
+        {
+          "nombre": "Hobb (comerciante)",
+          "texto": "Vi una sombra enorme junto al cuerpo. Olía a miedo.",
+          "danio_verdad": 10,
+          "texto_exito": "Gruul esconde las manos bajo la mesa. 'Hobb vende humo.'"
+        }
+      ],
+      "evidencias": [
+        {
+          "id": "foto",
+          "nombre": "Foto del callejón",
+          "descripcion": "Sombra rocosa de un Molk junto al cuerpo.",
+          "danio_verdad": 25,
+          "texto_exito": "Gruul gruñe bajo. Las piedras de su espalda crujen. 'Yo solo... pasaba por ahí.'",
+          "texto_fallo": ""
+        },
+        {
+          "id": "arma",
+          "nombre": "Fragmento de garra",
+          "descripcion": "Garra de jefe Molk, no de Gruul (más grande).",
+          "danio_verdad": 30,
+          "texto_exito": "'Esa garra... la conozco. Es... es de él. No puedo decir su nombre. Me matará.'",
+          "texto_fallo": ""
+        },
+        {
+          "id": "amenaza",
+          "nombre": "Mensaje de amenaza",
+          "descripcion": "'Calla o tu colonia arde. -K'.",
+          "danio_verdad": 25,
+          "texto_exito": "Gruul cierra sus puños de piedra. El miedo huele en la sala. '¿Cómo...?'",
+          "texto_fallo": ""
+        }
+      ],
+      "dialogos": {
+        "saludo": "Gruul no habla con polis humanos. Gruul no vio nada.",
+        "presionado": "¡GRRR! ¡Pequeño humano ruidoso! ¡Cuidado!",
+        "empatia": "...Mi colonia... son 40 familias. Si hablo, arden. ¿Entiendes? ¿Tú entiendes eso?",
+        "niega": "Gruul dormía. Gruul siempre duerme de noche."
+      }
+    },
+    {
+      "id": "elena",
+      "nombre": "Elena Marsh",
+      "especie": "humana (enfermera, 41 años, manos temblorosas)",
+      "rol": "Enfermera de la nave-hospital Piedad",
+      "secreto": "Mató al embajador alien T'Kaan con sobredosis: venganza por su familia muerta en el bombardeo que él firmó. Helix la usó.",
+      "verdad_final": "Sí... fui yo. Dos años esperando ese turno de noche. Le puse triple dosis y lo vi apagarse. Mi familia gritaba igual en la colonia... y ¿sabes lo peor? Helix lo sabía. Me dejaron hacerlo para romper la paz y vender armas. Fui su cuchillo. Hazlo público, por favor.",
+      "resistencia_base": 75,
+      "nivel": 4,
+      "avatar": {
+        "piel": "#D9B596",
+        "ropa": "#C24614",
+        "cabeza": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "cuerpo": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "ojos": "#5A6E8C",
+        "ojos_tam": 0.9,
+        "modelo": "res://Ultimate Monsters/Blob/glTF/Wizard.gltf",
+        "esc": 1.0,
+        "my": -0.25,
+        "rot": 0.0
+      },
+      "intro": "Nave-hospital Piedad. 02:40. Un embajador muere dormido. La enfermera de turno sonríe demasiado.",
+      "briefing": "Muerte del embajador T'Kaan. Sobredosis de K-9. Elena Marsh, enfermera intachable... con una familia enterrada en una colonia que T'Kaan bombardeó.",
+      "testigos": [
+        {
+          "nombre": "Celadora Reyes",
+          "texto": "Elena entró a la sala del embajador a las 02:40. No estaba en su ronda.",
+          "danio_verdad": 15,
+          "texto_exito": "Elena parpadea. 'Reyes confunde las horas. Trabaja doble turno.'"
+        },
+        {
+          "nombre": "Dr. Osei",
+          "texto": "Falta un vial de K-9. Solo ella y yo tenemos llave.",
+          "danio_verdad": 15,
+          "texto_exito": "Elena se toca el cuello. Suda. 'Osei... debería revisar sus cuentas.'"
+        }
+      ],
+      "evidencias": [
+        {
+          "id": "jeringa",
+          "nombre": "Jeringa con sedante K-9",
+          "descripcion": "Triple dosis letal; restos en su casillero.",
+          "danio_verdad": 30,
+          "texto_exito": "Elena mira la jeringa sin parpadear. Sus manos tiemblan. 'Cualquiera pudo tomarla...'",
+          "texto_fallo": ""
+        },
+        {
+          "id": "turno",
+          "nombre": "Registro de turno borrado",
+          "descripcion": "Su acceso a la sala del embajador a las 02:40, borrado del sistema.",
+          "danio_verdad": 25,
+          "texto_exito": "'Yo... yo estaba en la farmacia. Eso debe ser un error.' (suda, se toca el cuello)",
+          "texto_fallo": ""
+        },
+        {
+          "id": "helix",
+          "nombre": "Mensaje de Helix Corp",
+          "descripcion": "'La paz nos arruina. Haz lo necesario. Te cubrimos.'",
+          "danio_verdad": 30,
+          "texto_exito": "Elena lee el mensaje y se rompe. 'Ellos... ellos me prometieron que nadie lo sabría...'",
+          "texto_fallo": ""
+        }
+      ],
+      "dialogos": {
+        "saludo": "Soy enfermera, detective. Salvo vidas. ¿De verdad cree que maté a alguien?",
+        "presionado": "¡Yo cuidé a cientos, humanos Y aliens! ¡No tiene derecho a gritarme!",
+        "empatia": "...Mi hija tenía ocho años. En la colonia. Dicen que fue rápido. Nunca me dejaron ver los cuerpos.",
+        "niega": "Esa noche hice mi ronda normal. Revise el registro de farmacia."
+      }
+    },
+    {
+      "id": "yul",
+      "nombre": "Yul'Keth",
+      "especie": "alien Kthar (sacerdote, túnica ceremonial, voz grave)",
+      "rol": "Sacerdote del templo mixto",
+      "secreto": "No puso la bomba: fue su hermano menor. Yul se entrega para pagar con su sangre según su ley. Hay una segunda bomba.",
+      "verdad_final": "¡Basta! Yo no puse la bomba... fue mi hermano Iss. Yo lo abracé después, por eso el residuo. Nuestra ley dice que el mayor paga con su sangre. Pero hay otra bomba en el templo nuevo... y niños allí. Toma mi vida si quieres, pero salva a los niños. Iss está en el nivel 3.",
+      "resistencia_base": 85,
+      "nivel": 6,
+      "avatar": {
+        "piel": "#7E8F86",
+        "ropa": "#C24614",
+        "cabeza": [
+          0.95,
+          1.2,
+          1.0
+        ],
+        "cuerpo": [
+          1.0,
+          1.05,
+          1.0
+        ],
+        "ojos": "#7AD7FF",
+        "ojos_tam": 1.3,
+        "modelo": "res://Ultimate Monsters/Big/glTF/BlueDemon.gltf",
+        "esc": 1.1,
+        "my": -0.5,
+        "rot": 0.0
+      },
+      "intro": "El templo arde. Doce muertos. Un sacerdote se entrega... demasiado rápido.",
+      "briefing": "Atentado del templo mixto. Yul'Keth confiesa al instante. Nadie confiesa tan rápido sin esconder a alguien. Hay rumores de una segunda bomba. Contrarreloj.",
+      "testigos": [
+        {
+          "nombre": "Acólito Paz",
+          "texto": "Vi al hermano de Yul, Iss, con el báculo del sacerdote, bajando al sótano.",
+          "danio_verdad": 15,
+          "texto_exito": "Yul se levanta a medias. Las cadenas lo frenan. '¡Paz miente! ¡Es un niño!'"
+        },
+        {
+          "nombre": "Limpiadora Mara",
+          "texto": "Oí a dos Kthar discutir. Uno lloraba: 'perdóname, hermano mayor'.",
+          "danio_verdad": 15,
+          "texto_exito": "Yul reza en voz alta para no escuchar. Falla."
+        }
+      ],
+      "evidencias": [
+        {
+          "id": "residuo",
+          "nombre": "Residuo en su túnica",
+          "descripcion": "Explosivo en el pecho, patrón de abrazo, no de manipulación.",
+          "danio_verdad": 25,
+          "texto_exito": "Yul cierra los ojos. 'Abrazo a muchos fieles. Eso no prueba nada.' (pero reza en voz baja)",
+          "texto_fallo": ""
+        },
+        {
+          "id": "video_templo",
+          "nombre": "Video del templo",
+          "descripcion": "Figura joven con su mismo báculo entrando al sótano.",
+          "danio_verdad": 30,
+          "texto_exito": "'¡Ese báculo...!' Se levanta a medias. Las cadenas lo frenan. Suda.",
+          "texto_fallo": ""
+        },
+        {
+          "id": "mensaje_iss",
+          "nombre": "Mensaje de su hermano",
+          "descripcion": "'Perdóname, hermano mayor. Que los dioses te acojan.'",
+          "danio_verdad": 30,
+          "texto_exito": "Yul llora por primera vez. Un Kthar llorando. 'Iss... pequeño Iss...'",
+          "texto_fallo": ""
+        }
+      ],
+      "dialogos": {
+        "saludo": "Humano. Los dioses ven este cuarto. Fui yo. Castígame y terminemos.",
+        "presionado": "¡Mi fe no se grita! ¡Haz lo que quieras con este cuerpo!",
+        "empatia": "...Mi hermano pequeño... siempre tuvo miedo a la oscuridad. Yo le cantaba.",
+        "niega": "Ya confesé. Fui yo. ¿Qué más quieres?"
+      }
+    },
+    {
+      "id": "danner",
+      "nombre": "'Rata' Danner Cole",
+      "especie": "humano (informante, 35 años, cínico, sudoroso)",
+      "rol": "Informante del puerto bajo",
+      "secreto": "Vendió la lista de 40 agentes encubiertos al cártel Molk por deuda y droga. La lista era falsa y el cártel ya mató a 6 buscando a los verdaderos. Quedan 34 vivos si habla YA.",
+      "verdad_final": "¡ESTÁ BIEN, ESTÁ BIEN! ¡Vendí la lista! ¡Debía 200.000 y el polvo me comía! Pero escúchame: la lista era FALSA, ¿entiendes? ¡Falsa! Y esos animales lo descubrieron y están matando para encontrar la verdadera. Ya van 6. ¡Los otros 34 siguen vivos SI me sacas de aquí y los avisas AHORA!",
+      "resistencia_base": 55,
+      "nivel": 1,
+      "avatar": {
+        "piel": "#C9A186",
+        "ropa": "#C24614",
+        "cabeza": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "cuerpo": [
+          0.9,
+          1.0,
+          0.9
+        ],
+        "ojos": "#FF4444",
+        "ojos_tam": 0.8,
+        "modelo": "res://Ultimate Monsters/Big/glTF/Ninja.gltf",
+        "esc": 1.0,
+        "my": -0.45,
+        "rot": 0.0
+      },
+      "intro": "Puerto bajo. Seis agentes muertos en una semana. Alguien vendió sus nombres.",
+      "briefing": "Lista de 40 encubiertos vendida al cártel Molk. Danner Cole nadó en créditos esa misma noche. 34 agentes siguen vivos... por ahora. Es un cobarde: presiónalo.",
+      "testigos": [
+        {
+          "nombre": "Flint (camarero)",
+          "texto": "Danner pagó una ronda para todo el bar con créditos nuevos. Temblaba.",
+          "danio_verdad": 12,
+          "texto_exito": "Danner se encoge. '¿Flint? Ese borracho no sabe ni qué día es... ¿verdad?'"
+        },
+        {
+          "nombre": "Agente Vega",
+          "texto": "Seis de los nuestros, muertos. La lista es real, detective. Date prisa.",
+          "danio_verdad": 12,
+          "texto_exito": "Danner traga saliva. '¿Vega? No... no conozco a ningún Vega.'"
+        }
+      ],
+      "evidencias": [
+        {
+          "id": "transfer",
+          "nombre": "Transferencia 200.000 créditos",
+          "descripcion": "Del cártel Molk a su cuenta la noche de las muertes.",
+          "danio_verdad": 30,
+          "texto_exito": "Danner se ríe nervioso. '¿Eso? Eso fue... un premio de apuestas. En serio.' (se seca el sudor)",
+          "texto_fallo": ""
+        },
+        {
+          "id": "chip",
+          "nombre": "Chip con la lista",
+          "descripcion": "40 nombres en su escondite, con su huella.",
+          "danio_verdad": 30,
+          "texto_exito": "'¡Ese chip es de utilería! ¡Yo... yo solo...!' Golpea la mesa. Las manos le tiemblan.",
+          "texto_fallo": ""
+        },
+        {
+          "id": "grabacion",
+          "nombre": "Grabación del comprador",
+          "descripcion": "'Si nos mentiste, rata, morirán uno por uno. -K'.",
+          "danio_verdad": 25,
+          "texto_exito": "Danner se queda blanco. Escucha su sentencia. 'No... no, no, no...'",
+          "texto_fallo": ""
+        }
+      ],
+      "dialogos": {
+        "saludo": "Rata no sabe nada, poli. Rata solo vende chatarra. ¿Tienes algo o me voy?",
+        "presionado": "¡Eh, eh, sin tocar! ¡Conozco mis derechos, poli de pacotilla!",
+        "empatia": "...Yo tuve familia, ¿sabes? Una hija. No me deja verla. Dice que soy basura.",
+        "niega": "Listas, agentes... ves demasiadas películas, detective."
+      }
+    }
+  ]
+}

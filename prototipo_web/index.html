@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INTERROGART — Prototipo jugable (misma lógica que Godot)</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#050507;color:#e8e8e8;font-family:'Courier New',monospace;display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:12px}
+  h1{color:#ffcc00;letter-spacing:4px;text-shadow:0 0 14px #ffcc0088}
+  .sub{color:#888;font-size:.8rem;margin:2px 0 10px}
+  #room{width:960px;max-width:96vw;height:300px;background:radial-gradient(ellipse at 50% 0%, #3a3220 0%, #141210 45%, #000 100%);border:3px solid #333;position:relative;overflow:hidden}
+  #lamp{position:absolute;top:0;left:50%;transform:translateX(-50%);width:120px;height:120px;background:radial-gradient(circle,#ffedb0 0%,#ffcc00aa 25%,transparent 70%);animation:flick 4s infinite}
+  @keyframes flick{0%,100%{opacity:1}92%{opacity:1}93%{opacity:.4}94%{opacity:1}96%{opacity:.6}97%{opacity:1}}
+  #wire{position:absolute;top:0;left:50%;width:3px;height:40px;background:#222;transform:translateX(-50%)}
+  #suspect{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-size:90px;filter:drop-shadow(0 0 20px #000)}
+  #table{position:absolute;bottom:0;left:0;right:0;height:50px;background:linear-gradient(#4a3520,#241a10);border-top:2px solid #5a452a}
+  #ui{width:960px;max-width:96vw;background:#111;border:3px solid #333;border-top:none;padding:12px}
+  #meters{display:flex;gap:16px;margin:8px 0}
+  .m{flex:1}.m label{font-size:.75rem;color:#aaa}
+  .bar{height:18px;background:#222;border:1px solid #444}.fill{height:100%;transition:width .3s}
+  #log{height:220px;overflow-y:auto;background:#000;border:1px solid #333;padding:10px;font-size:.9rem;line-height:1.5;margin:8px 0}
+  #log .tu{color:#7af}#log .sos{color:#aaa}#log .ok{color:#4f4}#log .bad{color:#f55}
+  .btns{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}
+  button{background:#222;color:#eee;border:1px solid #555;padding:10px 14px;font-family:inherit;cursor:pointer}
+  button:hover:not(:disabled){background:#333;border-color:#ffcc00}
+  button:disabled{opacity:.4;cursor:default}
+  #ev button{display:block;width:100%;text-align:left;margin:4px 0}
+  #estado{text-align:center;min-height:1.6em;color:#ffcc00;margin-top:6px}
+</style>
+</head>
+<body>
+<h1>INTERROGART</h1>
+<div class="sub">3045 · cuarto cerrado · una luz · prototipo web (misma regla que el proyecto Godot 4)</div>
+<div id="room"><div id="wire"></div><div id="lamp"></div><div id="suspect">👽</div><div id="table"></div></div>
+<div id="ui">
+  <div id="who"></div>
+  <div id="meters">
+    <div class="m"><label>VERDAD</label><div class="bar"><div id="fV" class="fill" style="background:#2f2;width:0%"></div></div></div>
+    <div class="m"><label>EMPATÍA</label><div class="bar"><div id="fE" class="fill" style="background:#4af;width:20%"></div></div></div></div>
+    <div class="m"><label>TURNOS</label><div id="turnos" style="font-size:1.3rem">12</div></div>
+  </div>
+  <div id="log"></div>
+  <div class="btns">
+    <button id="bAsk">1) Preguntar suave</button>
+    <button id="bPush">2) Presionar (duro)</button>
+    <button id="bEmp">3) Empatizar</button>
+    <button id="bNew">↻ Nuevo interrogatorio</button>
+  </div>
+  <div id="ev"></div>
+  <div id="estado"></div>
+</div>
+<script>
+const CASOS = [
+ {nombre:"Vex'ahl", icon:"👽", especie:"alien Kthar", rol:"Mecánico del puerto orbital",
+  saludo:"¿Otra vez tú, humano? Ya dije todo. Yo no toqué ese carguero.",
+  niega:"Mientes. Yo dormía en mi litera.", presionado:"¡No me grites! ¡Los Kthar no olvidamos!",
+  empatia:"...Nadie me preguntó por mi cría. Se llama Nii. Está enferma.",
+  secreto:"Fui yo. Saboteé la válvula del Meridian. Mi cría se moría. Haz lo que quieras, pero salva a mi cría.",
+  res:70, ev:[
+   {id:"llave", n:"Llave con residuo de válvula", d:"Residuo verde del Meridian.", dmg:35, t:"Vex tiembla. '¿Dónde encontraste eso?'"},
+   {id:"video", n:"Video hangar 7", d:"Figura alta a las 03:12.", dmg:25, t:"'¡Ese no soy yo!... quizá sí pasé por ahí.'"},
+   {id:"deuda", n:"Factura médica impagada", d:"40.000 créditos, clínica Xenobio.", dmg:20, t:"Aparta la mirada. Su voz se quiebra."}]},
+ {nombre:"Sara Vidal", icon:"👩", especie:"humana ex-piloto", rol:"Contrabandista sospechosa",
+  saludo:"Abogado. Quiero un abogado. No diré nada.",
+  niega:"Solo transporto piezas legales.", presionado:"¡Ya basta! ¡No sabes con quién te metes!",
+  empatia:"...Mi hermano... meses sin verlo. Dicen que está bien.",
+  secreto:"Está bien... Escondí el contenedor en el sector 9. Me obligaron. Tienen a mi hermano.",
+  res:60, ev:[
+   {id:"ticket", n:"Ticket sector 9", d:"Acceso la noche del robo.", dmg:30, t:"Palidece. 'Puedo explicarlo...'"},
+   {id:"llamada", n:"Llamada interceptada", d:"'Hazlo o tu hermano paga'.", dmg:30, t:"'¿Cómo tienes eso? ¡Nos matarán!'"},
+   {id:"guante", n:"Guante con esporas", d:"Esporas del contenedor.", dmg:20, t:"Mira el guante. Manos tiemblan."}]},
+ {nombre:"Gruul", icon:"🪨", especie:"alien Molk (2.3m rocoso)", rol:"Guardia del mercado negro",
+  saludo:"Gruul no habla con polis. Gruul no vio nada.",
+  niega:"Gruul dormía.", presionado:"¡GRRR! ¡Pequeño humano ruidoso!",
+  empatia:"...Mi colonia, 40 familias. Si hablo, arden. ¿Entiendes?",
+  secreto:"Yo vi a mi jefe matar al embajador. Fue Karg. Ya no puedo callar.",
+  res:80, ev:[
+   {id:"foto", n:"Foto del callejón", d:"Sombra Molk junto al cuerpo.", dmg:25, t:"Gruñe. 'Yo solo pasaba...'"},
+   {id:"arma", n:"Fragmento de garra", d:"Garra de jefe, no de Gruul.", dmg:30, t:"'Esa garra... es de él. No puedo nombrarlo.'"},
+   {id:"amenaza", n:"Mensaje de amenaza", d:"'Calla o tu colonia arde. -K'.", dmg:25, t:"Cierra puños de piedra. '¿Cómo...?'"}]}
+];
+const MAX = 12;
+let caso, verdad, empatiaN, turnos, usadas, fin;
+const log = document.getElementById('log');
+function add(html){ log.innerHTML += html + "<br><br>"; log.scrollTop = log.scrollHeight; }
+function nuevo(){
+  caso = CASOS[Math.floor(Math.random()*CASOS.length)];
+  verdad = 100 - caso.res; empatiaN = 20; turnos = MAX; usadas = []; fin = false;
+  document.getElementById('suspect').textContent = caso.icon;
+  document.getElementById('who').innerHTML = `<b>${caso.nombre}</b> (${caso.especie}) · ${caso.rol}`;
+  log.innerHTML = "";
+  add(`<span class="sos"><b>${caso.nombre}:</b> ${caso.saludo}</span>`);
+  add(`Saca la verdad con <b>evidencias</b> y <b>empatía</b>. Tienes ${MAX} turnos. Si se acaban, <b>gana el interrogado y pierdes</b>.`);
+  ui();
+}
+function ui(){
+  document.getElementById('fV').style.width = verdad + "%";
+  document.getElementById('fE').style.width = empatiaN + "%";
+  document.getElementById('turnos').textContent = turnos + " / " + MAX;
+  const ev = document.getElementById('ev'); ev.innerHTML = "<b>EVIDENCIAS:</b>";
+  caso.ev.forEach(e=>{
+    const u = usadas.includes(e.id);
+    ev.innerHTML += `<button ${u||fin?"disabled":""} data-id="${e.id}">${u?"✔":"▸"} ${e.n} — ${e.d}</button>`;
+  });
+  ev.querySelectorAll('button').forEach(b=>b.onclick=()=>mostrar(b.dataset.id));
+  ["bAsk","bPush","bEmp"].forEach(id=>document.getElementById(id).disabled = fin);
+}
+function turno(){
+  if(fin) return false;
+  turnos--;
+  if(turnos<=0 && verdad<100){ perder(); return false; }
+  return true;
+}
+function win(){
+  if(fin||verdad<100) return;
+  fin = true;
+  add(`<span class="ok"><b>¡CONFIESA! ${caso.nombre}:</b> ${caso.secreto}</span>`);
+  document.getElementById('estado').textContent = "✅ VERDAD REVELADA. Ganaste. Pulsa Nuevo interrogatorio para otro caso.";
+  ui();
+}
+function perder(){
+  fin = true;
+  add(`<span class="bad"><b>${caso.nombre}:</b> Se acabó, detective. No tienes nada. Me voy. (GANA EL INTERROGADO)</span>`);
+  document.getElementById('estado').textContent = "❌ Sin turnos. Gana el interrogado, tú pierdes.";
+  ui();
+}
+document.getElementById('bAsk').onclick = ()=>{
+  if(!turno())return;
+  const g = 8 + empatiaN*0.08; verdad = Math.min(100, verdad+g); empatiaN = Math.min(100, empatiaN+4);
+  add(`<span class="tu"><b>Tú (suave):</b> Cuéntame esa noche.</span><br><span class="sos"><b>${caso.nombre}:</b> ${caso.niega} (+${g.toFixed(0)} verdad)</span>`);
+  ui(); win();
+};
+document.getElementById('bPush').onclick = ()=>{
+  if(!turno())return;
+  let g = 14; empatiaN = Math.max(0, empatiaN-12);
+  let extra = "";
+  if(empatiaN<15){ g*=0.5; extra=" (se cierra, rinde la mitad)"; }
+  verdad = Math.min(100, verdad+g);
+  add(`<span class="tu"><b>Tú (golpeas la mesa):</b> ¡No me mientas!</span><br><span class="sos"><b>${caso.nombre}:</b> ${caso.presionado} (+${g.toFixed(0)} verdad, -12 empatía${extra})</span>`);
+  ui(); win();
+};
+document.getElementById('bEmp').onclick = ()=>{
+  if(!turno())return;
+  empatiaN = Math.min(100, empatiaN+18); verdad = Math.min(100, verdad+5);
+  add(`<span class="tu"><b>Tú (calma):</b> Sé que es difícil. Te escucho.</span><br><span class="sos"><b>${caso.nombre}:</b> ${caso.empatia} (+18 empatía)</span>`);
+  ui(); win();
+};
+function mostrar(id){
+  if(fin||usadas.includes(id))return;
+  const e = caso.ev.find(x=>x.id===id);
+  if(!turno())return;
+  usadas.push(id);
+  const g = e.dmg * (1 + empatiaN/200);
+  verdad = Math.min(100, verdad+g);
+  add(`<span class="tu"><b>Muestras: ${e.n}</b> (${e.d})</span><br><span class="ok"><b>${caso.nombre}:</b> ${e.t} (+${g.toFixed(0)} verdad)</span>`);
+  ui(); win();
+}
+document.getElementById('bNew').onclick = nuevo;
+nuevo();
+</script>
+</body>
+</html>

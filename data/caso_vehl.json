@@ -1,0 +1,934 @@
+{
+  "id": "vehl",
+  "nivel": 0,
+  "modo": "arbol",
+  "nombre": "Vehl Iskaar",
+  "alias": "La Voz",
+  "especie": "Ilvari (2,1 m, piel translúcida, canta en infrasonido)",
+  "rol": "Voz oficial del Instituto de Xenolingüística",
+  "genero": "m",
+  "turnos": 16,
+  "intro": "Estación Umbral, 02:14. El doctor Aurelio Benn aparece muerto en la sala de escucha siete, con los oídos reventados. Solo un ilvari tenía acceso esa noche. Y alguien ha borrado el archivo de audio.",
+  "briefing": "El Dr. Benn (58) dirigía el programa de cantos ilvari del Instituto. Murió por un 'canto de silencio': una frecuencia que los ilvari tienen prohibida y que mata a un humano a menos de dos metros. Vehl Iskaar, su intérprete desde hace cinco años, entró en la sala a las 01:52. El archivo de la sala se borró a las 02:20... con las credenciales de Benn, que ya estaba muerto.",
+  "pista": "No es una conversación normal: lo que digas cambia lo que te contesta. Los ilvari odian que graben su voz sin permiso. Hay dos formas de sacarle la verdad completa. Y recuerda: una confesión que no queda grabada no vale nada ante un juez.",
+  "secreto": "Benn llevaba de noche a la sala siete a Nira, la hija de siete ciclos de Vehl, y la asustaba hasta que cantaba el canto de silencio para grabarlo y vendérselo a Helix Corp (Proyecto Coro). Anoche Nira cantó aterrada y Benn murió. Vehl la encontró, borró el archivo para protegerla y se la llevó envuelta en su capa. Las copias ya habían salido: transporte Carrow, muelle nueve, sale al amanecer.",
+  "perfil": "Contenido, formal, muy observador. Protege a los suyos por encima de su propia libertad. Si se siente acorralado, mentirá... o se inculpará. Si se siente respetado, habla. Un ilvari aterrado puede ser letal.",
+  "antecedentes": ["Sin antecedentes", "Voz acreditada del Instituto desde hace cinco años", "Viudo. Una hija, Nira (7 ciclos)"],
+  "rasgos": {"tipo": "ilvari", "placa": "IL-3045-00", "semilla": 7},
+  "grabadora_inicial": true,
+  "tension_inicial": 18,
+  "confianza_inicial": 15,
+  "verdad_inicial": 0,
+  "testigos": [
+    {"id": "ruiz", "nombre": "Guardia nocturno Ruiz", "texto": "Salió de la sala siete a las 02:31. Llevaba algo envuelto en la capa, contra el pecho. Algo pequeño. Se movía."},
+    {"id": "quint", "nombre": "Mara Quint (asistente de Benn)", "texto": "El doctor decía que por fin tenía 'la nota perfecta'. Que Helix pagaría lo que pidiera. Estaba eufórico. Daba miedo."},
+    {"id": "tessa", "nombre": "Maestra Tessa Oyelaran", "texto": "Nira, la hija de Vehl, lleva semanas agotada. Ya no canta, y los niños ilvari siempre cantan. Dibuja una y otra vez a un hombre con una caja."}
+  ],
+  "evidencias": [
+    {"id": "acceso", "nombre": "Registro de acceso, sala 7", "descripcion": "Código de Vehl Iskaar: entrada 01:52, salida 02:31. Nadie más entró esa noche.", "danio_verdad": 20},
+    {"id": "fragmento", "nombre": "Fragmento de audio (3 s)", "descripcion": "Lo único que se salvó del archivo borrado: una voz infantil canta tres notas. Después, un grito humano.", "danio_verdad": 25},
+    {"id": "informe", "nombre": "Informe forense", "descripcion": "Hemorragia bilateral por infrasonido. Emisor situado a menos de un metro del suelo: alguien de muy baja estatura.", "danio_verdad": 30},
+    {"id": "dibujo", "nombre": "Dibujo infantil", "descripcion": "Hallado bajo la consola: un hombre con una caja, una figura pequeña llorando. En escritura ilvari: 'el hombre de la caja quiere que cante triste'.", "danio_verdad": 25},
+    {"id": "helix", "nombre": "Pagos de Helix Corp", "descripcion": "Tres transferencias al Dr. Benn. Concepto: 'Proyecto CORO, muestras vocales'. La última, ayer: 400.000 créditos.", "danio_verdad": 30}
+  ],
+  "dialogos": {"victoria": "El amanecer, detective. Ya da igual."},
+  "arbol": {
+    "inicio": "n_inicio",
+    "nodos": {
+      "n_inicio": {
+        "dice": "Detective. Me dijeron que esto sería una conversación, no un interrogatorio. ¿Cuál de las dos es?",
+        "accion": "El collar traductor zumba en su cuello. Sus ojos negros no parpadean.",
+        "emocion": "calma",
+        "opciones": [
+          {"tono": "cortes", "texto": "Una conversación. Soy el agente Ibarra. ¿Necesita algo? ¿Agua, algo para la voz?", "ir": "n_agua", "ef": {"confianza": 10}},
+          {"tono": "directo", "texto": "Las dos. Un hombre murió anoche en la sala siete, y usted estuvo allí.", "ir": "n_niega", "ef": {"tension": 12}},
+          {"tono": "silencio", "texto": "[Guardar silencio. Sostenerle la mirada.]", "ir": "n_silencio"},
+          {"tono": "presion", "texto": "Depende de si me miente. Los que mienten acaban en la segunda.", "ir": "n_frio", "ef": {"tension": 8, "confianza": -5}}
+        ]
+      },
+      "n_agua": {
+        "dice": "Agua no. Los ilvari no bebemos delante de extraños. Pero gracias. Es la primera persona hoy que me pregunta algo que no es una acusación.",
+        "accion": "Deja de tamborilear con sus cuatro dedos. Mira de reojo la grabadora.",
+        "emocion": "calma",
+        "al_entrar": {"flag": "vio_grabadora"},
+        "opciones": [
+          {"tono": "pregunta", "texto": "Mira mucho esa grabadora. ¿Le incomoda?", "ir": "n_creencia", "ef": {"confianza": 4}},
+          {"tono": "empatia", "texto": "Tiene cara de no haber dormido. Yo tampoco. Empecemos por usted: ¿qué hace en el Instituto?", "ir": "n_quien", "ef": {"confianza": 5}},
+          {"tono": "directo", "texto": "Hablemos de anoche. ¿Dónde estaba a las dos de la madrugada?", "ir": "n_coartada"}
+        ]
+      },
+      "n_silencio": {
+        "dice": "...Los humanos llenan los silencios. Usted no. ¿Es una técnica, detective, o alguien le enseñó que el silencio es sagrado?",
+        "accion": "Ladea la cabeza, despacio. Por primera vez parece interesado en usted.",
+        "emocion": "calma",
+        "opciones": [
+          {"tono": "empatia", "texto": "Es respeto. Sé que para los ilvari un silencio dice más que las palabras.", "ir": "n_respeto", "ef": {"confianza": 12, "flag": "sabe_cultura"}},
+          {"tono": "presion", "texto": "Es paciencia. Tengo toda la noche.", "ir": "n_toda_noche", "ef": {"tension": 6}},
+          {"tono": "pregunta", "texto": "No deja de mirar la grabadora.", "ir": "n_creencia", "ef": {"flag": "vio_grabadora"}}
+        ]
+      },
+      "n_frio": {
+        "dice": "Entonces será una conversación corta. Pregunte lo que quiera. Tengo un traductor muy paciente.",
+        "accion": "Entrelaza los dedos. Las esposas tintinean contra el metal.",
+        "emocion": "burla",
+        "opciones": [
+          {"tono": "directo", "texto": "¿Dónde estaba anoche a las dos?", "ir": "n_coartada"},
+          {"tono": "pregunta", "texto": "¿Conocía bien al doctor Benn?", "ir": "n_benn1"},
+          {"tono": "silencio", "texto": "[Guardar silencio y esperar]", "ir": "n_silencio", "ef": {"tension": -4}}
+        ]
+      },
+      "n_toda_noche": {
+        "dice": "Nadie tiene toda la noche, detective. El amanecer llega para todos. Algunos lo esperan con más miedo que otros.",
+        "accion": "Mira hacia la puerta. Un gesto rápido, casi humano.",
+        "emocion": "nervioso",
+        "al_entrar": {"flag": "pista_amanecer"},
+        "opciones": [
+          {"tono": "pregunta", "texto": "¿Qué pasa al amanecer, Vehl?", "ir": "n_amanecer", "ef": {"tension": 8}},
+          {"tono": "directo", "texto": "Dejémonos de metáforas. ¿Dónde estaba anoche a las dos?", "ir": "n_coartada"},
+          {"tono": "empatia", "texto": "¿Le espera alguien fuera?", "ir": "n_quien_espera", "ef": {"confianza": 4}}
+        ]
+      },
+      "n_amanecer": {
+        "dice": "Nada. Sale el sol. Zarpan los barcos. Es una forma de hablar. Mi traductor es muy poético.",
+        "accion": "Lo dice demasiado rápido. Sus pupilas se estrechan hasta ser una raya.",
+        "emocion": "nervioso",
+        "al_entrar": {"flag": "pista_transporte"},
+        "opciones": [
+          {"tono": "presion", "texto": "¿Qué barco zarpa al amanecer, Vehl?", "ir": "n_barco_temprano", "ef": {"tension": 14}},
+          {"tono": "directo", "texto": "Dejemos la poesía. ¿Dónde estaba a las dos?", "ir": "n_coartada"},
+          {"tono": "silencio", "texto": "[Anotar algo en la libreta sin decir nada]", "ir": "n_libreta", "ef": {"tension": 6}}
+        ]
+      },
+      "n_barco_temprano": {
+        "dice": "No sé de qué barco me habla. No sé nada de barcos. Soy intérprete, no estibador.",
+        "accion": "La piel de su cuello se tensa bajo el collar metálico.",
+        "emocion": "nervioso",
+        "opciones": [
+          {"tono": "cortes", "texto": "Está bien. Empecemos por el principio. ¿Dónde estaba anoche?", "ir": "n_coartada", "ef": {"tension": -4}},
+          {"tono": "presion", "texto": "Sabe algo de ese barco y me lo va a decir.", "ir": "n_cierra1", "ef": {"tension": 18, "confianza": -10}}
+        ]
+      },
+      "n_libreta": {
+        "dice": "¿Qué ha escrito? ...No importa. Escriba lo que quiera. Las palabras escritas no pesan nada.",
+        "accion": "Intenta leer la libreta del revés. No lo consigue.",
+        "emocion": "nervioso",
+        "opciones": [
+          {"tono": "empatia", "texto": "He escrito que parece asustado. No culpable: asustado.", "ir": "n_asustado", "ef": {"confianza": 8}},
+          {"tono": "directo", "texto": "¿Dónde estaba anoche a las dos?", "ir": "n_coartada"}
+        ]
+      },
+      "n_asustado": {
+        "dice": "Asustado. Sí. Hay cosas que asustan más que una celda, detective. Hay gente que no sabe dónde estoy esta noche.",
+        "accion": "Mira sus manos esposadas como si fueran de otro.",
+        "emocion": "asustado",
+        "al_entrar": {"flag": "menciono_hija"},
+        "opciones": [
+          {"tono": "empatia", "texto": "¿Quién no sabe dónde está, Vehl?", "ir": "n_miedo_por", "ef": {"confianza": 4}},
+          {"tono": "directo", "texto": "Entonces ayúdeme a sacarle de aquí. ¿Estuvo en la sala siete?", "ir": "n_directo_suave"}
+        ]
+      },
+      "n_quien": {
+        "dice": "Soy una Voz. Traduzco lo que no cabe en palabras. El doctor Benn estudiaba nuestros cantos; yo se los cantaba. Cinco años juntos.",
+        "accion": "Pronuncia el nombre del doctor con cuidado, como quien pisa hielo.",
+        "emocion": "calma",
+        "al_entrar": {"flag": "conoce_trabajo"},
+        "opciones": [
+          {"tono": "pregunta", "texto": "¿Cómo era el doctor Benn?", "ir": "n_benn1"},
+          {"tono": "empatia", "texto": "Cinco años es mucho tiempo. Lo siento. ¿Eran amigos?", "ir": "n_amigos", "ef": {"confianza": 6}},
+          {"tono": "directo", "texto": "¿Dónde estaba anoche a las dos?", "ir": "n_coartada"}
+        ]
+      },
+      "n_amigos": {
+        "dice": "¿Amigos? Él decía que sí. Me regalaba café humano, que no puedo beber. Me preguntaba por mi familia. Demasiado, al final.",
+        "accion": "Algo se endurece en su cara al decir 'al final'.",
+        "emocion": "nervioso",
+        "al_entrar": {"flag": "benn_preguntaba"},
+        "opciones": [
+          {"tono": "pregunta", "texto": "¿Demasiado? ¿Qué le preguntaba de su familia?", "ir": "n_benn_familia", "ef": {"tension": 6}},
+          {"tono": "empatia", "texto": "¿Y usted? ¿Le echa de menos?", "ir": "n_echa_menos", "ef": {"confianza": 4}},
+          {"tono": "directo", "texto": "Estuvo en la sala siete anoche, Vehl. Lo sabemos.", "ir": "n_directo_suave"}
+        ]
+      },
+      "n_benn_familia": {
+        "dice": "Por mi hija. Qué canciones le enseñaba. A qué edad empiezan a cantar los niños ilvari. Si podía traerla un día al Instituto. Yo le dije que no.",
+        "accion": "Sus dedos arañan despacio la mesa de metal.",
+        "emocion": "asustado",
+        "al_entrar": {"flag": ["menciono_hija", "benn_pedia_nina"], "verdad": 5},
+        "revela": true,
+        "opciones": [
+          {"tono": "pregunta", "texto": "¿Y él respetó ese no?", "ir": "n_respeto_no", "ef": {"tension": 10}},
+          {"tono": "empatia", "texto": "Hizo bien en protegerla.", "ir": "n_proteger", "ef": {"confianza": 8}},
+          {"tono": "presion", "texto": "¿Por eso lo mató? ¿Porque se acercó a su hija?", "ir": "n_acusa_canto", "ef": {"tension": 18}}
+        ]
+      },
+      "n_respeto_no": {
+        "dice": "...No lo sé. Creía que sí. Hasta anoche creía que sí.",
+        "accion": "Cierra los ojos. Tiene párpados dobles: primero se cierra una membrana brillante y luego la piel.",
+        "emocion": "asustado",
+        "revela": true,
+        "al_entrar": {"verdad": 5},
+        "opciones": [
+          {"tono": "empatia", "texto": "¿Qué descubrió anoche, Vehl?", "ir": "n_que_hacia", "ef": {"confianza": 4}},
+          {"tono": "prueba", "texto": "Mire este dibujo. Estaba bajo la consola de la sala siete.", "prueba": "dibujo", "ir": "n_dibujo"},
+          {"tono": "presion", "texto": "Ya basta de rodeos. Estuvo allí. Dígalo.", "ir": "n_directo_suave", "ef": {"tension": 10}}
+        ]
+      },
+      "n_proteger": {
+        "dice": "Protegerla es lo único que sé hacer bien, detective. Lo único. Aunque para eso tenga que... hacer cosas.",
+        "accion": "Se da cuenta de lo que ha dicho y aprieta la mandíbula.",
+        "emocion": "nervioso",
+        "al_entrar": {"flag": "hizo_cosas"},
+        "opciones": [
+          {"tono": "empatia", "texto": "¿Qué cosas tuvo que hacer anoche?", "ir": "n_directo_suave", "ef": {"confianza": 3}},
+          {"tono": "cortes", "texto": "¿Quiere que apague la grabadora para hablar de eso?", "ir": "n_ofrece_apagar", "si": {"grabadora": true}, "ef": {"confianza": 4}},
+          {"tono": "presion", "texto": "¿Matar, por ejemplo?", "ir": "n_acusa_canto", "ef": {"tension": 16}}
+        ]
+      },
+      "n_echa_menos": {
+        "dice": "Echo de menos a quien creía que era. El hombre que me traía café. Ese hombre no existía, detective.",
+        "accion": "Lo dice sin rabia. Con un cansancio antiguo.",
+        "emocion": "asustado",
+        "revela": true,
+        "al_entrar": {"verdad": 5, "flag": "benn_mascara"},
+        "opciones": [
+          {"tono": "pregunta", "texto": "¿Quién era de verdad el doctor Benn?", "ir": "n_benn_grababa", "ef": {"tension": 6}},
+          {"tono": "empatia", "texto": "¿Cuándo se dio cuenta?", "ir": "n_directo_suave", "ef": {"confianza": 4}}
+        ]
+      },
+      "n_benn1": {
+        "dice": "Brillante. Paciente. Generoso con su tiempo. Eso dirán todos. Y es verdad... casi todo.",
+        "accion": "El 'casi' se queda flotando en el aire.",
+        "emocion": "calma",
+        "opciones": [
+          {"tono": "pregunta", "texto": "¿Casi? ¿Qué parte no es verdad?", "ir": "n_benn_grababa", "ef": {"tension": 8}},
+          {"tono": "empatia", "texto": "Trabajaron cinco años juntos. ¿Eran amigos?", "ir": "n_amigos", "ef": {"confianza": 5}},
+          {"tono": "directo", "texto": "Brillante y muerto. Usted estuvo allí. ¿Dónde estaba a las dos?", "ir": "n_coartada", "ef": {"tension": 6}}
+        ]
+      },
+      "n_benn_grababa": {
+        "dice": "El doctor grababa cantos. Todos, con permiso. Así se hacía la ciencia en el Instituto. Así... se hacía al principio.",
+        "accion": "Mira la grabadora de la mesa. Un segundo de más.",
+        "emocion": "nervioso",
+        "al_entrar": {"flag": ["vio_grabadora", "benn_grababa"]},
+        "opciones": [
+          {"tono": "pregunta", "texto": "¿Y después? ¿Empezó a grabar sin permiso?", "ir": "n_sin_permiso", "ef": {"tension": 10}},
+          {"tono": "prueba", "texto": "Helix Corp le pagaba por 'muestras vocales'. ¿Lo sabía?", "prueba": "helix", "ir": "n_helix"},
+          {"tono": "empatia", "texto": "Sé que para ustedes grabar una voz es algo serio. Explíquemelo.", "ir": "n_creencia", "ef": {"confianza": 6}}
+        ]
+      },
+      "n_sin_permiso": {
+        "dice": "No lo sé. No lo sabía. ...No me pregunte lo que no sé, detective.",
+        "accion": "Su respiración se acelera. El collar traduce un pitido corto que no es una palabra.",
+        "emocion": "asustado",
+        "opciones": [
+          {"tono": "empatia", "texto": "De acuerdo. Pregunto lo que sí sabe: ¿estuvo en la sala siete?", "ir": "n_directo_suave", "ef": {"tension": -6}},
+          {"tono": "testigo", "texto": "Su asistente dice que Benn tenía 'la nota perfecta' para Helix.", "testigo": "quint", "ir": "n_quint"},
+          {"tono": "presion", "texto": "Sí lo sabía. Y por eso está usted aquí.", "ir": "n_cierra1", "ef": {"tension": 16, "confianza": -8}}
+        ]
+      },
+      "n_quien_espera": {
+        "dice": "Mi hija. Tiene siete ciclos. Está con una vecina que no habla nuestra lengua. Debe de estar asustada.",
+        "accion": "Por primera vez, su voz sintetizada suena más grave.",
+        "emocion": "nervioso",
+        "al_entrar": {"flag": "menciono_hija"},
+        "opciones": [
+          {"tono": "empatia", "texto": "Entonces ayúdeme a terminar pronto para que vuelva con ella.", "ir": "n_ayuda", "ef": {"confianza": 8}},
+          {"tono": "pregunta", "texto": "¿Cómo se llama su hija?", "ir": "n_nombre_hija", "ef": {"tension": 8}},
+          {"tono": "directo", "texto": "¿Dónde estaba usted anoche? ¿Y dónde estaba ella?", "ir": "n_hija_coartada", "ef": {"tension": 10}}
+        ]
+      },
+      "n_nombre_hija": {
+        "dice": "...¿Por qué quiere saber su nombre?",
+        "accion": "Sus dedos se cierran de golpe. La cadena de las esposas se tensa.",
+        "emocion": "asustado",
+        "opciones": [
+          {"tono": "cortes", "texto": "Por nada. Perdone. Los humanos siempre preguntamos por los hijos.", "ir": "n_ayuda", "ef": {"tension": -8, "confianza": 2}},
+          {"tono": "presion", "texto": "Porque alguien muy pequeño estuvo en esa sala anoche.", "ir": "n_sospecha_nira", "ef": {"tension": 22}}
+        ]
+      },
+      "n_ayuda": {
+        "dice": "Terminar pronto. Sí. ...Pregunte, entonces. Intentaré que sea pronto.",
+        "accion": "Endereza la espalda. Parece haber tomado una decisión pequeña.",
+        "emocion": "calma",
+        "opciones": [
+          {"tono": "directo", "texto": "¿Estuvo en la sala siete anoche?", "ir": "n_directo_suave"},
+          {"tono": "pregunta", "texto": "¿Qué le preguntaba el doctor Benn sobre su familia?", "ir": "n_benn_familia", "si": {"flag": "benn_preguntaba"}},
+          {"tono": "pregunta", "texto": "¿Cómo era su relación con el doctor Benn?", "ir": "n_amigos", "si": {"no_flag": "benn_preguntaba"}},
+          {"tono": "cortes", "texto": "Antes de empezar: ¿le incomoda la grabadora?", "ir": "n_creencia", "si": {"grabadora": true, "no_flag": "sabe_creencia"}}
+        ]
+      },
+      "n_respeto": {
+        "dice": "Dice más, sí. Y dura más. Una palabra se la lleva el aire. Un silencio se queda. ...Usted es extraño, detective.",
+        "accion": "Sus hombros bajan un poco. La piel gris de sus sienes se aclara.",
+        "emocion": "calma",
+        "opciones": [
+          {"tono": "pregunta", "texto": "¿Por qué mira tanto la grabadora?", "ir": "n_creencia", "ef": {"confianza": 4}},
+          {"tono": "directo", "texto": "Tengo que preguntarle por anoche. ¿Estuvo en la sala siete?", "ir": "n_directo_suave"},
+          {"tono": "empatia", "texto": "Cinco años con el doctor Benn. Debe de ser duro perderle así.", "ir": "n_amigos", "ef": {"confianza": 5}}
+        ]
+      },
+      "n_creencia": {
+        "dice": "Para nosotros la voz no se devuelve. Grabar un canto sin permiso es encerrarlo. Nuestros hijos aprenden desde pequeños a no cantar cerca de las máquinas.",
+        "accion": "Mira la luz roja de la grabadora como se mira un arma cargada.",
+        "emocion": "nervioso",
+        "al_entrar": {"flag": ["sabe_creencia", "vio_grabadora"]},
+        "opciones": [
+          {"tono": "cortes", "texto": "¿Quiere que la apague?", "ir": "n_ofrece_apagar", "si": {"grabadora": true}, "ef": {"confianza": 4}},
+          {"tono": "pregunta", "texto": "El doctor Benn grababa cantos, ¿no? ¿Con permiso?", "ir": "n_benn_grababa", "ef": {"tension": 6}},
+          {"tono": "presion", "texto": "Pues tendrá que acostumbrarse. Aquí todo se graba.", "ir": "n_protocolo", "si": {"grabadora": true}, "ef": {"tension": 10, "confianza": -10}},
+          {"tono": "amenaza", "texto": "Si no colabora, grabaré su canto y lo usaré como prueba contra usted.", "fin": "d_silencio"}
+        ]
+      },
+      "n_protocolo": {
+        "dice": "Entonces hablaré para su máquina, detective. Y a las máquinas se les dice lo mínimo.",
+        "accion": "Su postura se vuelve rígida, ceremonial. Las manos, planas sobre la mesa.",
+        "emocion": "burla",
+        "al_entrar": {"flag": "modo_formal"},
+        "opciones": [
+          {"tono": "cortes", "texto": "Perdone. Me he equivocado. ¿La apago?", "ir": "n_ofrece_apagar", "ef": {"confianza": 6, "tension": -4}},
+          {"tono": "directo", "texto": "Lo mínimo me vale. ¿Estuvo en la sala siete?", "ir": "n_coartada"},
+          {"tono": "prueba", "texto": "Lo mínimo no basta. Su código abrió la sala siete a la 01:52.", "prueba": "acceso", "ir": "n_acceso"}
+        ]
+      },
+      "n_ofrece_apagar": {
+        "dice": "¿Haría eso? Sus jefes lo verán desde detrás del espejo. Le preguntarán por qué.",
+        "accion": "Mira el espejo. Luego le mira a usted, como si le viera por primera vez.",
+        "emocion": "nervioso",
+        "grabadora": {"off": {"ir": "n_apagada", "ef": {"confianza": 15, "tension": -10, "flag": "off_consentido"}}},
+        "opciones": [
+          {"tono": "cortes", "texto": "Que pregunten. [Apagar la grabadora]", "ir": "n_apagada", "grabadora": false, "ef": {"confianza": 15, "tension": -10, "flag": "off_consentido"}},
+          {"tono": "directo", "texto": "No puedo apagarla. Lo siento. Pero sí puedo escucharle de verdad.", "ir": "n_honesto", "ef": {"confianza": 6}},
+          {"tono": "presion", "texto": "La apagaré cuando me diga la verdad.", "ir": "n_trato", "ef": {"tension": 8}}
+        ]
+      },
+      "n_honesto": {
+        "dice": "Honesto. Eso es raro en esta sala. ...Pregunte. Diré lo que se pueda decir delante de una máquina.",
+        "accion": "Asiente una vez, lento.",
+        "emocion": "calma",
+        "opciones": [
+          {"tono": "directo", "texto": "¿Estuvo en la sala siete anoche?", "ir": "n_admite_on"},
+          {"tono": "pregunta", "texto": "¿Qué pasó con el doctor Benn?", "ir": "n_benn1"}
+        ]
+      },
+      "n_trato": {
+        "dice": "Un trato. Como los que hacía el doctor. Primero la voz, luego la promesa. No, detective. Así no.",
+        "accion": "Se echa hacia atrás en la silla. Cruza los largos brazos.",
+        "emocion": "burla",
+        "al_entrar": {"flag": "desconfia_tratos"},
+        "opciones": [
+          {"tono": "cortes", "texto": "Tiene razón. Sin condiciones. [Apagar la grabadora]", "ir": "n_apagada", "grabadora": false, "ef": {"confianza": 10, "tension": -6, "flag": "off_consentido"}},
+          {"tono": "directo", "texto": "Como quiera. ¿Dónde estaba anoche a las dos?", "ir": "n_coartada"},
+          {"tono": "pregunta", "texto": "¿Qué tratos hacía el doctor Benn?", "ir": "n_benn_grababa", "ef": {"tension": 6}}
+        ]
+      },
+      "n_apagada": {
+        "dice": "...Gracias. Hace mucho que un humano no hacía algo por mí sin pedir nada a cambio. Pregunte. Le contestaré lo que pueda.",
+        "accion": "Abre las manos sobre la mesa, palmas arriba. Entre los ilvari es un gesto de verdad.",
+        "emocion": "calma",
+        "opciones": [
+          {"tono": "directo", "texto": "¿Estuvo en la sala siete anoche?", "ir": "n_admite_off"},
+          {"tono": "pregunta", "texto": "¿Qué le pasó de verdad al doctor Benn?", "ir": "n_admite_off"},
+          {"tono": "empatia", "texto": "Primero dígame cómo está usted.", "ir": "n_como_esta", "ef": {"confianza": 6}}
+        ]
+      },
+      "n_como_esta": {
+        "dice": "¿Cómo estoy? Tengo miedo, detective. No por mí. Por alguien que no sabe dónde estoy esta noche.",
+        "accion": "Mira sus manos esposadas.",
+        "emocion": "asustado",
+        "al_entrar": {"flag": "menciono_hija"},
+        "opciones": [
+          {"tono": "empatia", "texto": "¿Por quién tiene miedo, Vehl?", "ir": "n_miedo_por", "ef": {"confianza": 4}},
+          {"tono": "directo", "texto": "Entonces ayúdeme a sacarle de aquí. ¿Estuvo en la sala siete?", "ir_si": [{"si": {"grabadora": false}, "ir": "n_admite_off"}], "ir": "n_directo_suave"}
+        ]
+      },
+      "n_miedo_por": {
+        "dice": "Por mi hija. Nira. ...No. No debí decir su nombre.",
+        "accion": "Se tapa la boca con sus dedos larguísimos. Un gesto infantil, terrible.",
+        "emocion": "asustado",
+        "al_entrar": {"flag": ["nombre_nira", "menciono_hija"]},
+        "revela": true,
+        "opciones": [
+          {"tono": "empatia", "texto": "Tranquilo. La grabadora está apagada. Su nombre se queda en esta sala.", "si": {"grabadora": false}, "ir": "n_admite_off", "ef": {"confianza": 8, "tension": -6}},
+          {"tono": "cortes", "texto": "[Apagar la grabadora] Su nombre no saldrá de aquí.", "si": {"grabadora": true}, "grabadora": false, "ir": "n_admite_off", "ef": {"confianza": 10, "tension": -6, "flag": "off_consentido"}},
+          {"tono": "presion", "texto": "¿Por qué no? ¿Qué tiene que ver Nira con esto?", "ir": "n_nira_presion", "ef": {"tension": 16}}
+        ]
+      },
+      "n_nira_presion": {
+        "dice": "Nada. Nira no tiene nada que ver. Es una niña. Duerme. No sabe nada. ¡Nada!",
+        "accion": "Por debajo del traductor se oye algo, muy grave. La taza de café tiembla sobre la mesa.",
+        "emocion": "furioso",
+        "al_entrar": {"flag": "peligro"},
+        "opciones": [
+          {"tono": "silencio", "texto": "[Levantar las manos despacio y callar]", "ir": "n_retrocede", "ef": {"tension": -18}},
+          {"tono": "empatia", "texto": "Le creo. Nadie va a tocar a su hija. Respire.", "ir": "n_retrocede", "ef": {"tension": -14, "confianza": 4}},
+          {"tono": "presion", "texto": "Una niña 'que no sabe nada' no hace temblar así a su padre.", "ir": "n_amenaza_nira", "ef": {"tension": 16}}
+        ]
+      },
+      "n_niega": {
+        "dice": "¿Estuve? ¿Quién lo dice? Trabajé en la embajada hasta tarde y me fui a casa. Con mi hija.",
+        "accion": "Su voz sintetizada no cambia. Pero la piel de sus sienes se oscurece, como un rubor gris.",
+        "emocion": "nervioso",
+        "al_entrar": {"flag": "menciono_hija"},
+        "opciones": [
+          {"tono": "prueba", "texto": "Su código abrió la sala siete a la 01:52.", "prueba": "acceso", "ir": "n_acceso"},
+          {"tono": "presion", "texto": "Miente. Y se le da mal.", "ir": "n_miente", "ef": {"tension": 14, "confianza": -8}},
+          {"tono": "pregunta", "texto": "¿Su hija puede confirmarlo?", "ir": "n_hija_coartada", "ef": {"tension": 10}},
+          {"tono": "cortes", "texto": "Está bien. Vamos más despacio. ¿Qué hace usted en el Instituto?", "ir": "n_quien", "ef": {"tension": -6, "confianza": 4}}
+        ]
+      },
+      "n_coartada": {
+        "dice": "Estuve en la embajada hasta las once. Después, en casa. Con mi hija. Pregunte a quien quiera.",
+        "accion": "Lo recita. Como algo ensayado frente a un espejo.",
+        "emocion": "calma",
+        "al_entrar": {"flag": "menciono_hija"},
+        "opciones": [
+          {"tono": "prueba", "texto": "Su código abrió la sala siete a la 01:52.", "prueba": "acceso", "ir": "n_acceso"},
+          {"tono": "pregunta", "texto": "¿Su hija puede confirmarlo?", "ir": "n_hija_coartada", "ef": {"tension": 10}},
+          {"tono": "empatia", "texto": "Le creo. Pero necesito que me ayude a entender una cosa.", "ir": "n_ayuda", "ef": {"confianza": 6}},
+          {"tono": "farol", "texto": "Tenemos las cámaras del pasillo. Le vemos entrar.", "ir": "n_farol", "ef": {"tension": 6}}
+        ]
+      },
+      "n_farol": {
+        "dice": "No hay cámaras en el ala siete. El doctor Benn las hizo retirar hace dos meses. Decía que asustaban a las voces. ...Usted no sabía eso.",
+        "accion": "Por primera vez, algo parecido a una sonrisa. No es agradable.",
+        "emocion": "burla",
+        "al_entrar": {"flag": ["farol_pillado", "benn_quito_camaras"]},
+        "opciones": [
+          {"tono": "cortes", "texto": "No. No lo sabía. Le he mentido y lo siento.", "ir": "n_honesto_farol", "ef": {"confianza": 8}},
+          {"tono": "prueba", "texto": "Pero sí sé esto: su código abrió la sala a la 01:52.", "prueba": "acceso", "ir": "n_acceso"},
+          {"tono": "pregunta", "texto": "¿Por qué querría Benn quitar las cámaras de su propia ala?", "ir": "n_camaras", "ef": {"tension": 8}}
+        ]
+      },
+      "n_honesto_farol": {
+        "dice": "Un humano que admite una mentira. Veremos cuánto le dura. ...Sí, estuve allí. Pero no como usted cree.",
+        "accion": "Le estudia largo rato antes de hablar.",
+        "emocion": "calma",
+        "al_entrar": {"verdad": 15, "flag": "admitio_estuvo"},
+        "revela": true,
+        "opciones": [
+          {"tono": "pregunta", "texto": "¿Y cómo estuvo, entonces?", "ir": "n_que_hacia"},
+          {"tono": "empatia", "texto": "Tómese su tiempo.", "ir": "n_que_hacia", "ef": {"tension": -5, "confianza": 3}}
+        ]
+      },
+      "n_camaras": {
+        "dice": "No lo sé. ...Sí lo sé. No quería que nadie viera quién entraba en su ala por las noches.",
+        "accion": "Se arrepiente en cuanto lo dice. Lo nota usted, y lo nota él.",
+        "emocion": "asustado",
+        "al_entrar": {"flag": "benn_escondia", "verdad": 5},
+        "opciones": [
+          {"tono": "pregunta", "texto": "¿Quién entraba por las noches, Vehl?", "ir": "n_que_hacia", "ef": {"tension": 8}},
+          {"tono": "testigo", "texto": "La maestra de su hija dice que Nira dibuja a un hombre con una caja.", "testigo": "tessa", "ir": "n_tessa"}
+        ]
+      },
+      "n_hija_coartada": {
+        "dice": "Nira tiene siete ciclos. Duerme como una piedra. No la metan en esto. No la metan en esto, detective.",
+        "accion": "Lo repite dos veces. El traductor no sabe cómo marcar el miedo, pero se nota igual.",
+        "emocion": "asustado",
+        "al_entrar": {"flag": ["nombre_nira", "menciono_hija"]},
+        "opciones": [
+          {"tono": "cortes", "texto": "De acuerdo. Dejamos a Nira fuera. Hábleme de usted.", "ir": "n_ayuda", "ef": {"tension": -8, "confianza": 6}},
+          {"tono": "prueba", "texto": "Entonces explíqueme por qué su código abrió la sala siete a la 01:52.", "prueba": "acceso", "ir": "n_acceso"},
+          {"tono": "testigo", "texto": "El guardia le vio salir a las 02:31 con algo pequeño en brazos.", "testigo": "ruiz", "ir": "n_brazos"}
+        ]
+      },
+      "n_miente": {
+        "dice": "Se me da mal porque no miento, detective. Los ilvari no mentimos: callamos. Es distinto.",
+        "accion": "Aparta la mirada hacia la pared. Una pared no le acusa.",
+        "emocion": "burla",
+        "opciones": [
+          {"tono": "prueba", "texto": "Entonces calle esto: su código abrió la sala siete a la 01:52.", "prueba": "acceso", "ir": "n_acceso"},
+          {"tono": "silencio", "texto": "[Callar usted también. Esperar.]", "ir": "n_silencio", "ef": {"tension": -8}},
+          {"tono": "presion", "texto": "Callar también es mentir. Y los que mienten en esta sala no salen.", "ir": "n_cierra1", "ef": {"tension": 16, "confianza": -8}}
+        ]
+      },
+      "n_directo_suave": {
+        "dice_si": [{"si": {"grabadora": false}, "dice": "Sí. Estuve. No voy a mentirle, ahora que la máquina calla."}],
+        "dice": "Esa pregunta tiene una respuesta corta y otra larga, detective. Con esa máquina escuchando, solo le daré la corta: estuve.",
+        "accion": "Mira la grabadora al decir 'máquina'.",
+        "emocion": "nervioso",
+        "al_entrar": {"verdad": 15, "flag": "admitio_estuvo"},
+        "revela": true,
+        "opciones": [
+          {"tono": "pregunta", "texto": "Deme la respuesta larga.", "ir_si": [{"si": {"grabadora": true}, "ir": "n_condicion"}], "ir": "n_que_hacia"},
+          {"tono": "cortes", "texto": "[Apagar la grabadora] Ahora, la larga.", "si": {"grabadora": true}, "grabadora": false, "ir": "n_que_hacia", "ef": {"confianza": 10, "tension": -6, "flag": "off_consentido"}},
+          {"tono": "prueba", "texto": "La respuesta larga ya la tengo aquí. Informe forense.", "prueba": "informe", "ir": "n_informe"},
+          {"tono": "acusar", "texto": "La corta me basta: estuvo, y cantó hasta matarle.", "ir": "n_acusa_canto", "ef": {"tension": 18}}
+        ]
+      },
+      "n_acceso": {
+        "dice": "Mi código... El doctor tenía mi código. Lo usaba a veces para entrar en la sala de escucha. Cualquiera pudo...",
+        "accion": "Se detiene. Sabe que suena mal.",
+        "emocion": "nervioso",
+        "al_entrar": {"flag": "acceso_visto"},
+        "opciones": [
+          {"tono": "testigo", "texto": "El guardia Ruiz le vio salir a las 02:31. A usted, no al doctor.", "testigo": "ruiz", "ir": "n_brazos"},
+          {"tono": "cortes", "texto": "Vehl. No le estoy acusando de nada todavía. Cuénteme qué vio.", "ir": "n_admite_on", "ef": {"confianza": 8, "tension": -4}},
+          {"tono": "farol", "texto": "El doctor murió a las 02:14. Muy tarde para prestar códigos.", "ir": "n_admite_on", "ef": {"tension": 10}}
+        ]
+      },
+      "n_brazos": {
+        "dice": "...Mi capa. Llevaba mi capa. Hacía frío en el pasillo.",
+        "accion": "Se abraza el pecho sin darse cuenta, como si todavía llevara algo contra él.",
+        "emocion": "asustado",
+        "al_entrar": {"verdad": 15, "flag": ["admitio_estuvo", "algo_en_brazos"]},
+        "revela": true,
+        "opciones": [
+          {"tono": "pregunta", "texto": "Las capas no se mueven solas, Vehl. ¿Qué llevaba en brazos?", "ir": "n_sospecha_nira", "ef": {"tension": 14}},
+          {"tono": "prueba", "texto": "El forense dice que el canto salió de alguien de menos de un metro.", "prueba": "informe", "ir": "n_informe"},
+          {"tono": "empatia", "texto": "Se está abrazando. Como si aún lo llevara. ¿A quién protegía?", "ir": "n_que_hacia", "ef": {"confianza": 5}}
+        ]
+      },
+      "n_admite_on": {
+        "dice": "Está bien. Estuve en la sala siete. Entré a la 01:52. El doctor estaba vivo cuando llegué. Eso es todo lo que diré con esa luz roja encendida.",
+        "accion": "Las palabras salen medidas, una a una, para la máquina.",
+        "emocion": "nervioso",
+        "al_entrar": {"verdad": 15, "flag": "admitio_estuvo"},
+        "grabadora": {"off": {"ir": "n_que_hacia", "ef": {"confianza": 12, "tension": -6, "flag": "off_consentido"}}},
+        "opciones": [
+          {"tono": "cortes", "texto": "[Apagar la grabadora] Entonces sigamos sin ella.", "si": {"grabadora": true}, "grabadora": false, "ir": "n_que_hacia", "ef": {"confianza": 12, "tension": -6, "flag": "off_consentido"}},
+          {"tono": "prueba", "texto": "Tengo el informe forense. Hablemos de quién cantó.", "prueba": "informe", "ir": "n_informe"},
+          {"tono": "acusar", "texto": "Estaba vivo cuando llegó. Y muerto cuando se fue. Fue usted.", "ir": "n_acusa_canto", "ef": {"tension": 16}},
+          {"tono": "pregunta", "texto": "¿Qué hacía allí a esas horas?", "ir": "n_que_hacia", "si": {"grabadora": false}}
+        ]
+      },
+      "n_admite_off": {
+        "dice": "Sí. Estuve en la sala siete. Entré a la 01:52. Cuando llegué, el doctor todavía estaba vivo.",
+        "accion": "Lo dice en voz baja. El traductor casi no le alcanza.",
+        "emocion": "nervioso",
+        "al_entrar": {"verdad": 15, "flag": "admitio_estuvo"},
+        "revela": true,
+        "opciones": [
+          {"tono": "pregunta", "texto": "¿Qué hacía allí a esas horas?", "ir": "n_que_hacia"},
+          {"tono": "empatia", "texto": "Gracias por decírmelo. Sé lo que le cuesta.", "ir": "n_que_hacia", "ef": {"confianza": 6}},
+          {"tono": "acusar", "texto": "Entonces lo mató usted.", "ir": "n_acusa_canto", "ef": {"tension": 20}}
+        ]
+      },
+      "n_que_hacia": {
+        "dice": "Fui a buscar a alguien. Alguien que no debía estar allí. Alguien que el doctor llevaba a esa sala por las noches... mientras yo trabajaba en la embajada.",
+        "accion": "Sus pupilas se abren hasta llenar todo el ojo.",
+        "emocion": "asustado",
+        "al_entrar": {"verdad": 5, "flag": "fue_a_buscar"},
+        "revela": true,
+        "opciones": [
+          {"tono": "empatia", "texto": "¿Nira?", "si": {"flag": "nombre_nira"}, "ir_si": [{"si": {"grabadora": true}, "ir": "n_condicion"}], "ir": "n_nira", "ef": {"confianza": 4}},
+          {"tono": "pregunta", "texto": "¿A quién, Vehl?", "ir_si": [{"si": {"grabadora": true}, "ir": "n_condicion"}], "ir": "n_nira"},
+          {"tono": "prueba", "texto": "A una niña que dibuja a un hombre con una caja.", "prueba": "dibujo", "ir": "n_dibujo"},
+          {"tono": "presion", "texto": "Deje de dar vueltas. ¿A quién?", "ir": "n_cierra1", "ef": {"tension": 15, "confianza": -8}}
+        ]
+      },
+      "n_condicion": {
+        "dice": "No. Con esa máquina encendida, no. Si su nombre queda grabado, la ley de mi pueblo la reclamará. Le quitarán la voz, detective. A una niña. ¿Lo entiende?",
+        "accion": "Señala la grabadora con un dedo que tiembla.",
+        "emocion": "asustado",
+        "al_entrar": {"flag": ["sabe_creencia", "condicion_grabadora"]},
+        "grabadora": {"off": {"ir": "n_nira", "ef": {"confianza": 12, "tension": -8, "flag": "off_consentido"}}},
+        "opciones": [
+          {"tono": "cortes", "texto": "[Apagar la grabadora] Está apagada. Hable.", "grabadora": false, "ir": "n_nira", "ef": {"confianza": 12, "tension": -8, "flag": "off_consentido"}},
+          {"tono": "promesa", "texto": "No puedo apagarla. Pero le juro que nadie de su pueblo la tocará.", "ir": "n_promesa_temprana", "ef": {"confianza": 4}},
+          {"tono": "prueba", "texto": "No necesito su nombre. Ya tengo el informe forense.", "prueba": "informe", "ir": "n_informe"},
+          {"tono": "presion", "texto": "La niña ya está implicada. O habla usted, o hablará ella.", "ir": "n_amenaza_nira", "ef": {"tension": 25}}
+        ]
+      },
+      "n_promesa_temprana": {
+        "dice": "Las promesas humanas duran lo que dura el humano que las hace. Apague la máquina, detective. Después hablaremos de promesas.",
+        "accion": "No hay rabia en su voz. Solo cansancio.",
+        "emocion": "nervioso",
+        "grabadora": {"off": {"ir": "n_nira", "ef": {"confianza": 10, "tension": -6, "flag": "off_consentido"}}},
+        "opciones": [
+          {"tono": "cortes", "texto": "[Apagar la grabadora]", "grabadora": false, "ir": "n_nira", "ef": {"confianza": 10, "tension": -6, "flag": "off_consentido"}},
+          {"tono": "prueba", "texto": "Entonces hablemos de lo que ya sabemos. Informe forense.", "prueba": "informe", "ir": "n_informe"},
+          {"tono": "presion", "texto": "No negocio con sospechosos.", "ir": "n_cierra1", "ef": {"tension": 15, "confianza": -6}}
+        ]
+      },
+      "n_amenaza_nira": {
+        "dice": "...Repita eso.",
+        "accion": "El aire vibra. La bombilla parpadea. Sus labios se separan apenas y algo muy grave empieza a sonar por debajo del traductor.",
+        "emocion": "furioso",
+        "al_entrar": {"flag": "peligro", "tension": 10},
+        "opciones": [
+          {"tono": "cortes", "texto": "[Retroceder] Perdone. No quise decir eso. Nadie va a tocar a su hija.", "ir": "n_retrocede", "ef": {"tension": -25, "confianza": -5}},
+          {"tono": "silencio", "texto": "[Levantar las manos despacio y callar]", "ir": "n_retrocede", "ef": {"tension": -20}},
+          {"tono": "amenaza", "texto": "Ya me ha oído. O habla usted, o traemos a la niña.", "fin": "d_canto"}
+        ]
+      },
+      "n_retrocede": {
+        "dice": "...No vuelva a hablar de ella así. Nunca. Los ilvari no olvidan una amenaza a un hijo.",
+        "accion": "El zumbido grave se apaga poco a poco. La bombilla deja de parpadear.",
+        "emocion": "nervioso",
+        "opciones": [
+          {"tono": "empatia", "texto": "Tiene razón. Me he pasado. Empecemos de nuevo: ¿qué pasó en la sala siete?", "ir_si": [{"si": {"flag": "admitio_estuvo"}, "ir": "n_que_hacia"}], "ir": "n_directo_suave", "ef": {"confianza": 4}},
+          {"tono": "prueba", "texto": "Solo quiero entender esto. Informe forense.", "prueba": "informe", "ir": "n_informe"},
+          {"tono": "silencio", "texto": "[Dejar que se calme. No decir nada.]", "ir": "n_calma_tras", "ef": {"tension": -10}}
+        ]
+      },
+      "n_calma_tras": {
+        "dice": "...Usted quiere la verdad. Yo quiero que mi hija amanezca a salvo. Quizá las dos cosas quepan en esta sala. Quizá no.",
+        "accion": "Respira hondo. Tiene cuatro fosas nasales en forma de rendija; se abren a la vez.",
+        "emocion": "calma",
+        "opciones": [
+          {"tono": "promesa", "texto": "Caben. Le doy mi palabra de que las dos caben.", "ir_si": [{"si": {"grabadora": true}, "ir": "n_condicion"}], "ir": "n_nira", "ef": {"confianza": 8}},
+          {"tono": "pregunta", "texto": "Entonces empecemos: ¿a quién fue a buscar a la sala siete?", "ir": "n_que_hacia"}
+        ]
+      },
+      "n_sospecha_nira": {
+        "dice": "No sé de qué me habla. No había nadie. No había nadie pequeño. No...",
+        "accion": "Las palabras se atropellan. El traductor se acopla con un chirrido.",
+        "emocion": "asustado",
+        "al_entrar": {"flag": "peligro"},
+        "opciones": [
+          {"tono": "empatia", "texto": "Vehl. Mírame. Nadie va a hacerle daño a su hija. Se lo prometo.", "ir": "n_calma_tras", "ef": {"tension": -12, "confianza": 6}},
+          {"tono": "prueba", "texto": "El forense no opina lo mismo.", "prueba": "informe", "ir": "n_informe", "ef": {"tension": 6}},
+          {"tono": "presion", "texto": "Había alguien pequeño y usted se lo llevó en brazos. ¿Quién?", "ir": "n_amenaza_nira", "ef": {"tension": 16}}
+        ]
+      },
+      "n_informe": {
+        "dice": "Menos de un metro... Eso... eso no demuestra nada. El sonido rebota. Los aparatos se equivocan.",
+        "accion": "Sus dedos se enroscan unos sobre otros, los cuatro, como raíces.",
+        "emocion": "asustado",
+        "al_entrar": {"verdad": 10, "flag": ["sabe_pequeno", "canto_confirmado"]},
+        "opciones": [
+          {"tono": "farol", "texto": "Usted mide dos metros, Vehl. No fue usted quien cantó.", "ir": "n_no_fue_el", "ef": {"tension": 6}},
+          {"tono": "prueba", "texto": "Escuche esto. Es lo único que se salvó del archivo.", "prueba": "fragmento", "ir": "n_fragmento"},
+          {"tono": "prueba", "texto": "Y este dibujo estaba bajo la consola.", "prueba": "dibujo", "ir": "n_dibujo"},
+          {"tono": "acusar", "texto": "Da igual la altura. Usted es el único ilvari que entró. Fue usted.", "ir": "n_acusa_canto", "ef": {"tension": 14}}
+        ]
+      },
+      "n_no_fue_el": {
+        "dice": "...Fui yo. Fui yo, detective. Yo canté. Escríbalo.",
+        "accion": "Lo dice demasiado deprisa. Como quien salta a un río para que otro no caiga.",
+        "emocion": "quebrado",
+        "al_entrar": {"flag": "cubre_a_alguien"},
+        "opciones": [
+          {"tono": "empatia", "texto": "No. Usted se está poniendo delante de alguien. ¿De quién?", "ir_si": [{"si": {"grabadora": true}, "ir": "n_condicion"}], "ir": "n_nira", "ef": {"confianza": 6}},
+          {"tono": "prueba", "texto": "Entonces explíqueme este dibujo.", "prueba": "dibujo", "ir": "n_dibujo"},
+          {"tono": "cerrar", "texto": "Me basta. Confesión registrada. Caso cerrado.", "fin": "d_falsa"}
+        ]
+      },
+      "n_fragmento": {
+        "dice": "Apáguelo. ¡APÁGUELO!",
+        "accion": "Tres notas de una voz de niña salen del altavoz. Luego un grito humano. Vehl se encoge como si le hubieran golpeado.",
+        "emocion": "asustado",
+        "al_entrar": {"verdad": 10, "tension": 12, "flag": ["oyo_fragmento", "sabe_pequeno"]},
+        "opciones": [
+          {"tono": "silencio", "texto": "[Apagar el audio. Esperar en silencio.]", "ir": "n_respira", "ef": {"tension": -16, "confianza": 8}},
+          {"tono": "pregunta", "texto": "Es una niña. ¿Quién es, Vehl?", "ir_si": [{"si": {"confianza_min": 45, "grabadora": false}, "ir": "n_nira"}, {"si": {"confianza_min": 45}, "ir": "n_condicion"}], "ir": "n_falsa"},
+          {"tono": "presion", "texto": "Es Nira, ¿verdad? Su hija.", "si": {"flag": "nombre_nira"}, "ir_si": [{"si": {"confianza_min": 35}, "ir": "n_condicion"}], "ir": "n_amenaza_nira", "ef": {"tension": 14}}
+        ]
+      },
+      "n_respira": {
+        "dice": "...Gracias. Esa voz no debería existir fuera de su garganta. Nunca. Él no tenía derecho.",
+        "accion": "Tarda en volver a mirarle. Cuando lo hace, algo ha cambiado.",
+        "emocion": "quebrado",
+        "al_entrar": {"flag": "benn_culpable", "verdad": 5},
+        "revela": true,
+        "opciones": [
+          {"tono": "pregunta", "texto": "¿Él? ¿El doctor Benn grabó esa voz?", "ir": "n_benn_culpable", "ef": {"tension": 6}},
+          {"tono": "empatia", "texto": "¿De quién es esa voz, Vehl?", "ir_si": [{"si": {"grabadora": true}, "ir": "n_condicion"}], "ir": "n_nira", "ef": {"confianza": 4}}
+        ]
+      },
+      "n_benn_culpable": {
+        "dice": "Él grababa. Siempre grababa. Decía que era ciencia. No era ciencia, detective. Era una cosecha.",
+        "accion": "La palabra 'cosecha' la dice en ilvari, y el collar tarda en traducirla.",
+        "emocion": "furioso",
+        "al_entrar": {"verdad": 5, "flag": "benn_grababa"},
+        "revela": true,
+        "opciones": [
+          {"tono": "prueba", "texto": "Una cosecha que alguien pagaba. Helix Corp.", "prueba": "helix", "ir": "n_helix"},
+          {"tono": "testigo", "texto": "Su asistente dice que buscaba 'la nota perfecta'.", "testigo": "quint", "ir": "n_quint"},
+          {"tono": "pregunta", "texto": "¿Qué cosechaba? ¿A quién?", "ir_si": [{"si": {"grabadora": true}, "ir": "n_condicion"}], "ir": "n_nira"}
+        ]
+      },
+      "n_dibujo": {
+        "dice": "Ella dibuja así. Las figuras sin boca. Siempre... siempre dibuja así.",
+        "accion": "Toca el papel con la punta de un dedo, muy despacio, como quien toca una herida.",
+        "emocion": "quebrado",
+        "al_entrar": {"verdad": 15, "flag": ["sabe_pequeno", "dibujo_visto", "nina_confirmada"]},
+        "revela": true,
+        "opciones": [
+          {"tono": "empatia", "texto": "¿Ella? Dígame su nombre. No lo usaré contra ella.", "ir_si": [{"si": {"grabadora": true, "no_flag": "decide_grabar"}, "ir": "n_condicion"}], "ir": "n_nira", "ef": {"confianza": 6}},
+          {"tono": "testigo", "texto": "Su maestra dice que ya no canta. Que dibuja siempre a ese hombre.", "testigo": "tessa", "ir": "n_tessa"},
+          {"tono": "prueba", "texto": "'El hombre de la caja'. Una grabadora. Pagada por Helix Corp.", "prueba": "helix", "ir": "n_helix"}
+        ]
+      },
+      "n_tessa": {
+        "dice": "Ya no canta... Yo creí que era la edad. Creí que... Oh, pequeña. Oh, Nira.",
+        "accion": "Se dobla sobre la mesa. Del collar sale un sonido que no es una palabra en ningún idioma.",
+        "emocion": "quebrado",
+        "al_entrar": {"verdad": 10, "flag": ["nombre_nira", "nina_confirmada", "menciono_hija"], "tension": -6},
+        "revela": true,
+        "opciones": [
+          {"tono": "empatia", "texto": "No es culpa suya, Vehl. Cuénteme qué le hizo ese hombre.", "ir_si": [{"si": {"grabadora": true, "no_flag": "decide_grabar"}, "ir": "n_condicion"}], "ir": "n_nira", "ef": {"confianza": 8}},
+          {"tono": "prueba", "texto": "Helix Corp pagaba a Benn por 'muestras vocales'. Esto es lo que compraban.", "prueba": "helix", "ir": "n_helix"}
+        ]
+      },
+      "n_helix": {
+        "dice": "Proyecto... Coro. Cuatrocientos mil créditos. Eso valía. Eso valía el miedo de mi hija.",
+        "accion": "Mira la cifra mucho tiempo. Luego empieza a temblar, entero.",
+        "emocion": "furioso",
+        "al_entrar": {"verdad": 15, "flag": ["sabe_helix", "benn_culpable"]},
+        "revela": true,
+        "opciones": [
+          {"tono": "testigo", "texto": "'La nota perfecta', decía Benn. Según su asistente, Helix pagaría lo que pidiera.", "testigo": "quint", "ir": "n_quint"},
+          {"tono": "acusar", "texto": "¿Y usted cuánto cobraba de Helix? Era su socio.", "fin": "d_helix"},
+          {"tono": "pregunta", "texto": "¿Qué pasó anoche, Vehl? Desde el principio.", "ir": "n_esa_noche"}
+        ]
+      },
+      "n_quint": {
+        "dice": "La nota perfecta. El canto de silencio. Lo que un niño ilvari canta cuando tiene tanto miedo que olvida cómo no hacerlo. ¡Lo supe demasiado tarde!",
+        "accion": "Golpea la mesa con la palma abierta. La cadena salta.",
+        "emocion": "furioso",
+        "al_entrar": {"verdad": 10, "flag": ["benn_culpable", "sabe_nota", "sabe_helix"], "tension": 8},
+        "revela": true,
+        "opciones": [
+          {"tono": "empatia", "texto": "Ahora lo sabe. Y yo también. Cuénteme anoche.", "ir": "n_esa_noche", "ef": {"confianza": 6, "tension": -6}},
+          {"tono": "presion", "texto": "Tarde para Benn. ¿Se vengó usted?", "ir": "n_acusa_canto", "ef": {"tension": 12}}
+        ]
+      },
+      "n_nira": {
+        "dice": "Nira. Mi hija. Tiene siete ciclos. El doctor se la llevaba a la sala siete por las noches, mientras yo trabajaba. Le decía que era un juego. Un juego de cantar.",
+        "accion": "Ya no mira la grabadora. Le mira a usted, y no parpadea.",
+        "emocion": "quebrado",
+        "al_entrar": {"verdad": 15, "flag": ["nombre_nira", "nina_confirmada", "menciono_hija"]},
+        "revela": true,
+        "opciones": [
+          {"tono": "pregunta", "texto": "¿Un juego de cantar? ¿Para qué la necesitaba?", "ir": "n_benn_monstruo"},
+          {"tono": "empatia", "texto": "Usted no podía saberlo. Siga, estoy aquí.", "ir": "n_benn_monstruo", "ef": {"confianza": 6}},
+          {"tono": "acusar", "texto": "Y cuando se enteró, lo mató.", "ir": "n_acusa_canto", "ef": {"tension": 16}}
+        ]
+      },
+      "n_benn_monstruo": {
+        "dice": "La asustaba. Apagaba las luces, le ponía sonidos horribles, le decía que yo no iba a volver... hasta que ella cantaba el canto de silencio. Y él lo grababa. Noche tras noche.",
+        "accion": "La piel translúcida de su garganta se ilumina un instante, de un azul enfermo.",
+        "emocion": "furioso",
+        "al_entrar": {"verdad": 10, "flag": "benn_culpable"},
+        "revela": true,
+        "opciones": [
+          {"tono": "pregunta", "texto": "¿Para quién lo grababa?", "ir_si": [{"si": {"flag": "sabe_helix"}, "ir": "n_esa_noche"}], "ir": "n_para_quien"},
+          {"tono": "prueba", "texto": "Para Helix Corp. Mire estos pagos.", "prueba": "helix", "ir": "n_helix"},
+          {"tono": "empatia", "texto": "Lo siento, Vehl. ¿Qué pasó anoche?", "ir": "n_esa_noche", "ef": {"confianza": 4}}
+        ]
+      },
+      "n_para_quien": {
+        "dice": "Para una empresa humana. Helix. Él lo llamaba Proyecto Coro. Imagine un altavoz que canta lo que cantaba mi hija, detective. En una plaza. En una colonia.",
+        "accion": "No hace falta que termine la frase.",
+        "emocion": "asustado",
+        "al_entrar": {"verdad": 10, "flag": "sabe_helix"},
+        "revela": true,
+        "opciones": [
+          {"tono": "pregunta", "texto": "¿Qué pasó anoche?", "ir": "n_esa_noche"},
+          {"tono": "acusar", "texto": "Suena a que usted sabe mucho del negocio. ¿Cuánto cobraba?", "fin": "d_helix"}
+        ]
+      },
+      "n_esa_noche": {
+        "dice": "Nira no estaba en casa. La vecina dijo que 'el señor del Instituto' había pasado a buscarla. Corrí. Cuando abrí la sala siete, ella estaba en la cabina, en la oscuridad, cantando. Y él... él sonreía. Tenía los auriculares de protección. Se los quitó para oírla mejor. Para oírla mejor, detective.",
+        "accion": "Se detiene. Sus manos tiemblan tanto que la cadena suena como una campanilla.",
+        "emocion": "quebrado",
+        "al_entrar": {"verdad": 10, "flag": "sabe_noche"},
+        "revela": true,
+        "opciones": [
+          {"tono": "silencio", "texto": "[No decir nada. Dejarle terminar.]", "ir": "n_borro", "ef": {"confianza": 6}},
+          {"tono": "pregunta", "texto": "¿Y el doctor murió en ese momento?", "ir": "n_borro"},
+          {"tono": "acusar", "texto": "Y entonces cantó usted.", "ir": "n_falsa", "ef": {"tension": 14}}
+        ]
+      },
+      "n_borro": {
+        "dice": "Cayó. Nira no paraba de cantar y él cayó con sangre en los oídos. La envolví en mi capa hasta que se calló. Después usé sus credenciales y borré todo. Todo. Para que nadie volviera a oír esa voz.",
+        "accion": "Levanta la vista. Por primera vez esta noche, parece aliviado de haberlo dicho.",
+        "emocion": "quebrado",
+        "al_entrar": {"verdad": 10, "flag": "sabe_borrado"},
+        "revela": true,
+        "opciones": [
+          {"tono": "pregunta", "texto": "¿Todo? ¿No quedó ninguna copia?", "ir": "n_copias"},
+          {"tono": "empatia", "texto": "Protegió a su hija. Cualquier padre lo habría hecho.", "ir": "n_copias", "ef": {"confianza": 5}},
+          {"tono": "cerrar", "texto": "Borró pruebas de un homicidio. Con eso me basta.", "ir_si": [{"si": {"grabadora": true}, "ir": "n_basta_on"}], "ir": "n_basta_off"}
+        ]
+      },
+      "n_basta_on": {
+        "dice": "¿Le basta? Borré un archivo, sí. Pero no le he contado lo peor, detective. Si cierra ahora, no sabrá dónde está la voz de mi hija.",
+        "accion": "Se inclina hacia delante tanto como le dejan las esposas.",
+        "emocion": "nervioso",
+        "opciones": [
+          {"tono": "pregunta", "texto": "¿Dónde está?", "ir": "n_copias"},
+          {"tono": "cerrar", "texto": "Eso lo investigará otro. Caso cerrado.", "fin": "d_falsa"}
+        ]
+      },
+      "n_basta_off": {
+        "dice": "¿Le basta? No hay nada grabado, detective. Y lo peor aún no se lo he contado.",
+        "accion": "Mira la grabadora apagada. Luego a usted.",
+        "emocion": "nervioso",
+        "opciones": [
+          {"tono": "pregunta", "texto": "¿Qué es lo peor?", "ir": "n_copias"},
+          {"tono": "cerrar", "texto": "Tengo lo que necesito. Hemos terminado.", "fin": "d_sin_grabar"}
+        ]
+      },
+      "n_copias": {
+        "dice": "No borré lo que ya había salido. Benn enviaba cada grabación a Helix. Las copias maestras y un prototipo del altavoz están en el transporte Carrow, en el muelle nueve. Zarpa al amanecer.",
+        "accion": "Mira el reloj de la pared. Usted también.",
+        "emocion": "asustado",
+        "al_entrar": {"verdad": 10, "flag": ["sabe_copias", "pista_transporte"]},
+        "revela": true,
+        "opciones": [
+          {"tono": "pregunta", "texto": "Y ahora que lo sé todo... ¿qué quiere, Vehl?", "ir_si": [{"si": {"grabadora": true}, "ir": "n_decide_grabar"}, {"si": {"flag": "sabe_helix", "prueba_usada": "helix"}, "ir": "n_decide_grabar"}], "ir": "n_que_pasara"},
+          {"tono": "cerrar", "texto": "Gracias. Ya tengo todo lo que necesito.", "ir_si": [{"si": {"grabadora": true}, "ir": "n_decide_grabar"}], "fin": "d_sin_grabar"}
+        ]
+      },
+      "n_que_pasara": {
+        "dice": "Ya lo sabe todo. Y no hay nada grabado. Ahora dígame la verdad, detective: ¿qué va a pasar con mi hija?",
+        "accion": "No pregunta por él. Solo por ella.",
+        "emocion": "nervioso",
+        "grabadora": {"on": {"fin": "d_traicion", "si_no_flag": "promesa"}},
+        "opciones": [
+          {"tono": "promesa", "texto": "Nira entrará en protección de testigos humana. Nadie de su pueblo la tocará. Le doy mi palabra.", "ir": "n_pide_grabar", "ef": {"flag": "promesa", "confianza": 10}},
+          {"tono": "directo", "texto": "Eso no depende de mí.", "ir": "n_sin_promesa", "ef": {"confianza": -8}},
+          {"tono": "cerrar", "texto": "Con esto me basta. Hemos terminado.", "fin": "d_sin_grabar"}
+        ]
+      },
+      "n_sin_promesa": {
+        "dice": "Entonces no hay nada más que decir. Lo que le he contado se lo lleva el aire, detective. Como todas las palabras.",
+        "accion": "Aparta la mirada hacia la pared.",
+        "emocion": "quebrado",
+        "grabadora": {"on": {"fin": "d_traicion"}},
+        "opciones": [
+          {"tono": "promesa", "texto": "Espere. Sí depende de mí. Le doy mi palabra: Nira queda protegida.", "ir": "n_pide_grabar", "ef": {"flag": "promesa", "confianza": 6}},
+          {"tono": "cerrar", "texto": "Hemos terminado.", "fin": "d_sin_grabar"}
+        ]
+      },
+      "n_pide_grabar": {
+        "dice": "Su palabra. Bien. Entonces enciéndala. Enciéndala usted, detective. Que quede grabada mi voz, no la de ella.",
+        "accion": "Asiente hacia la grabadora. Espera.",
+        "emocion": "calma",
+        "espera_grabadora": true,
+        "grabadora": {"on": {"ir": "n_final_a"}},
+        "opciones": [
+          {"tono": "cortes", "texto": "[Encender la grabadora]", "grabadora": true, "ir": "n_final_a"},
+          {"tono": "cerrar", "texto": "No hace falta. Me fío de usted. Hemos terminado.", "fin": "d_sin_grabar"}
+        ]
+      },
+      "n_decide_grabar": {
+        "dice_si": [{"si": {"grabadora": false}, "dice": "Encienda la máquina, detective. Si Helix ya tiene la voz de mi hija, un nombre en una grabación no la condena más. Lo único que puede salvarla es que un tribunal humano oiga esto. Enciéndala."}],
+        "dice": "Déjela encendida. Si Helix ya tiene la voz de mi hija, un nombre en una grabación no la condena más. Lo único que puede salvarla es que un tribunal humano oiga esto. Grábelo todo.",
+        "accion": "Se endereza. Por primera vez habla hacia la grabadora, y no hacia usted.",
+        "emocion": "calma",
+        "al_entrar": {"flag": "decide_grabar"},
+        "grabadora": {"on": {"ir": "n_final_b"}, "off": {"dice": "No. Enciéndala. Esta vez quiero que quede grabado.", "ef": {"tension": 6}}},
+        "opciones": [
+          {"tono": "pregunta", "texto": "Adelante. Desde el principio.", "si": {"grabadora": true}, "ir": "n_final_b"},
+          {"tono": "cortes", "texto": "[Encender la grabadora] Adelante.", "si": {"grabadora": false}, "grabadora": true, "ir": "n_final_b"},
+          {"tono": "cerrar", "texto": "No hace falta. Ya tengo lo que necesito.", "fin": "d_sin_grabar", "si": {"grabadora": false}}
+        ]
+      },
+      "n_acusa_canto": {
+        "dice": "¿Me acusa a mí? ...Hágalo. Ya está decidido, ¿verdad? Un ilvari, un humano muerto, un canto prohibido. Es una historia muy fácil de contar.",
+        "accion": "Algo se rinde en sus hombros. No es alivio. Es cansancio.",
+        "emocion": "quebrado",
+        "al_entrar": {"flag": "acusado"},
+        "opciones": [
+          {"tono": "acusar", "texto": "Sí. Fue usted.", "ir": "n_falsa", "ef": {"tension": 10}},
+          {"tono": "cortes", "texto": "No está decidido. Por eso le pregunto.", "ir_si": [{"si": {"flag": "admitio_estuvo"}, "ir": "n_que_hacia"}], "ir": "n_directo_suave", "ef": {"tension": -10, "confianza": 4}},
+          {"tono": "prueba", "texto": "Tiene razón: es demasiado fácil. Mire el informe forense.", "prueba": "informe", "ir": "n_informe"}
+        ]
+      },
+      "n_falsa": {
+        "dice": "Fui yo. Yo canté el canto de silencio. Lo maté. Escríbalo, fírmelo, y déjeme ir a mi celda.",
+        "accion": "Lo dice sin pestañear, con las manos planas sobre la mesa. Demasiado tranquilo.",
+        "emocion": "quebrado",
+        "al_entrar": {"flag": "confeso_falso"},
+        "opciones": [
+          {"tono": "cerrar", "texto": "Eso es lo que necesitaba. Caso cerrado.", "fin": "d_falsa"},
+          {"tono": "pregunta", "texto": "¿Cuánto duró el canto? ¿A qué distancia estaba usted?", "ir": "n_falsa_detalle"},
+          {"tono": "empatia", "texto": "No le creo. Está protegiendo a alguien.", "ir_si": [{"si": {"confianza_min": 30}, "ir": "n_no_le_creo"}], "ir": "n_cierra1", "ef": {"tension": 6}}
+        ]
+      },
+      "n_falsa_detalle": {
+        "dice": "Duró... mucho. Estaba cerca. Muy cerca. No sé. Los ilvari no medimos el canto en segundos.",
+        "accion": "Duda. Un asesino recordaría eso. Un padre que no estaba cantando, no.",
+        "emocion": "nervioso",
+        "al_entrar": {"flag": "falsa_pillada", "verdad": 5},
+        "opciones": [
+          {"tono": "prueba", "texto": "El emisor medía menos de un metro. Usted mide dos. No fue usted.", "prueba": "informe", "ir": "n_no_fue_el"},
+          {"tono": "empatia", "texto": "No sabe cuánto duró porque no cantaba usted. ¿Quién cantaba?", "ir": "n_no_le_creo", "ef": {"confianza": 4}},
+          {"tono": "cerrar", "texto": "Detalles. Su confesión me basta.", "fin": "d_falsa"}
+        ]
+      },
+      "n_no_le_creo": {
+        "dice": "...Usted no sabe lo que está pidiendo, detective. Si le digo quién cantó, se la llevarán.",
+        "accion": "No lo niega. Solo tiene miedo.",
+        "emocion": "asustado",
+        "al_entrar": {"verdad": 5, "flag": "cubre_a_alguien"},
+        "opciones": [
+          {"tono": "promesa", "texto": "Nadie se llevará a nadie. Le doy mi palabra.", "ir_si": [{"si": {"grabadora": true}, "ir": "n_condicion"}], "ir": "n_nira", "ef": {"confianza": 8}},
+          {"tono": "prueba", "texto": "No hace falta que me lo diga. Este dibujo lo dice por usted.", "prueba": "dibujo", "ir": "n_dibujo"},
+          {"tono": "testigo", "texto": "La maestra de Nira ya me lo ha dicho casi todo.", "testigo": "tessa", "ir": "n_tessa"}
+        ]
+      },
+      "n_cierra1": {
+        "dice": "Creo que esta conversación ha terminado, detective. Quiero hablar con mi embajadora.",
+        "accion": "Aparta las manos de la mesa. Las esconde bajo ella.",
+        "emocion": "burla",
+        "al_entrar": {"flag": "pide_embajadora", "tension": 6},
+        "opciones": [
+          {"tono": "cortes", "texto": "Perdone. He ido demasiado lejos. Deme una oportunidad más.", "ir_si": [{"si": {"confianza_min": 20}, "ir": "n_segunda"}], "fin": "d_abogado", "ef": {"tension": -12}},
+          {"tono": "silencio", "texto": "[Callar. Esperar. No moverse.]", "ir_si": [{"si": {"tension_max": 70}, "ir": "n_segunda"}], "fin": "d_abogado"},
+          {"tono": "presion", "texto": "Su embajadora no va a salvarle.", "fin": "d_abogado"}
+        ]
+      },
+      "n_segunda": {
+        "dice": "...Una. Una oportunidad. No la gaste gritando.",
+        "accion": "Vuelve a poner las manos sobre la mesa, despacio.",
+        "emocion": "nervioso",
+        "al_entrar": {"quitar_flag": "pide_embajadora"},
+        "opciones": [
+          {"tono": "empatia", "texto": "Solo quiero entender qué pasó en la sala siete.", "ir_si": [{"si": {"flag": "admitio_estuvo"}, "ir": "n_que_hacia"}], "ir": "n_directo_suave", "ef": {"confianza": 4}},
+          {"tono": "prueba", "texto": "Empecemos por los hechos. Informe forense.", "prueba": "informe", "ir": "n_informe"},
+          {"tono": "cortes", "texto": "¿Le incomoda la grabadora? Puedo apagarla.", "si": {"grabadora": true}, "ir": "n_ofrece_apagar", "ef": {"confianza": 4}}
+        ]
+      },
+      "n_final_a": {
+        "dice": "Me llamo Vehl Iskaar. Soy la Voz del Instituto. El doctor Aurelio Benn se llevaba a mi hija Nira a la sala siete por las noches. La asustaba hasta que cantaba el canto de silencio, y lo grababa para Helix Corp. Anoche Nira cantó y él murió. Yo borré el archivo para protegerla. Las copias están en el transporte Carrow, muelle nueve. Zarpa al amanecer. ...Ya está. Ahora es su palabra, detective. Cúmplala.",
+        "accion": "La luz roja parpadea. Vehl habla hacia ella, sereno, como quien canta una última vez.",
+        "emocion": "quebrado",
+        "fin": "v_padre"
+      },
+      "n_final_b": {
+        "dice": "Grábelo todo. El doctor Aurelio Benn vendió la voz de mi hija a Helix Corp: Proyecto Coro. La asustaba noche tras noche para arrancarle el canto de silencio. Anoche Nira cantó y él murió. Yo borré su archivo, pero Helix ya tenía las copias: transporte Carrow, muelle nueve, al amanecer. Que lo oiga un tribunal humano. Que Helix sepa que alguien escuchó.",
+        "accion": "Habla despacio, para que la máquina no pierda ni una palabra.",
+        "emocion": "quebrado",
+        "fin": "v_coro"
+      }
+    },
+    "grabadora_defecto": {
+      "off_confia": {"dice": "...Gracias. Así puedo hablar.", "ef": {"confianza": 12, "tension": -8, "flag": "off_consentido"}, "si": {"confianza_min": 40}},
+      "off_sabe": {"dice": "La ha apagado. ...Lo recordaré, detective.", "ef": {"confianza": 10, "tension": -6, "flag": "off_consentido"}, "si": {"flag": "sabe_creencia"}},
+      "off_sospecha": {"dice": "¿Por qué la apaga? ¿Qué piensa hacerme que no deba quedar grabado?", "ef": {"tension": 15, "confianza": -6}},
+      "on_traicion": {"fin": "d_traicion", "si": {"flag": "hablo_off", "no_flag": "promesa"}},
+      "on_formal": {"dice": "Muy bien. Hablaré para su máquina, entonces.", "ef": {"confianza": -5, "tension": 4}}
+    },
+    "pruebas_defecto": {
+      "acceso": {"dice": "Mi código. Sí. Eso ya lo sabemos los dos, detective.", "ef": {"tension": 4}},
+      "fragmento": {"dice": "¡Apague eso! No... no ahora. No así.", "ef": {"tension": 14}},
+      "informe": {"dice": "Un informe. Números. Los números no estaban allí esa noche.", "ef": {"tension": 6}},
+      "dibujo": {"dice": "...Guarde eso. Por favor. Guárdelo.", "ef": {"tension": 10}},
+      "helix": {"dice": "No sé nada de empresas humanas. No me enseñe eso ahora.", "ef": {"tension": 6}},
+      "_": {"dice": "Eso no tiene nada que ver con lo que hablábamos.", "ef": {"tension": 5}}
+    },
+    "testigos_defecto": {
+      "ruiz": {"dice": "El guardia ve lo que quiere ver. Hacía frío. Llevaba mi capa.", "ef": {"tension": 6}},
+      "quint": {"dice": "Mara Quint admiraba al doctor. Diría cualquier cosa de él. Buena o mala.", "ef": {"tension": 4}},
+      "tessa": {"dice": "¿Ha hablado con la maestra de mi hija? ...¿Por qué? ¿Qué tiene que ver Nira?", "ef": {"tension": 12, "flag": "menciono_hija"}},
+      "_": {"dice": "No sé qué quiere que diga a eso.", "ef": {"tension": 4}}
+    },
+    "tension_max": {"con_flag": {"peligro": "d_canto"}, "fin": "d_abogado"},
+    "finales": {
+      "v_padre": {"tipo": "victoria", "titulo": "LA VOZ DEL PADRE", "texto": "El transporte Carrow fue abordado a las 05:40 en el muelle nueve. Dentro: cuarenta horas de grabaciones de una niña aterrada y un prototipo de altavoz militar. Helix Corp lo niega todo; tres directivos están detenidos. Nira Iskaar vive bajo protección de testigos, lejos de cualquier máquina. Dicen que ha vuelto a cantar. Canciones normales."},
+      "v_coro": {"tipo": "victoria", "titulo": "EL CORO ROTO", "texto": "Con la declaración grabada, el fiscal consiguió la orden en once minutos. El Carrow no llegó a despegar. Proyecto Coro fue desmantelado y el nombre del doctor Benn, borrado de la placa del Instituto. Vehl Iskaar fue acusado de destruir pruebas: ocho meses. Cada tarde, una niña ilvari lo visita al otro lado del cristal."},
+      "d_falsa": {"tipo": "derrota", "titulo": "CULPABLE EQUIVOCADO", "texto": "Cierras el caso con una confesión firmada. Tres semanas después, en la colonia minera de Tessar, cuarenta y dos personas mueren a la vez, con los oídos sangrando. El altavoz llevaba el logotipo de Helix Corp. Vehl Iskaar se niega a ver a nadie. Nadie sabe dónde está su hija."},
+      "d_abogado": {"tipo": "derrota", "titulo": "PROTOCOLO DIPLOMÁTICO", "texto": "Se activa el protocolo diplomático ilvari. La embajadora entra con dos abogados y se lleva a Vehl sin una palabra más. Al amanecer, el transporte Carrow despega del muelle nueve. Nadie sabrá nunca qué llevaba."},
+      "d_silencio": {"tipo": "derrota", "titulo": "EL VOTO DE SILENCIO", "texto": "Vehl cierra los ojos y canta, sin traductor, una sola nota. Es el voto de silencio ilvari: no volverá a hablar con ningún humano. Nunca. El expediente se archiva sin culpable, y el Carrow zarpa al amanecer."},
+      "d_traicion": {"tipo": "derrota", "titulo": "LA LUZ ROJA", "texto": "Vehl ve encenderse la luz roja. No grita. Canta una nota, muy grave, y la bombilla estalla. Cuando vuelve la luz está de espaldas a ti, mirando la pared, y no volverá a darse la vuelta. Todo lo que te contó sin grabar no vale nada ante un juez."},
+      "d_canto": {"tipo": "derrota", "titulo": "CANTO DE SILENCIO", "texto": "El canto empieza por debajo de lo que un oído humano puede oír. Primero tiembla la mesa. Luego notas sangre en el oído izquierdo. Los guardias entran a tiempo de sacarte a rastras. Vehl queda aislado, acusado de agresión, y el caso Benn se cierra en falso."},
+      "d_sin_grabar": {"tipo": "derrota", "titulo": "PALABRAS AL AIRE", "texto": "Lo sabes todo. Pero no hay grabación, ni firma, ni testigo. Al día siguiente Vehl lo niega ante su embajadora, y tu informe es tu palabra contra la de un diplomático. El Carrow zarpa al amanecer."},
+      "d_amanecer": {"tipo": "derrota", "titulo": "AMANECER", "texto": "Suena la sirena del puerto: el transporte Carrow despega del muelle nueve. Vehl lo oye a través de las paredes y cierra los ojos. 'Ya está', dice. 'Ya da igual.' No vuelve a hablar."},
+      "d_helix": {"tipo": "derrota", "titulo": "LA ACUSACIÓN EQUIVOCADA", "texto": "Vehl se ríe, un sonido horrible a través del traductor. '¿Yo? ¿Socio de Helix?' Se levanta tanto como le dejan las esposas. 'Entonces no ha entendido nada.' Pide a su embajadora. La tiene en veinte minutos. El Carrow zarpa en noventa."}
+    }
+  }
+}

@@ -771,6 +771,60 @@ func set_estado_sospechoso(verdad: float, duda: float) -> void:
 func reaccion(tipo: String, verdad: float, empatia: float) -> void:
 	sospechoso.reaccionar(tipo, verdad, empatia)
 
+## Gestos de la acotación del nodo (Ilvari.GESTOS). Si la lista viene vacía se deducen del
+## texto. Solo los hace el modelo esculpido (tipo "ilvari").
+func gestos_sospechoso(ids: Array, accion := "") -> void:
+	if sospechoso == null or sospechoso.ilvari == null:
+		return
+	var il = sospechoso.ilvari
+	il.sala = _puntos_sala()
+	il.sala_efecto = _efecto_sospechoso
+	il.gestos(ids if not ids.is_empty() else il.inferir(accion))
+
+## Lo que el sospechoso puede mirar (mundo): la grabadora de la mesa y la pared del fondo.
+func _puntos_sala() -> Dictionary:
+	return {
+		"grabadora": (grabadora.global_position + Vector3(0, 0.06, 0)) if grabadora else Vector3(0.52, MESA_Y, -0.36),
+		"puerta": Vector3(-1.35, 1.6, -1.93),
+		"espejo": Vector3(0.95, 1.55, -1.93),
+		"reloj": Vector3(-0.55, 2.12, -1.93),
+		"pared": Vector3(-2.2, 1.45, -1.2),
+		"mesa_cerca": Vector3(0.12, MESA_Y, 0.05),
+	}
+
+var _grave := 0.0
+var _mirada_cam := 0.0
+var _mirada_cam_obj := Vector2.ZERO
+
+func _efecto_sospechoso(tipo: String, fuerza: float) -> void:
+	var a = _audio()
+	match tipo:
+		"golpe":
+			_impacto(fuerza, false)
+		"cadena":
+			if a and a.has_method("cadena"):
+				a.cadena(fuerza)
+		"pitido":
+			if a and a.has_method("pitido"):
+				a.pitido()
+		"chirrido":
+			if a and a.has_method("chirrido"):
+				a.chirrido()
+		"grave":
+			_grave = fuerza
+			if fuerza <= 0.01 and taza:
+				taza.position.y = MESA_Y
+				taza.rotation.y = 0.0
+			if a and a.has_method("grave"):
+				a.grave(fuerza)
+		"camara_reloj":
+			# "Mira el reloj de la pared. Usted también."
+			var r := Vector3(-0.55, 2.12, -1.93) - cam.global_position
+			var yaw := rad_to_deg(atan2(-r.x, -r.z))
+			var pit := rad_to_deg(atan2(r.y, Vector2(r.x, r.z).length())) - CAM_PITCH
+			_mirada_cam_obj = Vector2(yaw, pit)
+			_mirada_cam = 2.2
+
 func hablar(seg: float) -> void:
 	sospechoso.hablar(seg)
 
@@ -864,7 +918,7 @@ func _toque() -> void:
 	if a and a.has_method("tap"):
 		a.tap()
 
-func _impacto(fuerza: float) -> void:
+func _impacto(fuerza: float, susto := true) -> void:
 	_shake = 0.55 * fuerza
 	_lamp_kick = 1.0 * fuerza
 	_flicker_extra = 0.5 * fuerza
@@ -876,7 +930,8 @@ func _impacto(fuerza: float) -> void:
 		var tw := create_tween()
 		tw.tween_property(taza, "position:y", MESA_Y + 0.012 * fuerza, 0.05)
 		tw.tween_property(taza, "position:y", MESA_Y, 0.08).set_trans(Tween.TRANS_BOUNCE)
-	sospechoso._flinch = maxf(sospechoso._flinch, 0.5 * fuerza)
+	if susto:
+		sospechoso._flinch = maxf(sospechoso._flinch, 0.5 * fuerza)
 
 ## Una foto de la evidencia sale de la mano y se desliza hacia el sospechoso.
 func deslizar_evidencia(titulo: String) -> void:
@@ -1359,6 +1414,14 @@ func _process(delta: float) -> void:
 		_set_hover(puede and _carpeta_mesa_hit(mp))
 		_set_hover_grab(puede and not _hover and _grabadora_hit(mp))
 	_golpe = move_toward(_golpe, 0.0, delta * 1.6)
+	# canto grave del ilvari: la bombilla parpadea, la taza tiembla y el aire vibra
+	if _grave > 0.01:
+		_flicker_extra = maxf(_flicker_extra, _grave * 1.3)
+		_shake = maxf(_shake, _grave * 0.06)
+		_lamp_kick = maxf(_lamp_kick, _grave * 0.35)
+		if taza:
+			taza.position.y = MESA_Y + absf(sin(t * 47.0)) * 0.0028 * _grave
+			taza.rotation.y = sin(t * 31.0) * 0.03 * _grave
 	if post_mat:
 		post_mat.set_shader_parameter("golpe", _golpe)
 		post_mat.set_shader_parameter("negro", _negro)
@@ -1396,7 +1459,12 @@ func _camara_update(delta: float) -> void:
 	var obj := Vector2.ZERO
 	if sway and carpeta_estado == "mesa":
 		obj = Vector2(-n.x * 3.2, -n.y * 2.0)
-	_look = _look.lerp(obj, 1.0 - exp(-delta * 2.5))
+	var vel_look := 2.5
+	if _mirada_cam > 0.0:
+		_mirada_cam -= delta
+		obj = _mirada_cam_obj
+		vel_look = 1.8
+	_look = _look.lerp(obj, 1.0 - exp(-delta * vel_look))
 	var pos := CAM_BASE
 	if sway:
 		pos += Vector3(sin(t * 0.5) * 0.01, sin(t * 0.8) * 0.007, 0)

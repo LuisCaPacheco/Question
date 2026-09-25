@@ -22,6 +22,12 @@ var snd_card: AudioStreamWAV
 var snd_voz: AudioStreamWAV
 var _voz_player: AudioStreamPlayer
 var _voz_t := 0.0
+# gestos del sospechoso (acotaciones)
+var snd_cadena: AudioStreamWAV
+var snd_pitido: AudioStreamWAV
+var snd_chirrido: AudioStreamWAV
+var _grave_player: AudioStreamPlayer
+var _grave_obj := 0.0
 
 func _ready() -> void:
 	_generar_sonidos()
@@ -45,6 +51,11 @@ func _ready() -> void:
 	_voz_player.volume_db = -60.0
 	add_child(_voz_player)
 
+	_grave_player = AudioStreamPlayer.new()
+	_grave_player.stream = _wav(_gen_grave(), true)
+	_grave_player.volume_db = -60.0
+	add_child(_grave_player)
+
 # ---------- generacion (una sola vez al iniciar) ----------
 
 func _generar_sonidos() -> void:
@@ -59,6 +70,70 @@ func _generar_sonidos() -> void:
 	snd_door = _wav(_gen_door())
 	snd_card = _wav(_gen_whoosh())
 	snd_voz = _wav(_gen_voz(), true)
+	snd_cadena = _wav(_gen_cadena())
+	snd_pitido = _wav(_gen_pitido())
+	snd_chirrido = _wav(_gen_chirrido())
+
+## Eslabones de cadena que chocan: varios golpecitos metálicos agudos, cada uno con
+## parciales inarmónicos que se apagan rápido.
+func _gen_cadena() -> PackedFloat32Array:
+	var n := int(MIX_RATE * 0.7)
+	var s := PackedFloat32Array()
+	s.resize(n)
+	var golpes := [0.0, 0.045, 0.09, 0.16, 0.21, 0.33]
+	for g in golpes.size():
+		var t0: float = golpes[g] + randf() * 0.015
+		var amp := 0.7 * pow(0.78, g)
+		var base := randf_range(2300.0, 3400.0)
+		var i0 := int(t0 * MIX_RATE)
+		for j in int(0.18 * MIX_RATE):
+			var idx := i0 + j
+			if idx >= n:
+				break
+			var t := float(j) / MIX_RATE
+			var v := sin(TAU * base * t) * 0.6 + sin(TAU * base * 2.76 * t) * 0.3 + sin(TAU * base * 5.4 * t) * 0.15
+			v += (randf() * 2.0 - 1.0) * exp(-t * 900.0) * 0.8
+			s[idx] += v * amp * exp(-t * 38.0)
+	return s
+
+## Pitido corto del collar traductor (una sílaba que no sabe traducir).
+func _gen_pitido() -> PackedFloat32Array:
+	var n := int(MIX_RATE * 0.16)
+	var s := PackedFloat32Array()
+	s.resize(n)
+	for i in n:
+		var t := float(i) / MIX_RATE
+		var env := clampf(t * 300.0, 0.0, 1.0) * clampf((0.16 - t) * 60.0, 0.0, 1.0)
+		s[i] = (sin(TAU * 1760.0 * t) * 0.7 + sin(TAU * 3520.0 * t) * 0.15) * env * 0.35
+	return s
+
+## El traductor se acopla: realimentación que sube y se corta.
+func _gen_chirrido() -> PackedFloat32Array:
+	var n := int(MIX_RATE * 0.55)
+	var s := PackedFloat32Array()
+	s.resize(n)
+	var fase := 0.0
+	for i in n:
+		var t := float(i) / MIX_RATE
+		var f := 2200.0 + t * 3800.0 + sin(t * 90.0) * 160.0
+		fase += TAU * f / MIX_RATE
+		var env := clampf(t * 12.0, 0.0, 1.0) * clampf((0.55 - t) * 25.0, 0.0, 1.0)
+		s[i] = (sin(fase) + 0.35 * signf(sin(fase * 0.5))) * env * 0.16
+	return s
+
+## Canto ilvari en infrasonido: un grave de 38 Hz (se siente más que se oye) con
+## armónicos a 76 y 114 Hz para que se note en altavoces pequeños, y un batido lento.
+func _gen_grave() -> PackedFloat32Array:
+	var n := int(MIX_RATE * 4.0)
+	var s := PackedFloat32Array()
+	s.resize(n)
+	for i in n:
+		var t := float(i) / MIX_RATE
+		var bat := 0.75 + 0.25 * sin(TAU * 0.5 * t)
+		var v := sin(TAU * 38.0 * t) * 0.8 + sin(TAU * 76.0 * t + 0.4) * 0.35 + sin(TAU * 114.0 * t + 1.1) * 0.18
+		v += sin(TAU * 38.75 * t) * 0.3
+		s[i] = v * bat * 0.5
+	return s
 
 ## Golpe de puño en mesa de metal: grave + resonancia metalica.
 func _gen_thud() -> PackedFloat32Array:
@@ -269,6 +344,15 @@ func thud() -> void: play_sfx(snd_thud, 0.0, 0.92 + randf() * 0.12)
 func tap() -> void: play_sfx(snd_tap, -8.0, 0.9 + randf() * 0.25)
 func door() -> void: play_sfx(snd_door, -4.0)
 func card() -> void: play_sfx(snd_card, -6.0, 0.9 + randf() * 0.2)
+## Cadena de las esposas: fuerza 0..1 (tintineo suave .. salta contra la mesa).
+func cadena(fuerza := 0.5) -> void: play_sfx(snd_cadena, lerpf(-22.0, -4.0, clampf(fuerza, 0.0, 1.0)), 0.85 + randf() * 0.3)
+func pitido() -> void: play_sfx(snd_pitido, -12.0, 1.0 + randf() * 0.04)
+func chirrido() -> void: play_sfx(snd_chirrido, -10.0)
+## Nivel del canto grave 0..1 (se llama cada frame mientras dura el gesto).
+func grave(nivel: float) -> void:
+	_grave_obj = clampf(nivel, 0.0, 1.0)
+	if _grave_obj > 0.01 and _grave_player and not _grave_player.playing:
+		_grave_player.play()
 
 ## Voz del sospechoso: humano normal, kthar agudo y rasposo, molk muy grave.
 func voz(tipo: String, seg: float) -> void:
@@ -284,6 +368,11 @@ func voz(tipo: String, seg: float) -> void:
 		_voz_player.play(randf() * 1.5)
 
 func _process(delta: float) -> void:
+	if _grave_player and _grave_player.playing:
+		var obj := lerpf(-60.0, -3.0, sqrt(_grave_obj)) if _grave_obj > 0.01 else -60.0
+		_grave_player.volume_db = lerpf(_grave_player.volume_db, obj, 1.0 - exp(-delta * 3.0))
+		if _grave_obj <= 0.01 and _grave_player.volume_db < -55.0:
+			_grave_player.stop()
 	if _voz_player == null:
 		return
 	if _voz_t > 0.0:

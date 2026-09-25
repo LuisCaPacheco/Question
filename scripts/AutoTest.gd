@@ -134,6 +134,41 @@ func _correr_arbol(g: Node, e: Node) -> void:
 	print("AUTOTEST fin arbol terminado=", g.terminado, " resultado=", g.resultados.get("vehl", ""))
 	get_tree().quit()
 
+## --gestos: cada gesto de Ilvari.GESTOS, uno a uno, con una foto en su punto más intenso.
+## --solo=a,b,c limita la lista; --sin_ui oculta los subtítulos y las cartas (tapan las manos).
+func _correr_gestos(e: Node) -> void:
+	var il = e.sospechoso.ilvari
+	if il == null:
+		print("AUTOTEST ERROR: el caso no tiene modelo ilvari")
+		get_tree().quit()
+		return
+	if "--sin_ui" in OS.get_cmdline_user_args():
+		for c in get_tree().root.find_children("*", "CanvasLayer", true, false):
+			c.visible = false
+	var ids: Array = il.GESTOS.keys()
+	for a in OS.get_cmdline_user_args():
+		if a.begins_with("--solo="):
+			ids = Array(a.substr(7).split(","))
+	var n := 0
+	for id in ids:
+		n += 1
+		var def = il.GESTOS[id]
+		var partes: Array = def if def is Array else [def]
+		var pico := 0.0
+		for p in partes:
+			var ee: Array = p.get("e", [0.3, 1.0, 0.5])
+			var pk := float(p.get("retraso", 0.0)) + float(ee[0])
+			if str(p.get("curva", "")) == "pulso":
+				pk = float(p.get("retraso", 0.0)) + (float(ee[0]) + float(ee[1]) + float(ee[2])) * 0.5
+			pico = maxf(pico, pk)
+		e.gestos_sospechoso([id])
+		await _esperar(pico + 0.35)
+		await _foto("g%02d_%s" % [n, id])
+		e.gestos_sospechoso([])
+		await _esperar(1.6)
+	print("AUTOTEST fin gestos: ", n)
+	get_tree().quit()
+
 func _correr() -> void:
 	var g := get_parent()
 	var e := get_tree().current_scene
@@ -146,6 +181,9 @@ func _correr() -> void:
 	g.empezar_juego()
 	await _esperar(2.5)
 	await _foto("03_juego")
+	if "--gestos" in OS.get_cmdline_user_args():
+		await _correr_gestos(e)
+		return
 	if g.arbol:
 		await _correr_arbol(g, e)
 		return

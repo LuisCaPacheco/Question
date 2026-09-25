@@ -38,6 +38,7 @@
       "n_inicio": {
         "dice": "Detective. Me dijeron que esto sería una conversación, no un interrogatorio. ¿Cuál de las dos es?",
         "accion": "El collar traductor zumba en su cuello. Sus ojos negros no parpadean.",
+        "gestos": ["collar_zumba", "fija"],
         "emocion": "calma",
         "opciones": [
           {"tono": "cortes", "texto": "Una conversación. Soy el agente Ibarra. ¿Necesita algo? ¿Agua, algo para la voz?", "ir": "n_agua", "ef": {"confianza": 10}},
@@ -49,6 +50,7 @@
       "n_agua": {
         "dice": "Agua no. Los ilvari no bebemos delante de extraños. Pero gracias. Es la primera persona hoy que me pregunta algo que no es una acusación.",
         "accion": "Deja de tamborilear con sus cuatro dedos. Mira de reojo la grabadora.",
+        "gestos": ["deja_tamborilear", "mira_grabadora"],
         "emocion": "calma",
         "al_entrar": {"flag": "vio_grabadora"},
         "opciones": [
@@ -60,6 +62,7 @@
       "n_silencio": {
         "dice": "...Los humanos llenan los silencios. Usted no. ¿Es una técnica, detective, o alguien le enseñó que el silencio es sagrado?",
         "accion": "Ladea la cabeza, despacio. Por primera vez parece interesado en usted.",
+        "gestos": ["ladea"],
         "emocion": "calma",
         "opciones": [
           {"tono": "empatia", "texto": "Es respeto. Sé que para los ilvari un silencio dice más que las palabras.", "ir": "n_respeto", "ef": {"confianza": 12, "flag": "sabe_cultura"}},
@@ -70,6 +73,7 @@
       "n_frio": {
         "dice": "Entonces será una conversación corta. Pregunte lo que quiera. Tengo un traductor muy paciente.",
         "accion": "Entrelaza los dedos. Las esposas tintinean contra el metal.",
+        "gestos": ["entrelaza"],
         "emocion": "burla",
         "opciones": [
           {"tono": "directo", "texto": "¿Dónde estaba anoche a las dos?", "ir": "n_coartada"},
@@ -80,6 +84,7 @@
       "n_toda_noche": {
         "dice": "Nadie tiene toda la noche, detective. El amanecer llega para todos. Algunos lo esperan con más miedo que otros.",
         "accion": "Mira hacia la puerta. Un gesto rápido, casi humano.",
+        "gestos": ["mira_puerta"],
         "emocion": "nervioso",
         "al_entrar": {"flag": "pista_amanecer"},
         "opciones": [
@@ -91,6 +96,7 @@
       "n_amanecer": {
         "dice": "Nada. Sale el sol. Zarpan los barcos. Es una forma de hablar. Mi traductor es muy poético.",
         "accion": "Lo dice demasiado rápido. Sus pupilas se estrechan hasta ser una raya.",
+        "gestos": ["pupilas_raya"],
         "emocion": "nervioso",
         "al_entrar": {"flag": "pista_transporte"},
         "opciones": [
@@ -102,6 +108,7 @@
       "n_barco_temprano": {
         "dice": "No sé de qué barco me habla. No sé nada de barcos. Soy intérprete, no estibador.",
         "accion": "La piel de su cuello se tensa bajo el collar metálico.",
+        "gestos": ["cuello_tensa"],
         "emocion": "nervioso",
         "opciones": [
           {"tono": "cortes", "texto": "Está bien. Empecemos por el principio. ¿Dónde estaba anoche?", "ir": "n_coartada", "ef": {"tension": -4}},
@@ -111,6 +118,7 @@
       "n_libreta": {
         "dice": "¿Qué ha escrito? ...No importa. Escriba lo que quiera. Las palabras escritas no pesan nada.",
         "accion": "Intenta leer la libreta del revés. No lo consigue.",
+        "gestos": ["lee_reves"],
         "emocion": "nervioso",
         "opciones": [
           {"tono": "empatia", "texto": "He escrito que parece asustado. No culpable: asustado.", "ir": "n_asustado", "ef": {"confianza": 8}},
@@ -120,6 +128,7 @@
       "n_asustado": {
         "dice": "Asustado. Sí. Hay cosas que asustan más que una celda, detective. Hay gente que no sabe dónde estoy esta noche.",
         "accion": "Mira sus manos esposadas como si fueran de otro.",
+        "gestos": ["mira_manos"],
         "emocion": "asustado",
         "al_entrar": {"flag": "menciono_hija"},
         "opciones": [
@@ -130,6 +139,7 @@
       "n_quien": {
         "dice": "Soy una Voz. Traduzco lo que no cabe en palabras. El doctor Benn estudiaba nuestros cantos; yo se los cantaba. Cinco años juntos.",
         "accion": "Pronuncia el nombre del doctor con cuidado, como quien pisa hielo.",
+        "gestos": ["baja_voz"],
         "emocion": "calma",
         "al_entrar": {"flag": "conoce_trabajo"},
         "opciones": [
@@ -141,6 +151,7 @@
       "n_amigos": {
         "dice": "¿Amigos? Él decía que sí. Me regalaba café humano, que no puedo beber. Me preguntaba por mi familia. Demasiado, al final.",
         "accion": "Algo se endurece en su cara al decir 'al final'.",
+        "gestos": ["aprieta_mandibula"],
         "emocion": "nervioso",
         "al_entrar": {"flag": "benn_preguntaba"},
         "opciones": [
@@ -152,6 +163,7 @@
       "n_benn_familia": {
         "dice": "Por mi hija. Qué canciones le enseñaba. A qué edad empiezan a cantar los niños ilvari. Si podía traerla un día al Instituto. Yo le dije que no.",
         "accion": "Sus dedos arañan despacio la mesa de metal.",
+        "gestos": ["arana_mesa"],
         "emocion": "asustado",
         "al_entrar": {"flag": ["menciono_hija", "benn_pedia_nina"], "verdad": 5},
         "revela": true,
@@ -164,6 +176,7 @@
       "n_respeto_no": {
         "dice": "...No lo sé. Creía que sí. Hasta anoche creía que sí.",
         "accion": "Cierra los ojos. Tiene párpados dobles: primero se cierra una membrana brillante y luego la piel.",
+        "gestos": ["cierra_ojos"],
         "emocion": "asustado",
         "revela": true,
         "al_entrar": {"verdad": 5},
@@ -176,6 +189,7 @@
       "n_proteger": {
         "dice": "Protegerla es lo único que sé hacer bien, detective. Lo único. Aunque para eso tenga que... hacer cosas.",
         "accion": "Se da cuenta de lo que ha dicho y aprieta la mandíbula.",
+        "gestos": ["aprieta_mandibula"],
         "emocion": "nervioso",
         "al_entrar": {"flag": "hizo_cosas"},
         "opciones": [
@@ -187,6 +201,7 @@
       "n_echa_menos": {
         "dice": "Echo de menos a quien creía que era. El hombre que me traía café. Ese hombre no existía, detective.",
         "accion": "Lo dice sin rabia. Con un cansancio antiguo.",
+        "gestos": ["hombros_bajan"],
         "emocion": "asustado",
         "revela": true,
         "al_entrar": {"verdad": 5, "flag": "benn_mascara"},
@@ -198,6 +213,7 @@
       "n_benn1": {
         "dice": "Brillante. Paciente. Generoso con su tiempo. Eso dirán todos. Y es verdad... casi todo.",
         "accion": "El 'casi' se queda flotando en el aire.",
+        "gestos": ["pausa"],
         "emocion": "calma",
         "opciones": [
           {"tono": "pregunta", "texto": "¿Casi? ¿Qué parte no es verdad?", "ir": "n_benn_grababa", "ef": {"tension": 8}},
@@ -208,6 +224,7 @@
       "n_benn_grababa": {
         "dice": "El doctor grababa cantos. Todos, con permiso. Así se hacía la ciencia en el Instituto. Así... se hacía al principio.",
         "accion": "Mira la grabadora de la mesa. Un segundo de más.",
+        "gestos": ["mira_grabadora_larga"],
         "emocion": "nervioso",
         "al_entrar": {"flag": ["vio_grabadora", "benn_grababa"]},
         "opciones": [
@@ -219,6 +236,7 @@
       "n_sin_permiso": {
         "dice": "No lo sé. No lo sabía. ...No me pregunte lo que no sé, detective.",
         "accion": "Su respiración se acelera. El collar traduce un pitido corto que no es una palabra.",
+        "gestos": ["respira_rapido", "collar_pitido"],
         "emocion": "asustado",
         "opciones": [
           {"tono": "empatia", "texto": "De acuerdo. Pregunto lo que sí sabe: ¿estuvo en la sala siete?", "ir": "n_directo_suave", "ef": {"tension": -6}},
@@ -229,6 +247,7 @@
       "n_quien_espera": {
         "dice": "Mi hija. Tiene siete ciclos. Está con una vecina que no habla nuestra lengua. Debe de estar asustada.",
         "accion": "Por primera vez, su voz sintetizada suena más grave.",
+        "gestos": ["voz_grave"],
         "emocion": "nervioso",
         "al_entrar": {"flag": "menciono_hija"},
         "opciones": [
@@ -240,6 +259,7 @@
       "n_nombre_hija": {
         "dice": "...¿Por qué quiere saber su nombre?",
         "accion": "Sus dedos se cierran de golpe. La cadena de las esposas se tensa.",
+        "gestos": ["puno"],
         "emocion": "asustado",
         "opciones": [
           {"tono": "cortes", "texto": "Por nada. Perdone. Los humanos siempre preguntamos por los hijos.", "ir": "n_ayuda", "ef": {"tension": -8, "confianza": 2}},
@@ -249,6 +269,7 @@
       "n_ayuda": {
         "dice": "Terminar pronto. Sí. ...Pregunte, entonces. Intentaré que sea pronto.",
         "accion": "Endereza la espalda. Parece haber tomado una decisión pequeña.",
+        "gestos": ["endereza"],
         "emocion": "calma",
         "opciones": [
           {"tono": "directo", "texto": "¿Estuvo en la sala siete anoche?", "ir": "n_directo_suave"},
@@ -260,6 +281,7 @@
       "n_respeto": {
         "dice": "Dice más, sí. Y dura más. Una palabra se la lleva el aire. Un silencio se queda. ...Usted es extraño, detective.",
         "accion": "Sus hombros bajan un poco. La piel gris de sus sienes se aclara.",
+        "gestos": ["hombros_bajan", "sienes_claras"],
         "emocion": "calma",
         "opciones": [
           {"tono": "pregunta", "texto": "¿Por qué mira tanto la grabadora?", "ir": "n_creencia", "ef": {"confianza": 4}},
@@ -270,6 +292,7 @@
       "n_creencia": {
         "dice": "Para nosotros la voz no se devuelve. Grabar un canto sin permiso es encerrarlo. Nuestros hijos aprenden desde pequeños a no cantar cerca de las máquinas.",
         "accion": "Mira la luz roja de la grabadora como se mira un arma cargada.",
+        "gestos": ["mira_grabadora_larga", "pupilas_raya"],
         "emocion": "nervioso",
         "al_entrar": {"flag": ["sabe_creencia", "vio_grabadora"]},
         "opciones": [
@@ -282,6 +305,7 @@
       "n_protocolo": {
         "dice": "Entonces hablaré para su máquina, detective. Y a las máquinas se les dice lo mínimo.",
         "accion": "Su postura se vuelve rígida, ceremonial. Las manos, planas sobre la mesa.",
+        "gestos": ["rigido"],
         "emocion": "burla",
         "al_entrar": {"flag": "modo_formal"},
         "opciones": [
@@ -293,6 +317,7 @@
       "n_ofrece_apagar": {
         "dice": "¿Haría eso? Sus jefes lo verán desde detrás del espejo. Le preguntarán por qué.",
         "accion": "Mira el espejo. Luego le mira a usted, como si le viera por primera vez.",
+        "gestos": ["mira_espejo"],
         "emocion": "nervioso",
         "grabadora": {"off": {"ir": "n_apagada", "ef": {"confianza": 15, "tension": -10, "flag": "off_consentido"}}},
         "opciones": [
@@ -304,6 +329,7 @@
       "n_honesto": {
         "dice": "Honesto. Eso es raro en esta sala. ...Pregunte. Diré lo que se pueda decir delante de una máquina.",
         "accion": "Asiente una vez, lento.",
+        "gestos": ["asiente"],
         "emocion": "calma",
         "opciones": [
           {"tono": "directo", "texto": "¿Estuvo en la sala siete anoche?", "ir": "n_admite_on"},
@@ -313,6 +339,7 @@
       "n_trato": {
         "dice": "Un trato. Como los que hacía el doctor. Primero la voz, luego la promesa. No, detective. Así no.",
         "accion": "Se echa hacia atrás en la silla. Cruza los largos brazos.",
+        "gestos": ["cruza_brazos"],
         "emocion": "burla",
         "al_entrar": {"flag": "desconfia_tratos"},
         "opciones": [
@@ -324,6 +351,7 @@
       "n_apagada": {
         "dice": "...Gracias. Hace mucho que un humano no hacía algo por mí sin pedir nada a cambio. Pregunte. Le contestaré lo que pueda.",
         "accion": "Abre las manos sobre la mesa, palmas arriba. Entre los ilvari es un gesto de verdad.",
+        "gestos": ["palmas_arriba"],
         "emocion": "calma",
         "opciones": [
           {"tono": "directo", "texto": "¿Estuvo en la sala siete anoche?", "ir": "n_admite_off"},
@@ -334,6 +362,7 @@
       "n_como_esta": {
         "dice": "¿Cómo estoy? Tengo miedo, detective. No por mí. Por alguien que no sabe dónde estoy esta noche.",
         "accion": "Mira sus manos esposadas.",
+        "gestos": ["mira_manos"],
         "emocion": "asustado",
         "al_entrar": {"flag": "menciono_hija"},
         "opciones": [
@@ -344,6 +373,7 @@
       "n_miedo_por": {
         "dice": "Por mi hija. Nira. ...No. No debí decir su nombre.",
         "accion": "Se tapa la boca con sus dedos larguísimos. Un gesto infantil, terrible.",
+        "gestos": ["tapa_boca"],
         "emocion": "asustado",
         "al_entrar": {"flag": ["nombre_nira", "menciono_hija"]},
         "revela": true,
@@ -356,6 +386,7 @@
       "n_nira_presion": {
         "dice": "Nada. Nira no tiene nada que ver. Es una niña. Duerme. No sabe nada. ¡Nada!",
         "accion": "Por debajo del traductor se oye algo, muy grave. La taza de café tiembla sobre la mesa.",
+        "gestos": ["grave"],
         "emocion": "furioso",
         "al_entrar": {"flag": "peligro"},
         "opciones": [
@@ -367,6 +398,7 @@
       "n_niega": {
         "dice": "¿Estuve? ¿Quién lo dice? Trabajé en la embajada hasta tarde y me fui a casa. Con mi hija.",
         "accion": "Su voz sintetizada no cambia. Pero la piel de sus sienes se oscurece, como un rubor gris.",
+        "gestos": ["sienes_oscuras"],
         "emocion": "nervioso",
         "al_entrar": {"flag": "menciono_hija"},
         "opciones": [
@@ -379,6 +411,7 @@
       "n_coartada": {
         "dice": "Estuve en la embajada hasta las once. Después, en casa. Con mi hija. Pregunte a quien quiera.",
         "accion": "Lo recita. Como algo ensayado frente a un espejo.",
+        "gestos": ["fija", "planas"],
         "emocion": "calma",
         "al_entrar": {"flag": "menciono_hija"},
         "opciones": [
@@ -391,6 +424,7 @@
       "n_farol": {
         "dice": "No hay cámaras en el ala siete. El doctor Benn las hizo retirar hace dos meses. Decía que asustaban a las voces. ...Usted no sabía eso.",
         "accion": "Por primera vez, algo parecido a una sonrisa. No es agradable.",
+        "gestos": ["sonrisa"],
         "emocion": "burla",
         "al_entrar": {"flag": ["farol_pillado", "benn_quito_camaras"]},
         "opciones": [
@@ -402,6 +436,7 @@
       "n_honesto_farol": {
         "dice": "Un humano que admite una mentira. Veremos cuánto le dura. ...Sí, estuve allí. Pero no como usted cree.",
         "accion": "Le estudia largo rato antes de hablar.",
+        "gestos": ["estudia"],
         "emocion": "calma",
         "al_entrar": {"verdad": 15, "flag": "admitio_estuvo"},
         "revela": true,
@@ -413,6 +448,7 @@
       "n_camaras": {
         "dice": "No lo sé. ...Sí lo sé. No quería que nadie viera quién entraba en su ala por las noches.",
         "accion": "Se arrepiente en cuanto lo dice. Lo nota usted, y lo nota él.",
+        "gestos": ["aprieta_mandibula"],
         "emocion": "asustado",
         "al_entrar": {"flag": "benn_escondia", "verdad": 5},
         "opciones": [
@@ -423,6 +459,7 @@
       "n_hija_coartada": {
         "dice": "Nira tiene siete ciclos. Duerme como una piedra. No la metan en esto. No la metan en esto, detective.",
         "accion": "Lo repite dos veces. El traductor no sabe cómo marcar el miedo, pero se nota igual.",
+        "gestos": ["respira_rapido"],
         "emocion": "asustado",
         "al_entrar": {"flag": ["nombre_nira", "menciono_hija"]},
         "opciones": [
@@ -434,6 +471,7 @@
       "n_miente": {
         "dice": "Se me da mal porque no miento, detective. Los ilvari no mentimos: callamos. Es distinto.",
         "accion": "Aparta la mirada hacia la pared. Una pared no le acusa.",
+        "gestos": ["aparta_mirada"],
         "emocion": "burla",
         "opciones": [
           {"tono": "prueba", "texto": "Entonces calle esto: su código abrió la sala siete a la 01:52.", "prueba": "acceso", "ir": "n_acceso"},
@@ -445,6 +483,7 @@
         "dice_si": [{"si": {"grabadora": false}, "dice": "Sí. Estuve. No voy a mentirle, ahora que la máquina calla."}],
         "dice": "Esa pregunta tiene una respuesta corta y otra larga, detective. Con esa máquina escuchando, solo le daré la corta: estuve.",
         "accion": "Mira la grabadora al decir 'máquina'.",
+        "gestos": ["mira_grabadora"],
         "emocion": "nervioso",
         "al_entrar": {"verdad": 15, "flag": "admitio_estuvo"},
         "revela": true,
@@ -458,6 +497,7 @@
       "n_acceso": {
         "dice": "Mi código... El doctor tenía mi código. Lo usaba a veces para entrar en la sala de escucha. Cualquiera pudo...",
         "accion": "Se detiene. Sabe que suena mal.",
+        "gestos": ["pausa"],
         "emocion": "nervioso",
         "al_entrar": {"flag": "acceso_visto"},
         "opciones": [
@@ -469,6 +509,7 @@
       "n_brazos": {
         "dice": "...Mi capa. Llevaba mi capa. Hacía frío en el pasillo.",
         "accion": "Se abraza el pecho sin darse cuenta, como si todavía llevara algo contra él.",
+        "gestos": ["abraza_pecho"],
         "emocion": "asustado",
         "al_entrar": {"verdad": 15, "flag": ["admitio_estuvo", "algo_en_brazos"]},
         "revela": true,
@@ -481,6 +522,7 @@
       "n_admite_on": {
         "dice": "Está bien. Estuve en la sala siete. Entré a la 01:52. El doctor estaba vivo cuando llegué. Eso es todo lo que diré con esa luz roja encendida.",
         "accion": "Las palabras salen medidas, una a una, para la máquina.",
+        "gestos": ["mira_grabadora_larga"],
         "emocion": "nervioso",
         "al_entrar": {"verdad": 15, "flag": "admitio_estuvo"},
         "grabadora": {"off": {"ir": "n_que_hacia", "ef": {"confianza": 12, "tension": -6, "flag": "off_consentido"}}},
@@ -494,6 +536,7 @@
       "n_admite_off": {
         "dice": "Sí. Estuve en la sala siete. Entré a la 01:52. Cuando llegué, el doctor todavía estaba vivo.",
         "accion": "Lo dice en voz baja. El traductor casi no le alcanza.",
+        "gestos": ["baja_voz"],
         "emocion": "nervioso",
         "al_entrar": {"verdad": 15, "flag": "admitio_estuvo"},
         "revela": true,
@@ -506,6 +549,7 @@
       "n_que_hacia": {
         "dice": "Fui a buscar a alguien. Alguien que no debía estar allí. Alguien que el doctor llevaba a esa sala por las noches... mientras yo trabajaba en la embajada.",
         "accion": "Sus pupilas se abren hasta llenar todo el ojo.",
+        "gestos": ["pupilas_llenas"],
         "emocion": "asustado",
         "al_entrar": {"verdad": 5, "flag": "fue_a_buscar"},
         "revela": true,
@@ -519,6 +563,7 @@
       "n_condicion": {
         "dice": "No. Con esa máquina encendida, no. Si su nombre queda grabado, la ley de mi pueblo la reclamará. Le quitarán la voz, detective. A una niña. ¿Lo entiende?",
         "accion": "Señala la grabadora con un dedo que tiembla.",
+        "gestos": ["senala_grabadora"],
         "emocion": "asustado",
         "al_entrar": {"flag": ["sabe_creencia", "condicion_grabadora"]},
         "grabadora": {"off": {"ir": "n_nira", "ef": {"confianza": 12, "tension": -8, "flag": "off_consentido"}}},
@@ -532,6 +577,7 @@
       "n_promesa_temprana": {
         "dice": "Las promesas humanas duran lo que dura el humano que las hace. Apague la máquina, detective. Después hablaremos de promesas.",
         "accion": "No hay rabia en su voz. Solo cansancio.",
+        "gestos": ["hombros_bajan"],
         "emocion": "nervioso",
         "grabadora": {"off": {"ir": "n_nira", "ef": {"confianza": 10, "tension": -6, "flag": "off_consentido"}}},
         "opciones": [
@@ -543,6 +589,7 @@
       "n_amenaza_nira": {
         "dice": "...Repita eso.",
         "accion": "El aire vibra. La bombilla parpadea. Sus labios se separan apenas y algo muy grave empieza a sonar por debajo del traductor.",
+        "gestos": ["grave"],
         "emocion": "furioso",
         "al_entrar": {"flag": "peligro", "tension": 10},
         "opciones": [
@@ -554,6 +601,7 @@
       "n_retrocede": {
         "dice": "...No vuelva a hablar de ella así. Nunca. Los ilvari no olvidan una amenaza a un hijo.",
         "accion": "El zumbido grave se apaga poco a poco. La bombilla deja de parpadear.",
+        "gestos": ["grave_apaga"],
         "emocion": "nervioso",
         "opciones": [
           {"tono": "empatia", "texto": "Tiene razón. Me he pasado. Empecemos de nuevo: ¿qué pasó en la sala siete?", "ir_si": [{"si": {"flag": "admitio_estuvo"}, "ir": "n_que_hacia"}], "ir": "n_directo_suave", "ef": {"confianza": 4}},
@@ -564,6 +612,7 @@
       "n_calma_tras": {
         "dice": "...Usted quiere la verdad. Yo quiero que mi hija amanezca a salvo. Quizá las dos cosas quepan en esta sala. Quizá no.",
         "accion": "Respira hondo. Tiene cuatro fosas nasales en forma de rendija; se abren a la vez.",
+        "gestos": ["respira_hondo"],
         "emocion": "calma",
         "opciones": [
           {"tono": "promesa", "texto": "Caben. Le doy mi palabra de que las dos caben.", "ir_si": [{"si": {"grabadora": true}, "ir": "n_condicion"}], "ir": "n_nira", "ef": {"confianza": 8}},
@@ -573,6 +622,7 @@
       "n_sospecha_nira": {
         "dice": "No sé de qué me habla. No había nadie. No había nadie pequeño. No...",
         "accion": "Las palabras se atropellan. El traductor se acopla con un chirrido.",
+        "gestos": ["collar_chirrido", "respira_rapido"],
         "emocion": "asustado",
         "al_entrar": {"flag": "peligro"},
         "opciones": [
@@ -584,6 +634,7 @@
       "n_informe": {
         "dice": "Menos de un metro... Eso... eso no demuestra nada. El sonido rebota. Los aparatos se equivocan.",
         "accion": "Sus dedos se enroscan unos sobre otros, los cuatro, como raíces.",
+        "gestos": ["enrosca_dedos"],
         "emocion": "asustado",
         "al_entrar": {"verdad": 10, "flag": ["sabe_pequeno", "canto_confirmado"]},
         "opciones": [
@@ -596,6 +647,7 @@
       "n_no_fue_el": {
         "dice": "...Fui yo. Fui yo, detective. Yo canté. Escríbalo.",
         "accion": "Lo dice demasiado deprisa. Como quien salta a un río para que otro no caiga.",
+        "gestos": ["inclina"],
         "emocion": "quebrado",
         "al_entrar": {"flag": "cubre_a_alguien"},
         "opciones": [
@@ -607,6 +659,7 @@
       "n_fragmento": {
         "dice": "Apáguelo. ¡APÁGUELO!",
         "accion": "Tres notas de una voz de niña salen del altavoz. Luego un grito humano. Vehl se encoge como si le hubieran golpeado.",
+        "gestos": ["encoge"],
         "emocion": "asustado",
         "al_entrar": {"verdad": 10, "tension": 12, "flag": ["oyo_fragmento", "sabe_pequeno"]},
         "opciones": [
@@ -618,6 +671,7 @@
       "n_respira": {
         "dice": "...Gracias. Esa voz no debería existir fuera de su garganta. Nunca. Él no tenía derecho.",
         "accion": "Tarda en volver a mirarle. Cuando lo hace, algo ha cambiado.",
+        "gestos": ["tarda_mirar"],
         "emocion": "quebrado",
         "al_entrar": {"flag": "benn_culpable", "verdad": 5},
         "revela": true,
@@ -629,6 +683,7 @@
       "n_benn_culpable": {
         "dice": "Él grababa. Siempre grababa. Decía que era ciencia. No era ciencia, detective. Era una cosecha.",
         "accion": "La palabra 'cosecha' la dice en ilvari, y el collar tarda en traducirla.",
+        "gestos": ["collar_zumba", "aprieta_mandibula"],
         "emocion": "furioso",
         "al_entrar": {"verdad": 5, "flag": "benn_grababa"},
         "revela": true,
@@ -641,6 +696,7 @@
       "n_dibujo": {
         "dice": "Ella dibuja así. Las figuras sin boca. Siempre... siempre dibuja así.",
         "accion": "Toca el papel con la punta de un dedo, muy despacio, como quien toca una herida.",
+        "gestos": ["toca_papel"],
         "emocion": "quebrado",
         "al_entrar": {"verdad": 15, "flag": ["sabe_pequeno", "dibujo_visto", "nina_confirmada"]},
         "revela": true,
@@ -653,6 +709,7 @@
       "n_tessa": {
         "dice": "Ya no canta... Yo creí que era la edad. Creí que... Oh, pequeña. Oh, Nira.",
         "accion": "Se dobla sobre la mesa. Del collar sale un sonido que no es una palabra en ningún idioma.",
+        "gestos": ["dobla", "collar_pitido"],
         "emocion": "quebrado",
         "al_entrar": {"verdad": 10, "flag": ["nombre_nira", "nina_confirmada", "menciono_hija"], "tension": -6},
         "revela": true,
@@ -664,6 +721,7 @@
       "n_helix": {
         "dice": "Proyecto... Coro. Cuatrocientos mil créditos. Eso valía. Eso valía el miedo de mi hija.",
         "accion": "Mira la cifra mucho tiempo. Luego empieza a temblar, entero.",
+        "gestos": ["mira_cifra"],
         "emocion": "furioso",
         "al_entrar": {"verdad": 15, "flag": ["sabe_helix", "benn_culpable"]},
         "revela": true,
@@ -676,6 +734,7 @@
       "n_quint": {
         "dice": "La nota perfecta. El canto de silencio. Lo que un niño ilvari canta cuando tiene tanto miedo que olvida cómo no hacerlo. ¡Lo supe demasiado tarde!",
         "accion": "Golpea la mesa con la palma abierta. La cadena salta.",
+        "gestos": ["golpe_mesa"],
         "emocion": "furioso",
         "al_entrar": {"verdad": 10, "flag": ["benn_culpable", "sabe_nota", "sabe_helix"], "tension": 8},
         "revela": true,
@@ -687,6 +746,7 @@
       "n_nira": {
         "dice": "Nira. Mi hija. Tiene siete ciclos. El doctor se la llevaba a la sala siete por las noches, mientras yo trabajaba. Le decía que era un juego. Un juego de cantar.",
         "accion": "Ya no mira la grabadora. Le mira a usted, y no parpadea.",
+        "gestos": ["fija"],
         "emocion": "quebrado",
         "al_entrar": {"verdad": 15, "flag": ["nombre_nira", "nina_confirmada", "menciono_hija"]},
         "revela": true,
@@ -699,6 +759,7 @@
       "n_benn_monstruo": {
         "dice": "La asustaba. Apagaba las luces, le ponía sonidos horribles, le decía que yo no iba a volver... hasta que ella cantaba el canto de silencio. Y él lo grababa. Noche tras noche.",
         "accion": "La piel translúcida de su garganta se ilumina un instante, de un azul enfermo.",
+        "gestos": ["garganta_luz"],
         "emocion": "furioso",
         "al_entrar": {"verdad": 10, "flag": "benn_culpable"},
         "revela": true,
@@ -711,6 +772,7 @@
       "n_para_quien": {
         "dice": "Para una empresa humana. Helix. Él lo llamaba Proyecto Coro. Imagine un altavoz que canta lo que cantaba mi hija, detective. En una plaza. En una colonia.",
         "accion": "No hace falta que termine la frase.",
+        "gestos": ["aparta_mirada"],
         "emocion": "asustado",
         "al_entrar": {"verdad": 10, "flag": "sabe_helix"},
         "revela": true,
@@ -722,6 +784,7 @@
       "n_esa_noche": {
         "dice": "Nira no estaba en casa. La vecina dijo que 'el señor del Instituto' había pasado a buscarla. Corrí. Cuando abrí la sala siete, ella estaba en la cabina, en la oscuridad, cantando. Y él... él sonreía. Tenía los auriculares de protección. Se los quitó para oírla mejor. Para oírla mejor, detective.",
         "accion": "Se detiene. Sus manos tiemblan tanto que la cadena suena como una campanilla.",
+        "gestos": ["manos_tiemblan"],
         "emocion": "quebrado",
         "al_entrar": {"verdad": 10, "flag": "sabe_noche"},
         "revela": true,
@@ -734,6 +797,7 @@
       "n_borro": {
         "dice": "Cayó. Nira no paraba de cantar y él cayó con sangre en los oídos. La envolví en mi capa hasta que se calló. Después usé sus credenciales y borré todo. Todo. Para que nadie volviera a oír esa voz.",
         "accion": "Levanta la vista. Por primera vez esta noche, parece aliviado de haberlo dicho.",
+        "gestos": ["levanta_vista"],
         "emocion": "quebrado",
         "al_entrar": {"verdad": 10, "flag": "sabe_borrado"},
         "revela": true,
@@ -746,6 +810,7 @@
       "n_basta_on": {
         "dice": "¿Le basta? Borré un archivo, sí. Pero no le he contado lo peor, detective. Si cierra ahora, no sabrá dónde está la voz de mi hija.",
         "accion": "Se inclina hacia delante tanto como le dejan las esposas.",
+        "gestos": ["inclina"],
         "emocion": "nervioso",
         "opciones": [
           {"tono": "pregunta", "texto": "¿Dónde está?", "ir": "n_copias"},
@@ -755,6 +820,7 @@
       "n_basta_off": {
         "dice": "¿Le basta? No hay nada grabado, detective. Y lo peor aún no se lo he contado.",
         "accion": "Mira la grabadora apagada. Luego a usted.",
+        "gestos": ["mira_grabadora"],
         "emocion": "nervioso",
         "opciones": [
           {"tono": "pregunta", "texto": "¿Qué es lo peor?", "ir": "n_copias"},
@@ -764,6 +830,7 @@
       "n_copias": {
         "dice": "No borré lo que ya había salido. Benn enviaba cada grabación a Helix. Las copias maestras y un prototipo del altavoz están en el transporte Carrow, en el muelle nueve. Zarpa al amanecer.",
         "accion": "Mira el reloj de la pared. Usted también.",
+        "gestos": ["mira_reloj"],
         "emocion": "asustado",
         "al_entrar": {"verdad": 10, "flag": ["sabe_copias", "pista_transporte"]},
         "revela": true,
@@ -775,6 +842,7 @@
       "n_que_pasara": {
         "dice": "Ya lo sabe todo. Y no hay nada grabado. Ahora dígame la verdad, detective: ¿qué va a pasar con mi hija?",
         "accion": "No pregunta por él. Solo por ella.",
+        "gestos": ["baja_voz"],
         "emocion": "nervioso",
         "grabadora": {"on": {"fin": "d_traicion", "si_no_flag": "promesa"}},
         "opciones": [
@@ -786,6 +854,7 @@
       "n_sin_promesa": {
         "dice": "Entonces no hay nada más que decir. Lo que le he contado se lo lleva el aire, detective. Como todas las palabras.",
         "accion": "Aparta la mirada hacia la pared.",
+        "gestos": ["aparta_mirada"],
         "emocion": "quebrado",
         "grabadora": {"on": {"fin": "d_traicion"}},
         "opciones": [
@@ -796,6 +865,7 @@
       "n_pide_grabar": {
         "dice": "Su palabra. Bien. Entonces enciéndala. Enciéndala usted, detective. Que quede grabada mi voz, no la de ella.",
         "accion": "Asiente hacia la grabadora. Espera.",
+        "gestos": ["asiente_grabadora"],
         "emocion": "calma",
         "espera_grabadora": true,
         "grabadora": {"on": {"ir": "n_final_a"}},
@@ -808,6 +878,7 @@
         "dice_si": [{"si": {"grabadora": false}, "dice": "Encienda la máquina, detective. Si Helix ya tiene la voz de mi hija, un nombre en una grabación no la condena más. Lo único que puede salvarla es que un tribunal humano oiga esto. Enciéndala."}],
         "dice": "Déjela encendida. Si Helix ya tiene la voz de mi hija, un nombre en una grabación no la condena más. Lo único que puede salvarla es que un tribunal humano oiga esto. Grábelo todo.",
         "accion": "Se endereza. Por primera vez habla hacia la grabadora, y no hacia usted.",
+        "gestos": ["habla_grabadora"],
         "emocion": "calma",
         "al_entrar": {"flag": "decide_grabar"},
         "grabadora": {"on": {"ir": "n_final_b"}, "off": {"dice": "No. Enciéndala. Esta vez quiero que quede grabado.", "ef": {"tension": 6}}},
@@ -820,6 +891,7 @@
       "n_acusa_canto": {
         "dice": "¿Me acusa a mí? ...Hágalo. Ya está decidido, ¿verdad? Un ilvari, un humano muerto, un canto prohibido. Es una historia muy fácil de contar.",
         "accion": "Algo se rinde en sus hombros. No es alivio. Es cansancio.",
+        "gestos": ["rinde"],
         "emocion": "quebrado",
         "al_entrar": {"flag": "acusado"},
         "opciones": [
@@ -831,6 +903,7 @@
       "n_falsa": {
         "dice": "Fui yo. Yo canté el canto de silencio. Lo maté. Escríbalo, fírmelo, y déjeme ir a mi celda.",
         "accion": "Lo dice sin pestañear, con las manos planas sobre la mesa. Demasiado tranquilo.",
+        "gestos": ["planas", "fija"],
         "emocion": "quebrado",
         "al_entrar": {"flag": "confeso_falso"},
         "opciones": [
@@ -842,6 +915,7 @@
       "n_falsa_detalle": {
         "dice": "Duró... mucho. Estaba cerca. Muy cerca. No sé. Los ilvari no medimos el canto en segundos.",
         "accion": "Duda. Un asesino recordaría eso. Un padre que no estaba cantando, no.",
+        "gestos": ["pausa"],
         "emocion": "nervioso",
         "al_entrar": {"flag": "falsa_pillada", "verdad": 5},
         "opciones": [
@@ -853,6 +927,7 @@
       "n_no_le_creo": {
         "dice": "...Usted no sabe lo que está pidiendo, detective. Si le digo quién cantó, se la llevarán.",
         "accion": "No lo niega. Solo tiene miedo.",
+        "gestos": ["respira_rapido"],
         "emocion": "asustado",
         "al_entrar": {"verdad": 5, "flag": "cubre_a_alguien"},
         "opciones": [
@@ -864,6 +939,7 @@
       "n_cierra1": {
         "dice": "Creo que esta conversación ha terminado, detective. Quiero hablar con mi embajadora.",
         "accion": "Aparta las manos de la mesa. Las esconde bajo ella.",
+        "gestos": ["esconde_manos"],
         "emocion": "burla",
         "al_entrar": {"flag": "pide_embajadora", "tension": 6},
         "opciones": [
@@ -875,6 +951,7 @@
       "n_segunda": {
         "dice": "...Una. Una oportunidad. No la gaste gritando.",
         "accion": "Vuelve a poner las manos sobre la mesa, despacio.",
+        "gestos": ["vuelve_manos"],
         "emocion": "nervioso",
         "al_entrar": {"quitar_flag": "pide_embajadora"},
         "opciones": [
@@ -886,12 +963,14 @@
       "n_final_a": {
         "dice": "Me llamo Vehl Iskaar. Soy la Voz del Instituto. El doctor Aurelio Benn se llevaba a mi hija Nira a la sala siete por las noches. La asustaba hasta que cantaba el canto de silencio, y lo grababa para Helix Corp. Anoche Nira cantó y él murió. Yo borré el archivo para protegerla. Las copias están en el transporte Carrow, muelle nueve. Zarpa al amanecer. ...Ya está. Ahora es su palabra, detective. Cúmplala.",
         "accion": "La luz roja parpadea. Vehl habla hacia ella, sereno, como quien canta una última vez.",
+        "gestos": ["habla_grabadora", "collar_zumba"],
         "emocion": "quebrado",
         "fin": "v_padre"
       },
       "n_final_b": {
         "dice": "Grábelo todo. El doctor Aurelio Benn vendió la voz de mi hija a Helix Corp: Proyecto Coro. La asustaba noche tras noche para arrancarle el canto de silencio. Anoche Nira cantó y él murió. Yo borré su archivo, pero Helix ya tenía las copias: transporte Carrow, muelle nueve, al amanecer. Que lo oiga un tribunal humano. Que Helix sepa que alguien escuchó.",
         "accion": "Habla despacio, para que la máquina no pierda ni una palabra.",
+        "gestos": ["habla_grabadora"],
         "emocion": "quebrado",
         "fin": "v_coro"
       }

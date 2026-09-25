@@ -505,7 +505,9 @@ func _construir_subtitulo() -> void:
 	sub_panel.offset_bottom = -132
 	sub_panel.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	sub_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	sub_panel.add_theme_stylebox_override("panel", Estilo.caja(Color(0.02, 0.02, 0.025, 0.72), Color(0, 0, 0, 0), 0, 4, Vector4(18, 6, 18, 8)))
+	# fondo casi transparente: justo detrás están las manos del sospechoso y sus gestos
+	# (entrelaza los dedos, golpea la mesa...); el contorno negro mantiene el texto legible
+	sub_panel.add_theme_stylebox_override("panel", Estilo.caja(Color(0.02, 0.02, 0.025, 0.4), Color(0, 0, 0, 0), 0, 4, Vector4(18, 6, 18, 8)))
 	p_juego.add_child(sub_panel)
 	var v := VBoxContainer.new()
 	v.add_theme_constant_override("separation", 2)
@@ -525,6 +527,9 @@ func _construir_subtitulo() -> void:
 	lbl_sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lbl_sub.visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING
 	v.add_child(lbl_sub)
+	for l in [lbl_sub_accion, lbl_sub_quien, lbl_sub]:
+		l.add_theme_constant_override("outline_size", 6)
+		l.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.9))
 	sub_panel.modulate.a = 0.0
 
 func _construir_mano_cartas() -> void:
@@ -751,6 +756,9 @@ func _mostrar_resultado_arbol(r: Dictionary) -> void:
 	if e and e.get("sospechoso"):
 		e.sospechoso.set_emocion(str(r.get("emocion", "calma")))
 		e.sospechoso._emocion_t = 0.0      # la emoción del nodo se mantiene
+	# la acotación se representa con el cuerpo (mira la puerta, entrelaza los dedos...)
+	if e and e.has_method("gestos_sospechoso") and (r.get("nodo_nuevo", false) or not (r.get("gestos", []) as Array).is_empty()):
+		e.gestos_sospechoso(r.get("gestos", []), str(r.get("accion", "")))
 	if arbol.espera_grabadora():
 		_aviso("QUIERE QUE LO GRABES", Color(0.95, 0.3, 0.2), "Clic en la grabadora (o tecla G).")
 

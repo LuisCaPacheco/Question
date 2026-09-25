@@ -5,7 +5,8 @@ extends RefCounted
 ##
 ## Cada acción (opción, grabadora, prueba o testigo sacados de la carpeta) gasta un turno
 ## y devuelve un resultado:
-##   {"dice": String, "accion": String, "emocion": String, "fin": String, "nodo_nuevo": bool}
+##   {"dice": String, "accion": String, "gestos": Array, "emocion": String, "fin": String, "nodo_nuevo": bool}
+##   "gestos" son los nombres de Ilvari.GESTOS que representan la acotación del nodo.
 ## "fin" vacío = la conversación sigue.
 
 var caso: Dictionary = {}
@@ -147,6 +148,7 @@ func _resultado(fin: String, nuevo: bool, dice := "") -> Dictionary:
 	return {
 		"dice": texto_nodo() if nuevo else dice,
 		"accion": str(n.get("accion", "")) if nuevo else "",
+		"gestos": (n.get("gestos", []) as Array) if nuevo else [],
 		"emocion": str(n.get("emocion", "calma")),
 		"fin": fin,
 		"nodo_nuevo": nuevo,

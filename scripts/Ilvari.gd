@@ -236,6 +236,7 @@ func _ready() -> void:
 		B[sk.get_bone_name(i)] = i
 	for lado in [1, -1]:
 		_mano_rest[lado] = sk.get_bone_global_rest(_h("mano" + _suf(lado)))
+	_preparar_tacto()
 	_materiales()
 	_esposas()
 	var ig := _h("garganta")
@@ -710,7 +711,8 @@ func animar(s, delta: float) -> void:
 		if pm[0] > 0.0:
 			T = T.interpolate_with(_pose_mano(str(pm[1]), lado), pm[0])
 		T.origin += Vector3(sin(t * 29.0 + lado * 1.3), sin(t * 41.0 + lado) * 0.5, cos(t * 23.0 + lado)) * tm
-		_brazo(lado, T)
+		_T_mano[lado] = T
+		_colocar(lado)
 	var curl := 0.12
 	match emo:
 		"furioso": curl = 0.9
@@ -739,12 +741,16 @@ func animar(s, delta: float) -> void:
 			_tambor = -1.0
 	var md: Array = _m("dedos_d")
 	var temblor_dedos: float = nerv * nerv + G.temblor_manos * 0.8
+	var deseado := {}
 	for lado in [1, -1]:
-		var por_dedo: Array = []
+		deseado[lado] = [_curl, _curl, _curl, _curl]
 		if lado < 0 and md[0] > 0.0 and str(md[1]) == "senala":
 			var w: float = md[0]
-			por_dedo = [lerpf(_curl, -0.05, w), lerpf(_curl, 1.0, w), lerpf(_curl, 1.0, w), lerpf(_curl, 0.9, w)]
-		_dedos(lado, _curl, tap if lado < 0 else [0.0, 0.0, 0.0], temblor_dedos, por_dedo)
+			deseado[lado] = [lerpf(_curl, -0.05, w), lerpf(_curl, 1.0, w), lerpf(_curl, 1.0, w), lerpf(_curl, 0.9, w)]
+	# los dedos tienen tacto: se paran al tocar la otra mano o la mesa
+	_tacto(delta, deseado)
+	for lado in [1, -1]:
+		_dedos(lado, _curl, tap if lado < 0 else [0.0, 0.0, 0.0], temblor_dedos, _cf[lado])
 	_cadenas_update(delta)
 
 func _arco(a: Vector3, b: Vector3) -> Basis:
@@ -820,3 +826,228 @@ func _dedos(lado: int, c: float, tap: Array, temblor: float, por_dedo: Array = [
 			continue
 		var r := sk.get_bone_rest(i).basis.get_rotation_quaternion()
 		sk.set_bone_pose_rotation(i, r * Quaternion(Vector3.RIGHT, -deg_to_rad([20.0, 28.0, 36.0][k] * cp)))
+
+# ------------------------------------------------------------------ tacto
+## Las manos son sólidas. Palma, falanges y antebrazo se tratan como cápsulas (medidas de
+## herramientas/mano_ilvari.py) y cada frame:
+##  1. si una mano se mete en la otra, las dos se separan lo justo para quedar en contacto;
+##  2. si al cerrar los dedos no caben sobre la mesa (un puño, la mano como una araña), la
+##     muñeca se levanta y la mano queda apoyada en los nudillos o las yemas;
+##  3. cada dedo deja de cerrarse (o se abre) cuando toca la otra mano o la mesa.
+## Sin contacto, los empujes se apagan poco a poco y la pose vuelve a ser la del gesto.
+const R_FALANGE := [0.0088, 0.0074, 0.0066]
+const LARGO_PUNTA := 0.03
+const R_ANTEBRAZO := 0.03
+const HOLGURA := 0.0012           # rozar no es atravesar
+const PASO_DEDO := 0.035          # cuánto puede corregir un dedo por frame
+
+var _T_mano := {1: Transform3D(), -1: Transform3D()}   # objetivo del gesto (sin correcciones)
+var _empuje := {1: Vector3.ZERO, -1: Vector3.ZERO}      # separa una mano de la otra
+var _alza := {1: 0.0, -1: 0.0}                          # levanta la mano de la mesa
+var _cf := {1: [0.15, 0.15, 0.15, 0.15], -1: [0.15, 0.15, 0.15, 0.15]}   # flexión real (índice, medio, anular, pulgar)
+var _dedo_hueso := {}             # lado -> [[i0, i1, i2] por dedo en el orden de _cf]
+var _dedo_rest := {}              # lado -> [[[quat, origen] x3] por dedo]
+var _a_mesa := Transform3D()      # espacio del esqueleto -> espacio local (donde está MESA_Y)
+func _preparar_tacto() -> void:
+	for lado in [1, -1]:
+		var huesos: Array = []
+		var rests: Array = []
+		for f in [1, 2, 3, 0]:
+			var ids: Array = []
+			var rr: Array = []
+			for k in 3:
+				var i := _h("dedo%d_%d%s" % [f, k, _suf(lado)])
+				ids.append(i)
+				var r := sk.get_bone_rest(i) if i >= 0 else Transform3D()
+				rr.append([r.basis.get_rotation_quaternion(), r.origin])
+			huesos.append(ids)
+			rests.append(rr)
+		_dedo_hueso[lado] = huesos
+		_dedo_rest[lado] = rests
+
+## IK del brazo con el objetivo del gesto más las correcciones de contacto.
+func _colocar(lado: int) -> void:
+	var T: Transform3D = _T_mano[lado]
+	T.origin += _empuje[lado] + _a_mesa.basis.inverse() * Vector3.UP * float(_alza[lado])
+	_brazo(lado, T)
+
+## Articulaciones de un dedo (espacio del esqueleto) para una flexión c, sin tocar el esqueleto.
+## d = índice en _cf (0..2 dedos, 3 pulgar).
+func _falanges(lado: int, d: int, c: float) -> PackedVector3Array:
+	var ids: Array = _dedo_hueso[lado][d]
+	var rr: Array = _dedo_rest[lado][d]
+	var G := sk.get_bone_global_pose(sk.get_bone_parent(ids[0]))
+	var pts := PackedVector3Array()
+	for k in 3:
+		var ang: float
+		if d == 3:
+			ang = -deg_to_rad([20.0, 28.0, 36.0][k] * c)
+		else:
+			ang = -deg_to_rad(clampf(c, -0.15, 1.15) * FLEX_MAX[k] - FLEX_REPOSO[k])
+		G = G * Transform3D(Basis((rr[k][0] as Quaternion) * Quaternion(Vector3.RIGHT, ang)), rr[k][1])
+		pts.append(G.origin)
+	pts.append(G.origin + G.basis.y.normalized() * LARGO_PUNTA)
+	return pts
+
+## Cápsulas [a, b, radio] de una mano: palma, antebrazo y dedos con las flexiones dadas.
+func _capsulas(lado: int, flex: Array) -> Array:
+	var s := _suf(lado)
+	var M := sk.get_bone_global_pose(_h("mano" + s))
+	var caps: Array = []
+	for x in [-0.017, 0.0, 0.017]:
+		caps.append([M * Vector3(x, 0.02, -0.003), M * Vector3(x, 0.09, -0.003), 0.012])
+	caps.append([sk.get_bone_global_pose(_h("antebrazo" + s)).origin.lerp(M.origin, 0.3), M.origin, R_ANTEBRAZO])
+	for d in 4:
+		var p := _falanges(lado, d, flex[d])
+		for k in 3:
+			caps.append([p[k], p[k + 1], R_FALANGE[k]])
+	return caps
+
+## Puntos más cercanos entre los segmentos p1-q1 y p2-q2 (Ericson, Real-Time Collision Detection).
+static func _seg_seg(p1: Vector3, q1: Vector3, p2: Vector3, q2: Vector3) -> Array:
+	var d1 := q1 - p1
+	var d2 := q2 - p2
+	var r := p1 - p2
+	var a := d1.dot(d1)
+	var e := d2.dot(d2)
+	var f := d2.dot(r)
+	var s := 0.0
+	var u := 0.0
+	if a <= 1e-10 and e <= 1e-10:
+		return [p1, p2]
+	if a <= 1e-10:
+		u = clampf(f / e, 0.0, 1.0)
+	else:
+		var c := d1.dot(r)
+		if e <= 1e-10:
+			s = clampf(-c / a, 0.0, 1.0)
+		else:
+			var b := d1.dot(d2)
+			var den := a * e - b * b
+			s = clampf((b * f - c * e) / den, 0.0, 1.0) if den > 1e-12 else 0.0
+			u = (b * s + f) / e
+			if u < 0.0:
+				u = 0.0
+				s = clampf(-c / a, 0.0, 1.0)
+			elif u > 1.0:
+				u = 1.0
+				s = clampf((b - c) / a, 0.0, 1.0)
+	return [p1 + d1 * s, p2 + d2 * u]
+
+## Cuánto se mete la cápsula (a, b, r) en las de la lista. Devuelve [máxima, dirección para salir].
+static func _choque(a: Vector3, b: Vector3, r: float, otras: Array) -> Array:
+	var peor := 0.0
+	var salir := Vector3.ZERO
+	var centro := (a + b) * 0.5
+	var medio := a.distance_to(b) * 0.5 + r
+	for o in otras:
+		var oa: Vector3 = o[0]
+		var ob: Vector3 = o[1]
+		var ro: float = o[2]
+		if centro.distance_to((oa + ob) * 0.5) > medio + oa.distance_to(ob) * 0.5 + ro:
+			continue
+		var cc := _seg_seg(a, b, oa, ob)
+		var v: Vector3 = cc[0] - cc[1]
+		var dist := v.length()
+		var pen := r + ro - dist
+		if pen > 0.0:
+			peor = maxf(peor, pen)
+			salir += (v / dist if dist > 1e-6 else Vector3.UP) * pen
+	return [peor, salir]
+
+## Cuánto se hunde la cápsula en la mesa (0 si no está encima de ella).
+func _en_mesa(a: Vector3, b: Vector3, r: float) -> float:
+	var peor := 0.0
+	for p in [a, b]:
+		var q := _a_mesa * (p as Vector3)
+		if q.z > BORDE_Z - 0.01 and absf(q.x) < 0.75:
+			peor = maxf(peor, MESA_Y + r - q.y)
+	return peor
+
+## Penetración total de un dedo (sus tres falanges, puntos p) contra la otra mano y la mesa.
+func _pen_falanges(p: PackedVector3Array, otras: Array, mesa: bool) -> float:
+	var total := 0.0
+	for k in 3:
+		if not otras.is_empty():
+			total += maxf(0.0, float(_choque(p[k], p[k + 1], R_FALANGE[k], otras)[0]) - HOLGURA)
+		if mesa:
+			total += maxf(0.0, _en_mesa(p[k], p[k + 1], R_FALANGE[k]) - HOLGURA * 2.5)
+	return total
+
+## Primera criba: ¿se tocan las cajas que envuelven las dos manos?
+static func _cajas_tocan(a: Array, b: Array) -> bool:
+	var ca := _caja(a)
+	var cb := _caja(b)
+	return ca.intersects(cb)
+
+static func _caja(caps: Array) -> AABB:
+	var c := AABB(caps[0][0], Vector3.ZERO)
+	for k in caps:
+		c = c.expand(k[0]).expand(k[1])
+	return c.grow(0.015)
+
+## deseado[lado] = flexión que pide el gesto para cada dedo (orden de _cf).
+func _tacto(delta: float, deseado: Dictionary) -> void:
+	_a_mesa = global_transform.affine_inverse() * sk.global_transform
+	var mesa := {}
+	for lado in [1, -1]:
+		_empuje[lado] = (_empuje[lado] as Vector3) * exp(-delta * 1.2)
+		_alza[lado] = float(_alza[lado]) * exp(-delta * 1.2)
+		# con las manos bajo la mesa o recogidas no hay mesa que tocar
+		var w := _a_mesa * sk.get_bone_global_pose(_h("mano" + _suf(lado))).origin
+		mesa[lado] = w.y > MESA_Y - 0.03 and w.z > BORDE_Z - 0.02
+	# 1 y 2: la mano entera (con los dedos como los tiene ahora) contra la otra y contra la mesa
+	var caps := {1: _capsulas(1, _cf[1]), -1: _capsulas(-1, _cf[-1])}
+	var cerca := _cajas_tocan(caps[1], caps[-1])
+	var corregir := false
+	if cerca:
+		var peor := 0.0
+		var salir := Vector3.ZERO
+		var caja_otra := _caja(caps[-1])
+		for c in caps[1]:
+			if not caja_otra.intersects(AABB(c[0], Vector3.ZERO).expand(c[1]).grow(c[2])):
+				continue
+			var ch := _choque(c[0], c[1], c[2], caps[-1])
+			peor = maxf(peor, ch[0])
+			salir += ch[1]
+		if peor > HOLGURA and salir.length() > 1e-6:
+			var mov := salir.normalized() * (peor - HOLGURA) * 0.5
+			_empuje[1] += mov
+			_empuje[-1] -= mov
+			corregir = true
+	for lado in [1, -1]:
+		if not mesa[lado]:
+			continue
+		# con los dedos como los quiere el gesto: si no caben, se levanta la muñeca
+		var peor := 0.0
+		for c in (caps[lado] if deseado[lado] == _cf[lado] else _capsulas(lado, deseado[lado])):
+			peor = maxf(peor, _en_mesa(c[0], c[1], c[2]))
+		if peor > HOLGURA * 2.0:
+			_alza[lado] = float(_alza[lado]) + peor - HOLGURA * 2.0
+			corregir = true
+	for lado in [1, -1]:
+		_empuje[lado] = (_empuje[lado] as Vector3).limit_length(0.15)
+		_alza[lado] = minf(float(_alza[lado]), 0.12)
+		if corregir:
+			_colocar(lado)
+	if corregir and cerca:
+		caps[-1] = _capsulas(-1, _cf[-1])
+	# 3: cada dedo contra la otra mano (tal como queda) y la mesa
+	for lado in [1, -1]:
+		var otras: Array = caps[-lado] if cerca else []
+		var cambio := false
+		for d in 4:
+			var quiere: float = deseado[lado][d]
+			var ahora: float = _cf[lado][d]
+			var mejor := quiere
+			if _pen_falanges(_falanges(lado, d, quiere), otras, mesa[lado]) > 0.0:
+				var coste := INF
+				for c in [quiere, ahora, ahora + PASO_DEDO, ahora - PASO_DEDO]:
+					var k: float = _pen_falanges(_falanges(lado, d, c), otras, mesa[lado]) * 400.0 + absf(c - quiere)
+					if k < coste:
+						coste = k
+						mejor = c
+			cambio = cambio or mejor != ahora
+			_cf[lado][d] = mejor
+		if lado == 1 and cerca and (cambio or corregir):
+			caps[1] = _capsulas(1, _cf[1])

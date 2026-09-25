@@ -11,6 +11,9 @@ func _ready() -> void:
 			salida = a.substr(11)
 		elif a.begins_with("--caso="):
 			caso = a.substr(7)
+	# el juego arranca a pantalla completa; las capturas se hacen siempre a 1280x720
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+	DisplayServer.window_set_size(Vector2i(1280, 720))
 	# la prueba no debe tocar la partida guardada del jugador
 	if FileAccess.file_exists(SAVE):
 		_save_original = FileAccess.get_file_as_string(SAVE)
@@ -164,6 +167,12 @@ func _correr_gestos(e: Node) -> void:
 		e.gestos_sospechoso([id])
 		await _esperar(pico + 0.35)
 		await _foto("g%02d_%s" % [n, id])
+		if "--cerca" in OS.get_cmdline_user_args():
+			# primeros planos de las manos: de frente y de lado
+			var c: Vector3 = il.to_global((il._muneca(1) + il._muneca(-1)) * 0.5 + Vector3(0, 0.04, 0.1))
+			var b: Basis = il.global_basis
+			await _vista_debug(e, c + b * Vector3(0, 0.28, 0.38), c, "g%02d_%s_frente" % [n, id])
+			await _vista_debug(e, c + b * Vector3(0.42, 0.12, 0.08), c, "g%02d_%s_lado" % [n, id])
 		e.gestos_sospechoso([])
 		await _esperar(1.6)
 	print("AUTOTEST fin gestos: ", n)

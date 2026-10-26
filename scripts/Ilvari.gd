@@ -1,12 +1,13 @@
 extends Node3D
-## INTERROGART - Vehl Iskaar, el ilvari (modelos/ilvari.glb, generado con
-## herramientas/construir_ilvari.py). Lo crea Sospechoso.gd cuando rasgos.tipo == "ilvari"
-## y cada frame le pasa su estado (emoción, inclinación, boca, nervios...) en animar().
+## INTERROGART - sospechosos esculpidos: Vehl Iskaar, el ilvari (modelos/ilvari.glb, de
+## herramientas/construir_ilvari.py) y Vex'ahl, el kthar (modelos/kthar.glb, de
+## construir_kthar.py). Comparten esqueleto, así que este mismo script los anima; lo que
+## cambia (texturas, ojos, piel) está en PERFILES. Lo crea Sospechoso.gd (rasgos.tipo ==
+## "ilvari" o rasgos.modelo) y cada frame le pasa su estado (emoción, boca, nervios...) en animar().
 ## Huesos animados: columna/pecho (inclinación, respiración), cuello/cuello2/cabeza (mira a
-## la cámara), mandíbula (habla), garganta (saco vocal que se infla al hablar), cejas
+## la cámara), mandíbula (habla), garganta (saco vocal del ilvari), pinzas (kthar), cejas
 ## (arco superciliar), brazos con IK para que las manos sigan apoyadas en la mesa, y dedos.
 
-const ESCENA := "res://modelos/ilvari.glb"
 const AgenteScript := preload("res://scripts/Agente.gd")
 const Proc := preload("res://scripts/Proc.gd")
 const MESA_Y := 0.795
@@ -28,8 +29,10 @@ uniform float translucidez = 0.22;
 uniform float rug = 0.42;
 uniform float humedad = 0.0;
 uniform float poros_esc = 40.0;
+uniform float desatura = 0.0;
 void fragment() {
-	vec3 c = texture(albedo_tex, UV).rgb * tinte.rgb;
+	vec3 c = texture(albedo_tex, UV).rgb;
+	c = mix(c, vec3(dot(c, vec3(0.299, 0.587, 0.114))), desatura) * tinte.rgb;
 	ALBEDO = c;
 	AO = mix(1.0, texture(ao_tex, UV).r, 0.75);
 	AO_LIGHT_AFFECT = 0.3;
@@ -58,6 +61,9 @@ uniform float brillo = 1.0;
 uniform float pupila = 0.72;
 uniform float cierre = 0.0;
 uniform vec3 piel = vec3(0.42, 0.44, 0.5);
+uniform vec3 iris_a = vec3(0.07, 0.02, 0.15);   // centro del iris
+uniform vec3 iris_b = vec3(0.02, 0.17, 0.18);   // borde
+uniform float iris_emi = 0.45;                  // cuánto brilla el iris (el kthar lo tiene encendido)
 void fragment() {
 	float f = pow(1.0 - clamp(dot(NORMAL, VIEW), 0.0, 1.0), 2.0);
 	vec2 p = NORMAL.xy;
@@ -65,10 +71,10 @@ void fragment() {
 	float e = length(vec2(p.x / ancho, p.y / 1.25));
 	float pup = 1.0 - smoothstep(0.82, 1.0, e);
 	float r = length(p);
-	vec3 iris = mix(vec3(0.07, 0.02, 0.15), vec3(0.02, 0.17, 0.18), smoothstep(0.1, 0.75, r));
+	vec3 iris = mix(iris_a, iris_b, smoothstep(0.1, 0.75, r));
 	iris *= 0.6 + 0.4 * sin(atan(p.y, p.x) * 34.0 + r * 9.0);
 	vec3 col = mix(iris, vec3(0.004, 0.004, 0.006), pup);
-	vec3 emi = iris * (1.0 - pup) * 0.45 + mix(vec3(0.05, 0.02, 0.12), vec3(0.02, 0.12, 0.16), f) * f * 0.35 * brillo;
+	vec3 emi = iris * (1.0 - pup) * iris_emi * brillo + mix(vec3(0.05, 0.02, 0.12), vec3(0.02, 0.12, 0.16), f) * f * 0.35 * brillo;
 	float rug = 0.04;
 	float cc = 1.0;
 	float borde_m = 1.1 - 2.3 * clamp(cierre * 1.35, 0.0, 1.0);
@@ -92,6 +98,60 @@ void fragment() {
 
 ## Pupila de reposo según la emoción (1 = todo negro).
 const PUPILA_EMO := {"calma": 0.72, "burla": 0.5, "nervioso": 0.6, "asustado": 0.97, "furioso": 0.32, "quebrado": 0.9, "triunfo": 0.45}
+
+## Lo que cambia de una especie a otra. Las texturas son modelos/tex/<prefijo>_{color,normal,ao}.png.
+const PERFILES := {
+	"ilvari": {
+		"escena": "res://modelos/ilvari.glb", "cabeza": "ilv_cabeza", "mano": "ilv_mano_R",
+		"ropa": "ilv_tunica", "ropa_mat": "tunica", "ropa_tinte": Color(0.28, 0.34, 0.46), "ropa_rug": 0.86,
+		"tinte": Color(0.78, 0.8, 0.86), "luz_interior": Color(0.25, 0.3, 0.6), "translucidez": 0.22, "rug": 0.42,
+		"pupila": PUPILA_EMO, "parpadea": false, "altura_cabeza": 1.36,
+	},
+	# Vex'ahl: piel curtida (poca translucidez) y ojos de depredador, con el iris encendido y la
+	# rendija casi cerrada; se abre con el miedo. Parpadea poco, con la membrana primero.
+	"kthar": {
+		"escena": "res://modelos/kthar.glb", "cabeza": "kth_cabeza", "mano": "kth_mano_R",
+		"ropa": "kth_mono", "ropa_mat": "ropa", "ropa_tinte": Color(1, 1, 1), "ropa_rug": 0.92,
+		"tinte": Color(1.0, 1.0, 0.96), "luz_interior": Color(0.2, 0.32, 0.12), "translucidez": 0.07, "rug": 0.55,
+		"iris_a": Color(1.0, 0.2, 0.04), "iris_b": Color(0.45, 0.02, 0.0), "iris_emi": 2.2, "piel_ojo": Color(0.08, 0.1, 0.07),
+		"pupila": {"calma": 0.2, "burla": 0.1, "nervioso": 0.42, "asustado": 0.85, "furioso": 0.06, "quebrado": 0.7, "triunfo": 0.08},
+		"parpadea": true, "altura_cabeza": 1.34,
+		# colores de la ficha de Vex'ahl con los que se horneó el modelo: otro kthar (Yul'Keth)
+		# se tiñe en proporción a sus propios colores (ver _ajustar_perfil)
+		"ref_piel": Color("#6F7F72"), "ref_ropa": Color("#A6410F"), "ref_ojos": Color("#FF2A10"),
+	},
+}
+
+## El mismo modelo con los colores de otra ficha (rasgos.piel / ropa / ojos del JSON).
+func _ajustar_perfil(p: Dictionary, r: Dictionary) -> Dictionary:
+	p = p.duplicate()
+	var prop := func(ref: Color, c: Color, tope: float) -> Color:
+		return Color(minf(c.r / maxf(ref.r, 0.02), tope), minf(c.g / maxf(ref.g, 0.02), tope), minf(c.b / maxf(ref.b, 0.02), tope))
+	if p.has("ref_piel") and r.has("piel") and Color(r.piel) != p.ref_piel:
+		# la textura ya trae el tono de la ficha original: se aclara u oscurece según la
+		# luminancia y se le quita color si la piel nueva es más gris
+		var a: Color = p.ref_piel
+		var b := Color(r.piel)
+		var lum := func(c: Color) -> float: return c.r * 0.299 + c.g * 0.587 + c.b * 0.114
+		var sat := func(c: Color) -> float: return (maxf(c.r, maxf(c.g, c.b)) - minf(c.r, minf(c.g, c.b))) / maxf(maxf(c.r, maxf(c.g, c.b)), 0.01)
+		var l: float = minf(float(lum.call(b)) / maxf(float(lum.call(a)), 0.01), 1.6)
+		p.desatura = clampf((1.0 - float(sat.call(b)) / maxf(float(sat.call(a)), 0.01)) * 2.0, 0.0, 0.85)
+		# lo que se le quita de color a la textura se devuelve con el matiz de la piel nueva
+		var lb: float = maxf(float(lum.call(b)), 0.01)
+		var h := Color(b.r / lb, b.g / lb, b.b / lb).lerp(Color(1, 1, 1), 1.0 - float(p.desatura))
+		# el foco de la sala es cálido: un gris sin compensar se ve amarillo
+		var frio := Color(1, 1, 1).lerp(Color(0.9, 1.0, 1.16), float(p.desatura))
+		p.tinte = Color(l * h.r * frio.r, l * h.g * frio.g, l * h.b * frio.b)
+	if p.has("ref_ropa") and r.has("ropa") and Color(r.ropa) != p.ref_ropa:
+		# otro color de ropa: color liso (los pliegues siguen en el mapa de normales)
+		p.ropa_color = Color(r.ropa)
+	if p.has("ref_ojos") and r.has("ojos") and Color(r.ojos) != p.ref_ojos:
+		var o := Color(r.ojos)
+		p.iris_a = o
+		p.iris_b = o.darkened(0.6)
+		var luz := Color(o.r * 0.25, o.g * 0.25, o.b * 0.25)
+		p.luz_interior = luz
+	return p
 ## Borde de la mesa del lado del ilvari (z local): por aquí pasa la cadena si las manos
 ## bajan de la mesa.
 const BORDE_Z := 0.35
@@ -191,9 +251,18 @@ const SUMA := ["lean", "yaw", "pitch", "tilt", "hombros", "resp", "resp_vel", "g
 const MAXIMO := ["mirar", "vel", "abre", "aprieta", "pupila", "fija", "sin_tambor", "curl", "manos",
 		"mano_d", "mano_i", "dedos_d"]
 
+var especie := "ilvari"         # clave de PERFILES; se pone antes de add_child
+var placa := ""                # número de preso (si el modelo tiene el hueso "placa")
+var rasgos := {}               # ficha del JSON (colores propios); se pone antes de add_child
+var perfil: Dictionary
 var sk: Skeleton3D
 var modelo: Node3D
 var B := {}
+var _pinza_eje := {}           # lado -> eje (local del hueso) que abre la pinza hacia fuera
+var _pinza := 0.0
+var _chasquido := -1.0
+var _parp_t := 3.0
+var _parp := -1.0
 var t := 0.0
 var _listo := false
 var _mano_rest := {}           # lado (+1 izq. del ilvari = x>0, -1 = x<0) -> Transform3D
@@ -210,6 +279,8 @@ var _tinte_cara := Color(0.78, 0.8, 0.86)
 var _luz: OmniLight3D           # dentro de la garganta (se ilumina con el canto)
 var _pupila := 0.72
 var _eslabones := {1: [], -1: []}
+const ESLABONES_MAX := 48
+var _paso_eslabon := 1.0
 var _anilla := Vector3.ZERO
 var _cadena_len := {1: 0.4, -1: 0.4}
 var _cadena_salto := 0.0
@@ -222,23 +293,29 @@ var _M := {}                   # canal -> [peso, valor] del gesto más fuerte
 var _grave_env := 0.0
 
 func _ready() -> void:
-	var ps: PackedScene = load(ESCENA)
+	perfil = _ajustar_perfil(PERFILES.get(especie, PERFILES["ilvari"]), rasgos)
+	var ps: PackedScene = load(perfil.escena)
 	if ps == null:
-		push_error("No se encontró " + ESCENA)
+		push_error("No se encontró " + str(perfil.escena))
 		return
 	modelo = ps.instantiate()
 	add_child(modelo)
 	sk = _buscar_skel(modelo)
 	if sk == null:
-		push_error("ilvari.glb sin esqueleto")
+		push_error(str(perfil.escena) + " sin esqueleto")
 		return
 	for i in sk.get_bone_count():
 		B[sk.get_bone_name(i)] = i
 	for lado in [1, -1]:
 		_mano_rest[lado] = sk.get_bone_global_rest(_h("mano" + _suf(lado)))
+		var ip := _h("pinza" + _suf(lado))
+		if ip >= 0:
+			# el eje "hacia delante" de la cara, visto desde el hueso: girar sobre él abre la pinza
+			_pinza_eje[lado] = (sk.get_bone_global_rest(ip).basis.inverse() * Vector3.BACK).normalized()
 	_preparar_tacto()
 	_materiales()
 	_esposas()
+	_placa()
 	var ig := _h("garganta")
 	if ig >= 0:
 		var ba := BoneAttachment3D.new()
@@ -274,22 +351,44 @@ func _suf(lado: int) -> String:
 func _materiales() -> void:
 	var aux = AgenteScript.new()
 	var poros: Texture2D = aux._ruido_normal(13, 0.11, 1.6)
-	var piel_cara := _piel("ilv_cabeza", aux, poros)
+	var piel_cara := _piel(perfil.cabeza, aux, poros)
 	_mat_cara = piel_cara
-	var piel_mano := _piel("ilv_mano_R", aux, poros)
+	_tinte_cara = perfil.tinte
+	var piel_mano := _piel(perfil.mano, aux, poros)
 	_mat_ojo = ShaderMaterial.new()
 	var sh := Shader.new()
 	sh.code = SHADER_OJO
 	_mat_ojo.shader = sh
+	for k in ["iris_a", "iris_b"]:
+		if perfil.has(k):
+			var c: Color = perfil[k]
+			_mat_ojo.set_shader_parameter(k, Vector3(c.r, c.g, c.b))
+	if perfil.has("iris_emi"):
+		_mat_ojo.set_shader_parameter("iris_emi", perfil.iris_emi)
+	if perfil.has("piel_ojo"):
+		var c: Color = perfil.piel_ojo
+		_mat_ojo.set_shader_parameter("piel", Vector3(c.r, c.g, c.b))
 	var tunica := StandardMaterial3D.new()
-	tunica.albedo_texture = aux._tex("ilv_tunica_color.png")
-	# bajo el foco cálido de la sala un gris oscuro parece crema: tinte azul noche
-	tunica.albedo_color = Color(0.28, 0.34, 0.46)
+	tunica.albedo_texture = aux._tex(perfil.ropa + "_color.png")
+	# (ilvari) bajo el foco cálido de la sala un gris oscuro parece crema: tinte azul noche
+	tunica.albedo_color = perfil.ropa_tinte
+	if perfil.has("ropa_color"):
+		tunica.albedo_texture = null
+		tunica.albedo_color = perfil.ropa_color
 	tunica.normal_enabled = true
-	tunica.normal_texture = aux._tex("ilv_tunica_normal.png")
-	tunica.roughness = 0.86
+	tunica.normal_texture = aux._tex(perfil.ropa + "_normal.png")
+	tunica.roughness = perfil.ropa_rug
 	tunica.rim_enabled = true
 	tunica.rim = 0.2
+	# pinzas de quitina (kthar): casi negras y brillantes, como uña
+	var quitina := StandardMaterial3D.new()
+	quitina.albedo_texture = aux._tex("kth_pinzas_color.png")
+	quitina.normal_enabled = true
+	quitina.normal_texture = aux._tex("kth_pinzas_normal.png")
+	quitina.roughness = 0.28
+	quitina.clearcoat_enabled = true
+	quitina.clearcoat = 0.6
+	var diente := Proc.mat(Color(0.62, 0.56, 0.4), 0.3)
 	var collar := StandardMaterial3D.new()
 	collar.albedo_color = Color(0.5, 0.52, 0.56)
 	collar.metallic = 1.0
@@ -300,8 +399,8 @@ func _materiales() -> void:
 	_mat_lente.emission = Color(0.3, 0.85, 1.0)
 	_mat_lente.emission_energy_multiplier = 1.5
 	aux.free()
-	var por_nombre := {"piel": piel_mano, "piel_cara": piel_cara, "ojo": _mat_ojo, "tunica": tunica,
-			"collar": collar, "lente": _mat_lente}
+	var por_nombre := {"piel": piel_mano, "piel_cara": piel_cara, "ojo": _mat_ojo, perfil.ropa_mat: tunica,
+			"collar": collar, "lente": _mat_lente, "quitina": quitina, "diente": diente}
 	for mi in sk.get_children():
 		if not (mi is MeshInstance3D):
 			continue
@@ -323,8 +422,38 @@ func _piel(prefijo: String, aux, poros: Texture2D) -> ShaderMaterial:
 	if ao:
 		m.set_shader_parameter("ao_tex", ao)
 	m.set_shader_parameter("poros", poros)
+	m.set_shader_parameter("tinte", perfil.tinte)
+	m.set_shader_parameter("luz_interior", perfil.luz_interior)
+	m.set_shader_parameter("translucidez", perfil.translucidez)
+	m.set_shader_parameter("rug", perfil.rug)
+	m.set_shader_parameter("desatura", perfil.get("desatura", 0.0))
 	_mat_piel.append(m)
 	return m
+
+## Placa de preso en el pecho (hueso "placa", que apunta hacia fuera de la tela).
+func _placa() -> void:
+	var ip := _h("placa")
+	if ip < 0 or placa == "":
+		return
+	var ba := BoneAttachment3D.new()
+	ba.bone_name = "placa"
+	sk.add_child(ba)
+	var piv := Node3D.new()
+	# el eje Y del hueso sale del pecho y su Z mira arriba: el texto (+Z del Label3D) va
+	# hacia fuera y se lee con la vertical del hueso
+	piv.basis = Basis(Vector3(-1, 0, 0), Vector3(0, 0, 1), Vector3(0, 1, 0))
+	piv.position = Vector3(0, 0.002, 0)
+	ba.add_child(piv)
+	Proc.malla(piv, Proc.caja(Vector3(0.085, 0.032, 0.003)), Vector3.ZERO, Proc.mat(Color(0.78, 0.76, 0.7), 0.9))
+	var l := Label3D.new()
+	l.text = placa
+	l.font_size = 40
+	l.pixel_size = 0.00045
+	l.modulate = Color(0.05, 0.04, 0.03)
+	l.outline_size = 0
+	l.shaded = true
+	l.position = Vector3(0, 0, 0.0018)
+	piv.add_child(l)
 
 ## Esposas en las muñecas (siguen al hueso de la mano) y cadena hasta la anilla de la mesa.
 ## La cadena se recoloca cada frame (_cadenas_update): sigue a las manos, pasa por el borde
@@ -343,9 +472,14 @@ func _esposas() -> void:
 		esposa.scale = Vector3(1.0, 1.0, 0.78)
 		var w: Vector3 = to_local(sk.global_transform * (_mano_rest[lado] as Transform3D) * Vector3(0, -0.028, -0.012))
 		_cadena_len[lado] = w.distance_to(_anilla) * 1.25 + 0.04
+		# en reposo bastan 9 eslabones; si las manos suben se usan más para que la cadena
+		# no se vea a puntos (los que sobran quedan ocultos)
+		_paso_eslabon = minf(_paso_eslabon, w.distance_to(_anilla) / 9.0)
 		var lista: Array = []
-		for k in 9:
-			lista.append(Proc.malla(self, eslabon, w.lerp(_anilla, (k + 0.5) / 9.0), metal))
+		for k in ESLABONES_MAX:
+			var mi := Proc.malla(self, eslabon, w.lerp(_anilla, (k + 0.5) / ESLABONES_MAX), metal)
+			mi.visible = k < 9
+			lista.append(mi)
 		_eslabones[lado] = lista
 
 func _muneca(lado: int) -> Vector3:
@@ -366,7 +500,13 @@ func _cadenas_update(delta: float) -> void:
 	for lado in [1, -1]:
 		var w := _muneca(lado)
 		var pts: Array = [w]
-		if w.y < MESA_Y - 0.01 or w.z < BORDE_Z - 0.02:
+		if w.y > MESA_Y + 0.12:
+			# manos en alto (brazos cruzados, en la boca...): la cadena cae por delante del
+			# cuerpo, separada de los antebrazos, hasta el borde de la mesa
+			var caida := Vector3(w.x * 0.9, lerpf(w.y, MESA_Y, 0.55), maxf(w.z + 0.13, BORDE_Z - 0.02))
+			pts.append(caida)
+			pts.append(Vector3(w.x * 0.8, MESA_Y + 0.006, maxf(BORDE_Z, caida.z)))
+		elif w.y < MESA_Y - 0.01 or w.z < BORDE_Z - 0.02:
 			pts.append(Vector3(w.x * 0.85, MESA_Y + 0.006, BORDE_Z))
 		pts.append(_anilla)
 		var largos: Array = []
@@ -377,7 +517,9 @@ func _cadenas_update(delta: float) -> void:
 			total += l
 		var holgura := maxf(0.0, float(_cadena_len[lado]) - total)
 		var lista: Array = _eslabones[lado]
-		var n := lista.size()
+		var n := clampi(ceili(maxf(total, float(_cadena_len[lado]) * 0.8) / _paso_eslabon), 9, lista.size())
+		for k in lista.size():
+			(lista[k] as MeshInstance3D).visible = k < n
 		for k in n:
 			var u := (k + 0.5) / n
 			var p := _en_polilinea(pts, largos, total, u)
@@ -670,7 +812,7 @@ func animar(s, delta: float) -> void:
 	var luz := clampf(G.luz + G.grave * 0.3, 0.0, 1.0)
 	for m in _mat_piel:
 		(m as ShaderMaterial).set_shader_parameter("humedad", clampf(nerv * 1.1 - 0.3, 0.0, 0.8))
-		(m as ShaderMaterial).set_shader_parameter("translucidez", 0.22 + luz * 0.5)
+		(m as ShaderMaterial).set_shader_parameter("translucidez", float(perfil.translucidez) + luz * 0.5)
 	if _mat_cara:
 		var k := 1.0 + 0.3 * clampf(G.sienes, -1.0, 1.0)
 		_mat_cara.set_shader_parameter("tinte", Color(_tinte_cara.r * k, _tinte_cara.g * k, _tinte_cara.b * k))
@@ -678,13 +820,17 @@ func animar(s, delta: float) -> void:
 		_luz.light_energy = luz * 2.6 * (0.8 + 0.2 * sin(t * 17.0))
 	# --- ojos: pupila según la emoción (o el gesto) y párpados dobles
 	if _mat_ojo:
-		var pu: float = PUPILA_EMO.get(emo, 0.72)
+		var pu: float = (perfil.pupila as Dictionary).get(emo, 0.72)
 		var mp: Array = _m("pupila")
 		if mp[0] > 0.0:
 			pu = lerpf(pu, float(mp[1]), mp[0])
 		_pupila = lerpf(_pupila, pu, 1.0 - exp(-delta * 7.0))
 		_mat_ojo.set_shader_parameter("pupila", _pupila)
-		_mat_ojo.set_shader_parameter("cierre", clampf(G.cierre, 0.0, 1.0))
+		_mat_ojo.set_shader_parameter("cierre", clampf(G.cierre + _parpadeo(delta, emo, nerv, fija), 0.0, 1.0))
+		if perfil.has("iris_emi"):
+			# el iris encendido sigue a la emoción (se aviva con la ira y la burla)
+			_mat_ojo.set_shader_parameter("brillo", s._glow * (0.9 + 0.1 * sin(t * 3.1)))
+	_pinzas(s, delta, nerv)
 	# --- canto grave: la sala tiembla con él (Room3D) y suena por debajo del traductor
 	var grave := clampf(G.grave, 0.0, 1.0)
 	if (grave > 0.001 or _grave_env > 0.001) and sala_efecto.is_valid():
@@ -752,6 +898,45 @@ func animar(s, delta: float) -> void:
 	for lado in [1, -1]:
 		_dedos(lado, _curl, tap if lado < 0 else [0.0, 0.0, 0.0], temblor_dedos, _cf[lado])
 	_cadenas_update(delta)
+
+## Parpadeo (solo especies que parpadean): lento y raro cuando domina, rápido y seguido con
+## nervios. Mientras fija la vista no parpadea. Devuelve el cierre extra (0..1).
+func _parpadeo(delta: float, emo: String, nerv: float, fija: float) -> float:
+	if not perfil.parpadea:
+		return 0.0
+	_parp_t -= delta
+	if _parp_t <= 0.0 and _parp < 0.0 and fija < 0.5:
+		_parp = 0.0
+		_parp_t = randf_range(5.0, 9.0) if emo in ["burla", "triunfo", "calma", "furioso"] else randf_range(1.2, 3.0) * (1.2 - nerv * 0.6)
+	if _parp < 0.0:
+		return 0.0
+	_parp += delta / 0.22
+	if _parp >= 1.0:
+		_parp = -1.0
+		return 0.0
+	return sin(_parp * PI)
+
+## Pinzas del kthar: se entreabren al hablar, se separan con la ira, tiemblan con los nervios
+## y de vez en cuando chasquean (se abren y se cierran de golpe) cuando se burla.
+func _pinzas(s, delta: float, nerv: float) -> void:
+	if _pinza_eje.is_empty():
+		return
+	var obj: float = 0.04 + s._abre * 0.3 + maxf(s._cejas, 0.0) * 0.16 + nerv * 0.06
+	obj += float(_m("abre")[0]) * 0.1 - float(_m("aprieta")[0]) * 0.08
+	_pinza = lerpf(_pinza, obj, 1.0 - exp(-delta * 8.0))
+	if _chasquido < 0.0 and s.emocion in ["burla", "triunfo"] and randf() < delta * 0.25:
+		_chasquido = 0.0
+	var extra := 0.0
+	if _chasquido >= 0.0:
+		_chasquido += delta / 0.35
+		extra = sin(clampf(_chasquido, 0.0, 1.0) * PI) * 0.35
+		if _chasquido >= 1.0:
+			_chasquido = -1.0
+	for lado in _pinza_eje:
+		var i := _h("pinza" + _suf(lado))
+		var ang: float = (_pinza + extra + sin(t * 1.7 + lado) * 0.02 + sin(t * 31.0 + lado * 2.0) * nerv * nerv * 0.03) * lado
+		var r := sk.get_bone_rest(i).basis.get_rotation_quaternion()
+		sk.set_bone_pose_rotation(i, r * Quaternion(_pinza_eje[lado], ang))
 
 func _arco(a: Vector3, b: Vector3) -> Basis:
 	a = a.normalized()

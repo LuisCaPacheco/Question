@@ -69,7 +69,7 @@ var mat_piel: ShaderMaterial
 var mat_ropa: ShaderMaterial
 var mat_negro: StandardMaterial3D
 var esc := Vector3.ONE
-var ilvari = null               # modelo esculpido (tipo "ilvari"); si existe, anima él
+var esculpido = null            # modelo esculpido (Ilvari.gd); si existe, anima él
 
 func _ready() -> void:
 	_base_pos = position
@@ -103,13 +103,18 @@ func construir(r: Dictionary) -> void:
 	comisuras.clear(); cejas.clear(); ojos.clear(); mat_iris.clear(); pinzas.clear()
 	sudor.clear(); hombros.clear(); codos.clear(); brazo_sup.clear(); manos.clear()
 	mandibula = null; boca_cav = null; dientes_sup = null
-	torso_piv = null; cabeza_piv = null; ilvari = null
+	torso_piv = null; cabeza_piv = null; esculpido = null
 	rasgos = r
 	tipo = str(r.get("tipo", "humano"))
-	if tipo == "ilvari":
+	# modelo esculpido: el ilvari siempre; los demás si el caso trae "modelo" y el .glb existe
+	var especie := str(r.get("modelo", "ilvari" if tipo == "ilvari" else ""))
+	if especie != "" and IlvariScript.PERFILES.has(especie) and ResourceLoader.exists(IlvariScript.PERFILES[especie].escena):
 		_silla()
-		ilvari = IlvariScript.new()
-		add_child(ilvari)
+		esculpido = IlvariScript.new()
+		esculpido.especie = especie
+		esculpido.placa = str(r.get("placa", ""))
+		esculpido.rasgos = r
+		add_child(esculpido)
 		set_emocion("calma")
 		return
 	var cb: Array = r.get("cuerpo", [1, 1, 1])
@@ -560,6 +565,27 @@ func reaccionar(tactica: String, verdad: float, empatia: float) -> void:
 		"acusar_fallo":
 			set_emocion("triunfo")
 	_emocion_t = 6.0
+	if esculpido:
+		esculpido.gestos(_gestos_tactica(tactica, verdad, empatia))
+
+## Casos sin guion (modo clásico): el modelo esculpido responde a cada táctica con el cuerpo.
+func _gestos_tactica(tactica: String, verdad: float, empatia: float) -> Array:
+	match tactica:
+		"confrontar":
+			return ["aprieta_mandibula", "inclina"] if verdad < 55.0 else ["encoge", "aparta_mirada"]
+		"evidencia":
+			return ["encoge", "manos_tiemblan"] if nervios > 0.55 else ["lee_reves", "deja_tamborilear"]
+		"testigo":
+			return ["mira_puerta", "respira_rapido"] if verdad > 40.0 else ["ladea", "sonrisa"]
+		"minimizar":
+			return ["echa_atras", "sonrisa"] if verdad < 60.0 else ["respira_hondo", "mira_manos"]
+		"alternativa":
+			return ["mira_manos", "enrosca_dedos"] if verdad > 35.0 else ["estudia"]
+		"empatia":
+			return ["cruza_brazos", "fija"] if empatia < 45.0 else ["hombros_bajan", "levanta_vista"]
+		"acusar_fallo":
+			return ["echa_atras", "sonrisa", "planas"]
+	return []
 
 func hablar(seg: float) -> void:
 	hablando = seg
@@ -576,7 +602,7 @@ func _emocion_reposo() -> String:
 # =====================================================================
 
 func _process(delta: float) -> void:
-	if (torso_piv == null and ilvari == null) or not visible:
+	if (torso_piv == null and esculpido == null) or not visible:
 		return
 	t += delta
 	var k := 1.0 - exp(-delta * 4.0)
@@ -594,8 +620,8 @@ func _process(delta: float) -> void:
 		_emocion_t -= delta
 		if _emocion_t <= 0.0 and emocion not in ["quebrado", "triunfo"]:
 			set_emocion(_emocion_reposo())
-	if ilvari:
-		_ilvari_update(delta)
+	if esculpido:
+		_esculpido_update(delta)
 		return
 	# respiracion + inclinacion
 	var resp := sin(t * (1.3 + nervios * 1.6))
@@ -620,8 +646,8 @@ func _process(delta: float) -> void:
 	elif mat_piel:
 		mat_piel.set_shader_parameter("sudor", clampf(nervios * 1.2 - 0.3, 0.0, 1.0))
 
-func _ilvari_update(delta: float) -> void:
-	# mirada: el ilvari no parpadea, pero su vista salta cuando está nervioso
+func _esculpido_update(delta: float) -> void:
+	# mirada: la vista salta cuando está nervioso (el parpadeo, si lo hay, lo lleva el modelo)
 	_mirada_t -= delta
 	if _mirada_t <= 0.0:
 		var r := 0.3 if emocion == "nervioso" else (0.04 if emocion in ["burla", "triunfo", "furioso"] else 0.1)
@@ -631,7 +657,7 @@ func _ilvari_update(delta: float) -> void:
 	if hablando > 0.0:
 		abre = maxf(abre, 0.15 + 0.85 * absf(sin(t * 10.5) * sin(t * 4.3 + 1.0)))
 	_abre = lerpf(_abre, abre, 1.0 - exp(-delta * 16.0))
-	ilvari.animar(self, delta)
+	esculpido.animar(self, delta)
 
 func _cabeza_update(delta: float) -> void:
 	_mirada_t -= delta

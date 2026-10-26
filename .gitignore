@@ -9,3 +9,6 @@ Ultimate Monsters/
 autotest*/
 __pycache__/
 *.pyc
+
+# vistas previas que generan los scripts de Blender (-- previa)
+herramientas/_previa/

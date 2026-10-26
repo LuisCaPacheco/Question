@@ -140,9 +140,9 @@ func _correr_arbol(g: Node, e: Node) -> void:
 ## --gestos: cada gesto de Ilvari.GESTOS, uno a uno, con una foto en su punto más intenso.
 ## --solo=a,b,c limita la lista; --sin_ui oculta los subtítulos y las cartas (tapan las manos).
 func _correr_gestos(e: Node) -> void:
-	var il = e.sospechoso.ilvari
+	var il = e.sospechoso.esculpido
 	if il == null:
-		print("AUTOTEST ERROR: el caso no tiene modelo ilvari")
+		print("AUTOTEST ERROR: el caso no tiene modelo esculpido")
 		get_tree().quit()
 		return
 	if "--sin_ui" in OS.get_cmdline_user_args():
@@ -190,6 +190,11 @@ func _correr() -> void:
 	g.empezar_juego()
 	await _esperar(2.5)
 	await _foto("03_juego")
+	if "--retrato" in OS.get_cmdline_user_args():
+		# primeros planos del sospechoso (cara, perfil y manos) antes de jugar
+		await _vista_debug(e, Vector3(0.0, 1.42, -0.5), Vector3(0.0, 1.36, -0.98), "r1_cara")
+		await _vista_debug(e, Vector3(0.55, 1.45, -0.7), Vector3(0.0, 1.34, -1.0), "r2_perfil")
+		await _vista_debug(e, Vector3(0.0, 1.25, -0.05), Vector3(0.0, 0.83, -0.4), "r3_manos")
 	if "--gestos" in OS.get_cmdline_user_args():
 		await _correr_gestos(e)
 		return

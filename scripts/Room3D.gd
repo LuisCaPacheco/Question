@@ -754,9 +754,12 @@ func set_rasgos(r: Dictionary) -> void:
 	sospechoso.construir(r)
 	sospechoso.nervios = 0.2
 	sospechoso.verdad_ref = 0.0
-	# foto del expediente: el ilvari tiene la cabeza más alta
+	if sospechoso.esculpido:
+		sospechoso.esculpido.sala = _puntos_sala()
+		sospechoso.esculpido.sala_efecto = _efecto_sospechoso
+	# foto del expediente: los modelos esculpidos tienen la cabeza más alta
 	if mug_cam:
-		var alto := 1.36 if str(r.get("tipo", "")) == "ilvari" else 1.3
+		var alto: float = sospechoso.esculpido.perfil.get("altura_cabeza", 1.3) if sospechoso.esculpido else 1.3
 		mug_cam.position = Vector3(0, alto + 0.02, -0.2)
 		mug_cam.look_at(Vector3(0, alto, -0.97), Vector3.UP)
 
@@ -772,11 +775,11 @@ func reaccion(tipo: String, verdad: float, empatia: float) -> void:
 	sospechoso.reaccionar(tipo, verdad, empatia)
 
 ## Gestos de la acotación del nodo (Ilvari.GESTOS). Si la lista viene vacía se deducen del
-## texto. Solo los hace el modelo esculpido (tipo "ilvari").
+## texto. Solo los hacen los modelos esculpidos.
 func gestos_sospechoso(ids: Array, accion := "") -> void:
-	if sospechoso == null or sospechoso.ilvari == null:
+	if sospechoso == null or sospechoso.esculpido == null:
 		return
-	var il = sospechoso.ilvari
+	var il = sospechoso.esculpido
 	il.sala = _puntos_sala()
 	il.sala_efecto = _efecto_sospechoso
 	il.gestos(ids if not ids.is_empty() else il.inferir(accion))

@@ -209,6 +209,7 @@
       },
       "rasgos": {
         "tipo": "kthar",
+        "modelo": "kthar",
         "piel": "#6F7F72",
         "mancha": "#3B4A3A",
         "vena": "#2C5A3A",
@@ -485,6 +486,7 @@
       },
       "rasgos": {
         "tipo": "kthar",
+        "modelo": "kthar",
         "piel": "#8C9488",
         "mancha": "#4A3A44",
         "vena": "#5A2A4A",

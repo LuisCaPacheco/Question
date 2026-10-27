@@ -75,6 +75,7 @@ uniform float iris_emi = 0.2;
 uniform float esclera_emi = 0.0;
 uniform float venas = 0.3;
 uniform float abierto = 0.42;
+uniform float pestanas = 1.0;
 void fragment() {
 	vec2 p = vec2(UV.x - 0.5, 0.5 - UV.y) * 2.0;
 	float r = length(p);
@@ -95,6 +96,10 @@ void fragment() {
 	vec3 emi = iris * en_iris * (1.0 - en_pup) * iris_emi * brillo + esclera * (1.0 - en_iris) * esclera_emi * brillo;
 	float borde = mix(abierto + 0.1, -abierto - 0.12, clamp(cierre, 0.0, 1.0));
 	float lid = smoothstep(borde - 0.04, borde + 0.04, p.y);
+	// sombra de las pestañas justo bajo el borde del párpado
+	float pest = (1.0 - smoothstep(0.0, 0.16, borde - p.y)) * (1.0 - lid) * pestanas;
+	col *= 1.0 - pest * 0.75;
+	emi *= 1.0 - pest;
 	col = mix(col, piel, lid);
 	emi *= 1.0 - lid;
 	ALBEDO = col;
@@ -181,7 +186,7 @@ const PERFILES := {
 	# ya horneados). Comparten la base "humano"; los colores de los ojos salen de rasgos.
 	"humano_danner": {
 		"base": "humano", "escena": "res://modelos/humano_danner.glb", "prefijo": "hum_danner",
-		"pelo_rug": 0.3, "iris_emi": 0.5, "venas_ojo": 0.6,
+		"pelo_rug": 0.42, "iris_emi": 0.5, "venas_ojo": 0.6,
 	},
 	"humano_sara": {
 		"base": "humano", "escena": "res://modelos/humano_sara.glb", "prefijo": "hum_sara",
@@ -198,9 +203,9 @@ const PERFILES := {
 	"molk": {
 		"escena": "res://modelos/molk.glb", "cabeza": "mlk_cabeza", "mano": "mlk_mano_R", "cuerpo": "mlk_cuerpo",
 		"ropa": "mlk_mono", "ropa_mat": "ropa", "ropa_tinte": Color(1, 1, 1), "ropa_rug": 0.95,
-		"tinte": Color(1, 1, 1), "luz_interior": Color(0.5, 0.12, 0.0), "translucidez": 0.04, "rug": 0.82,
-		"grietas": Color(1.0, 0.36, 0.06), "grietas_energia": 2.2,
-		"ojo": "uv", "iris_emi": 3.0, "esclera_emi": 1.4, "venas_ojo": 0.0, "abierto": 0.3,
+		"tinte": Color(0.5, 0.48, 0.47), "luz_interior": Color(0.5, 0.12, 0.0), "translucidez": 0.04, "rug": 0.82,
+		"grietas": Color(1.0, 0.36, 0.06), "grietas_energia": 1.5,
+		"ojo": "uv", "iris_emi": 3.0, "esclera_emi": 1.4, "venas_ojo": 0.0, "abierto": 0.3, "pestanas": 0.0,
 		"ojo_esclera": Color(0.55, 0.12, 0.01), "ojo_iris_a": Color(1.0, 0.85, 0.35), "ojo_iris_b": Color(1.0, 0.45, 0.05),
 		"pupila": {"calma": 0.1, "burla": 0.05, "nervioso": 0.3, "asustado": 0.6, "furioso": 0.0, "quebrado": 0.45, "triunfo": 0.05},
 		"parpadea": true, "altura_cabeza": 1.4, "diente": Color(0.62, 0.57, 0.46),
@@ -214,8 +219,8 @@ const PERFILES := {
 const BASES := {
 	"humano": {
 		"ropa_mat": "ropa", "ropa_tinte": Color(1, 1, 1), "ropa_rug": 0.9,
-		"tinte": Color(1, 1, 1), "luz_interior": Color(0.55, 0.14, 0.08), "translucidez": 0.12, "rug": 0.5,
-		"ojo": "uv", "parpadea": true, "altura_cabeza": 1.265,
+		"tinte": Color(0.55, 0.54, 0.54), "luz_interior": Color(0.55, 0.14, 0.08), "translucidez": 0.12, "rug": 0.5,
+		"ojo": "uv", "parpadea": true, "altura_cabeza": 1.265, "abierto": 0.3,
 		"pupila": {"calma": 0.35, "burla": 0.3, "nervioso": 0.5, "asustado": 0.8, "furioso": 0.22, "quebrado": 0.6, "triunfo": 0.28},
 		# mano humana (herramientas/mano.py): cuatro dedos y el pulgar
 		"dedos": 4, "r_falange": [0.0094, 0.0085, 0.0077], "largo_punta": 0.021, "r_antebrazo": 0.032,
@@ -521,7 +526,7 @@ func _materiales() -> void:
 		for par in [["ojo_iris_a", "iris_a"], ["ojo_iris_b", "iris_b"], ["ojo_esclera", "esclera"], ["ojo_piel", "piel"]]:
 			if perfil.has(par[0]):
 				_mat_ojo.set_shader_parameter(par[1], lin.call(perfil[par[0]]))
-		for par in [["venas_ojo", "venas"], ["esclera_emi", "esclera_emi"], ["abierto", "abierto"]]:
+		for par in [["venas_ojo", "venas"], ["esclera_emi", "esclera_emi"], ["abierto", "abierto"], ["pestanas", "pestanas"]]:
 			if perfil.has(par[0]):
 				_mat_ojo.set_shader_parameter(par[1], float(perfil[par[0]]))
 	for k in ["iris_a", "iris_b"]:

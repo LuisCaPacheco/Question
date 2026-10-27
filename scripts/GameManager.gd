@@ -179,13 +179,21 @@ func cargar_datos() -> void:
 	var parsed = JSON.parse_string(f.get_as_text())
 	if parsed is Dictionary and parsed.has("sospechosos"):
 		sospechosos = parsed["sospechosos"]
-	# casos grandes (árbol de diálogo) en su propio archivo: data/caso_<id>.json
+	# casos grandes (árbol de diálogo) en su propio archivo: data/caso_<id>.json. Si el id ya
+	# existe en sospechosos.json, el árbol sustituye a la versión clásica del caso.
 	for fn in DirAccess.get_files_at("res://data"):
 		if fn.begins_with("caso_") and fn.ends_with(".json"):
 			var fc := FileAccess.open("res://data/" + fn, FileAccess.READ)
 			var c = JSON.parse_string(fc.get_as_text()) if fc else null
 			if c is Dictionary and c.has("id"):
-				sospechosos.append(c)
+				var previo := -1
+				for i in sospechosos.size():
+					if str(sospechosos[i].get("id", "")) == str(c["id"]):
+						previo = i
+				if previo >= 0:
+					sospechosos[previo] = c
+				else:
+					sospechosos.append(c)
 			else:
 				push_error("Caso inválido: " + fn)
 	sospechosos.sort_custom(func(a, b): return int(a.get("nivel", 99)) < int(b.get("nivel", 99)))

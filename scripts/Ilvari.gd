@@ -6,7 +6,10 @@ extends Node3D
 ## "ilvari" o rasgos.modelo) y cada frame le pasa su estado (emoción, boca, nervios...) en animar().
 ## Huesos animados: columna/pecho (inclinación, respiración), cuello/cuello2/cabeza (mira a
 ## la cámara), mandíbula (habla), garganta (saco vocal del ilvari), pinzas (kthar), cejas
-## (arco superciliar), brazos con IK para que las manos sigan apoyadas en la mesa, y dedos.
+## (arco superciliar), comisuras (sonrisa de los humanos), brazos con IK para que las manos
+## sigan apoyadas en la mesa, y dedos (tres o cuatro más el pulgar, según PERFILES.dedos).
+## También anima a los humanos (construir_humano.py: un modelo por personaje) y al molk
+## (construir_molk.py), que usan los mismos nombres de huesos.
 
 const AgenteScript := preload("res://scripts/Agente.gd")
 const Proc := preload("res://scripts/Proc.gd")
@@ -30,6 +33,10 @@ uniform float rug = 0.42;
 uniform float humedad = 0.0;
 uniform float poros_esc = 40.0;
 uniform float desatura = 0.0;
+// grietas incandescentes (molk): máscara horneada <prefijo>_emi.png
+uniform sampler2D emi_tex : hint_default_black, filter_linear_mipmap;
+uniform vec4 emi_col : source_color = vec4(1.0, 0.35, 0.06, 1.0);
+uniform float emi = 0.0;
 void fragment() {
 	vec3 c = texture(albedo_tex, UV).rgb;
 	c = mix(c, vec3(dot(c, vec3(0.299, 0.587, 0.114))), desatura) * tinte.rgb;
@@ -46,6 +53,56 @@ void fragment() {
 	BACKLIGHT = luz_interior.rgb * translucidez;
 	RIM = 0.12;
 	RIM_TINT = 0.8;
+	EMISSION = emi_col.rgb * texture(emi_tex, UV).r * emi;
+}
+"""
+
+## Ojo con esclera, iris y pupila redonda (humanos y molk). A diferencia de SHADER_OJO, las
+## coordenadas salen de la UV (proyección frontal hecha al construir el modelo): el iris va
+## pegado a la cabeza y mira hacia donde mira ella. El párpado superior baja con "cierre".
+const SHADER_OJO_UV := """
+shader_type spatial;
+render_mode specular_schlick_ggx;
+uniform float brillo = 1.0;
+uniform float pupila = 0.4;
+uniform float cierre = 0.0;
+uniform vec3 piel = vec3(0.45, 0.32, 0.25);
+uniform vec3 esclera = vec3(0.75, 0.7, 0.62);
+uniform vec3 iris_a = vec3(0.3, 0.2, 0.05);
+uniform vec3 iris_b = vec3(0.1, 0.06, 0.02);
+uniform float iris_r = 0.47;
+uniform float iris_emi = 0.2;
+uniform float esclera_emi = 0.0;
+uniform float venas = 0.3;
+uniform float abierto = 0.42;
+void fragment() {
+	vec2 p = vec2(UV.x - 0.5, 0.5 - UV.y) * 2.0;
+	float r = length(p);
+	float a = atan(p.y, p.x);
+	vec3 col = esclera;
+	float ven = pow(abs(sin(a * 23.0 + sin(a * 7.0) * 2.0)), 40.0) * smoothstep(0.5, 1.0, r) * venas;
+	col = mix(col, vec3(0.5, 0.06, 0.05), ven);
+	col *= mix(1.0, 0.8, smoothstep(0.55, 1.0, r));
+	float ir = r / iris_r;
+	vec3 iris = mix(iris_a, iris_b, smoothstep(0.2, 1.0, ir));
+	iris *= 0.72 + 0.28 * sin(a * 41.0 + ir * 6.0) * sin(a * 13.0 + 1.0);
+	iris = mix(iris, iris * 0.2, smoothstep(0.82, 1.0, ir));
+	float en_iris = 1.0 - smoothstep(0.96, 1.04, ir);
+	float pr = mix(0.2, 0.72, pupila);
+	float en_pup = 1.0 - smoothstep(pr - 0.05, pr + 0.03, ir);
+	col = mix(col, iris, en_iris);
+	col = mix(col, vec3(0.004), en_pup);
+	vec3 emi = iris * en_iris * (1.0 - en_pup) * iris_emi * brillo + esclera * (1.0 - en_iris) * esclera_emi * brillo;
+	float borde = mix(abierto + 0.1, -abierto - 0.12, clamp(cierre, 0.0, 1.0));
+	float lid = smoothstep(borde - 0.04, borde + 0.04, p.y);
+	col = mix(col, piel, lid);
+	emi *= 1.0 - lid;
+	ALBEDO = col;
+	EMISSION = emi;
+	ROUGHNESS = mix(0.05, 0.6, lid);
+	SPECULAR = mix(0.7, 0.35, lid);
+	CLEARCOAT = 1.0 - lid;
+	CLEARCOAT_ROUGHNESS = 0.03;
 }
 """
 
@@ -120,11 +177,87 @@ const PERFILES := {
 		# se tiñe en proporción a sus propios colores (ver _ajustar_perfil)
 		"ref_piel": Color("#6F7F72"), "ref_ropa": Color("#A6410F"), "ref_ojos": Color("#FF2A10"),
 	},
+	# Humanos: un modelo por personaje (pelo, cicatriz y dientes propios, colores de su ficha
+	# ya horneados). Comparten la base "humano"; los colores de los ojos salen de rasgos.
+	"humano_danner": {
+		"base": "humano", "escena": "res://modelos/humano_danner.glb", "prefijo": "hum_danner",
+		"pelo_rug": 0.3, "iris_emi": 0.5, "venas_ojo": 0.6,
+	},
+	"humano_sara": {
+		"base": "humano", "escena": "res://modelos/humano_sara.glb", "prefijo": "hum_sara",
+		"pelo_rug": 0.42, "iris_emi": 0.7, "venas_ojo": 0.15,
+		# sonríe con los ojos quietos: casi no parpadea y apenas mueve la pupila
+		"pupila": {"calma": 0.3, "burla": 0.28, "nervioso": 0.34, "asustado": 0.5, "furioso": 0.25, "quebrado": 0.45, "triunfo": 0.26},
+	},
+	"humano_elena": {
+		"base": "humano", "escena": "res://modelos/humano_elena.glb", "prefijo": "hum_elena",
+		"pelo_rug": 0.55, "iris_emi": 0.8, "venas_ojo": 0.1,
+	},
+	# Gruul, el molk: roca viva con grietas de magma (emisión que sigue a la ira y los nervios),
+	# ojos de brasa, manos de tres dedos enormes. Brazos de piedra al aire (material piel_cuerpo).
+	"molk": {
+		"escena": "res://modelos/molk.glb", "cabeza": "mlk_cabeza", "mano": "mlk_mano_R", "cuerpo": "mlk_cuerpo",
+		"ropa": "mlk_mono", "ropa_mat": "ropa", "ropa_tinte": Color(1, 1, 1), "ropa_rug": 0.95,
+		"tinte": Color(1, 1, 1), "luz_interior": Color(0.5, 0.12, 0.0), "translucidez": 0.04, "rug": 0.82,
+		"grietas": Color(1.0, 0.36, 0.06), "grietas_energia": 2.2,
+		"ojo": "uv", "iris_emi": 3.0, "esclera_emi": 1.4, "venas_ojo": 0.0, "abierto": 0.3,
+		"ojo_esclera": Color(0.55, 0.12, 0.01), "ojo_iris_a": Color(1.0, 0.85, 0.35), "ojo_iris_b": Color(1.0, 0.45, 0.05),
+		"pupila": {"calma": 0.1, "burla": 0.05, "nervioso": 0.3, "asustado": 0.6, "furioso": 0.0, "quebrado": 0.45, "triunfo": 0.05},
+		"parpadea": true, "altura_cabeza": 1.4, "diente": Color(0.62, 0.57, 0.46),
+		"dedos": 3, "r_falange": [0.0175, 0.0155, 0.014], "largo_punta": 0.036, "r_antebrazo": 0.058,
+		"palma": {"x": [-0.032, 0.0, 0.032], "y": [0.025, 0.11], "r": 0.022}, "esposa": 1.75,
+		"poses": {"boca": Vector3(0.0, 0.03, 0.06), "pecho": Vector3(0.0, 0.17, 0.08), "cruzados": Vector3(0.0, 0.12, 0.12)},
+	},
 }
+
+## Lo común a una familia de perfiles ("base" en PERFILES): el perfil concreto lo pisa.
+const BASES := {
+	"humano": {
+		"ropa_mat": "ropa", "ropa_tinte": Color(1, 1, 1), "ropa_rug": 0.9,
+		"tinte": Color(1, 1, 1), "luz_interior": Color(0.55, 0.14, 0.08), "translucidez": 0.12, "rug": 0.5,
+		"ojo": "uv", "parpadea": true, "altura_cabeza": 1.265,
+		"pupila": {"calma": 0.35, "burla": 0.3, "nervioso": 0.5, "asustado": 0.8, "furioso": 0.22, "quebrado": 0.6, "triunfo": 0.28},
+		# mano humana (herramientas/mano.py): cuatro dedos y el pulgar
+		"dedos": 4, "r_falange": [0.0094, 0.0085, 0.0077], "largo_punta": 0.021, "r_antebrazo": 0.032,
+		"palma": {"x": [-0.021, -0.007, 0.007, 0.021], "y": [0.02, 0.09], "r": 0.012}, "esposa": 1.06,
+		# la cabeza y los hombros están más bajos que los del ilvari
+		"poses": {"boca": Vector3(0.0, -0.085, -0.02), "pecho": Vector3(0.0, -0.035, 0.0), "cruzados": Vector3(0.0, -0.03, 0.0)},
+	},
+}
+
+## Perfil completo: base + perfil; con "prefijo" se deducen los nombres de las texturas.
+static func perfil_de(especie: String) -> Dictionary:
+	var p: Dictionary = PERFILES.get(especie, PERFILES["ilvari"])
+	var out: Dictionary = {}
+	if p.has("base"):
+		out = (BASES[p.base] as Dictionary).duplicate(true)
+	out.merge(p, true)
+	if out.has("prefijo"):
+		var pre: String = out.prefijo
+		for k in ["cabeza", "mano", "pelo"]:
+			if not out.has(k):
+				out[k] = pre + "_" + k + ("_R" if k == "mano" else "")
+		if not out.has("ropa"):
+			out.ropa = pre + "_mono"
+	return out
 
 ## El mismo modelo con los colores de otra ficha (rasgos.piel / ropa / ojos del JSON).
 func _ajustar_perfil(p: Dictionary, r: Dictionary) -> Dictionary:
 	p = p.duplicate()
+	# ojo de esclera (humanos): iris, esclera y párpado con los colores de la ficha
+	if str(p.get("ojo", "")) == "uv":
+		if r.has("ojos") and not p.has("ojo_iris_a"):
+			var o := Color(r.ojos)
+			p.ojo_iris_a = o
+			p.ojo_iris_b = o.darkened(0.55)
+		if r.has("esclera") and not p.has("ojo_esclera"):
+			p.ojo_esclera = Color(r.esclera)
+		if r.has("piel") and not p.has("ojo_piel"):
+			p.ojo_piel = Color(r.piel)
+	if r.has("unas") and not p.has("una"):
+		p.una = Color(r.unas)
+	if r.has("dientes_color") and not p.has("diente"):
+		p.diente = Color(r.dientes_color)
 	var prop := func(ref: Color, c: Color, tope: float) -> Color:
 		return Color(minf(c.r / maxf(ref.r, 0.02), tope), minf(c.g / maxf(ref.g, 0.02), tope), minf(c.b / maxf(ref.b, 0.02), tope))
 	if p.has("ref_piel") and r.has("piel") and Color(r.piel) != p.ref_piel:
@@ -291,9 +424,28 @@ var _activos: Array = []       # {g, t, soltar, w0, tr, hechos}
 var _G := {}                   # canales sumados en este frame
 var _M := {}                   # canal -> [peso, valor] del gesto más fuerte
 var _grave_env := 0.0
+# medidas de la mano (de PERFILES; por defecto, las del ilvari)
+var _nd := 3                   # dedos sin contar el pulgar
+var _rf: Array = [0.0088, 0.0074, 0.0066]   # radio de cada falange
+var _lp := 0.03                # largo de la falange distal (la última no tiene hueso hijo)
+var _ra := 0.03                # radio del antebrazo
+var _palma := {}               # cápsulas de la palma: x de cada una, tramo y, radio
+var _poses := {}               # desplazamiento de algunas poses de mano (cabeza más baja...)
+var _emi := 0.0                # brillo de las grietas (molk)
 
 func _ready() -> void:
-	perfil = _ajustar_perfil(PERFILES.get(especie, PERFILES["ilvari"]), rasgos)
+	perfil = _ajustar_perfil(perfil_de(especie), rasgos)
+	_nd = int(perfil.get("dedos", 3))
+	_rf = perfil.get("r_falange", [0.0088, 0.0074, 0.0066])
+	_lp = float(perfil.get("largo_punta", 0.03))
+	_ra = float(perfil.get("r_antebrazo", 0.03))
+	_palma = perfil.get("palma", {"x": [-0.017, 0.0, 0.017], "y": [0.02, 0.09], "r": 0.012})
+	_poses = perfil.get("poses", {})
+	for lado in [1, -1]:
+		var cf: Array = []
+		cf.resize(_nd + 1)
+		cf.fill(0.15)
+		_cf[lado] = cf
 	var ps: PackedScene = load(perfil.escena)
 	if ps == null:
 		push_error("No se encontró " + str(perfil.escena))
@@ -355,10 +507,23 @@ func _materiales() -> void:
 	_mat_cara = piel_cara
 	_tinte_cara = perfil.tinte
 	var piel_mano := _piel(perfil.mano, aux, poros)
+	var piel_cuerpo: ShaderMaterial = _piel(perfil.cuerpo, aux, poros) if perfil.has("cuerpo") else piel_mano
 	_mat_ojo = ShaderMaterial.new()
 	var sh := Shader.new()
-	sh.code = SHADER_OJO
+	var ojo_uv := str(perfil.get("ojo", "")) == "uv"
+	sh.code = SHADER_OJO_UV if ojo_uv else SHADER_OJO
 	_mat_ojo.shader = sh
+	if ojo_uv:
+		# colores de la ficha (sRGB) -> lineales, como los de las texturas horneadas
+		var lin := func(c: Color) -> Vector3:
+			var l := c.srgb_to_linear()
+			return Vector3(l.r, l.g, l.b)
+		for par in [["ojo_iris_a", "iris_a"], ["ojo_iris_b", "iris_b"], ["ojo_esclera", "esclera"], ["ojo_piel", "piel"]]:
+			if perfil.has(par[0]):
+				_mat_ojo.set_shader_parameter(par[1], lin.call(perfil[par[0]]))
+		for par in [["venas_ojo", "venas"], ["esclera_emi", "esclera_emi"], ["abierto", "abierto"]]:
+			if perfil.has(par[0]):
+				_mat_ojo.set_shader_parameter(par[1], float(perfil[par[0]]))
 	for k in ["iris_a", "iris_b"]:
 		if perfil.has(k):
 			var c: Color = perfil[k]
@@ -368,6 +533,26 @@ func _materiales() -> void:
 	if perfil.has("piel_ojo"):
 		var c: Color = perfil.piel_ojo
 		_mat_ojo.set_shader_parameter("piel", Vector3(c.r, c.g, c.b))
+	# grietas de magma: la máscara se hornea junto al color (<prefijo>_emi.png)
+	if perfil.has("grietas"):
+		for m in _mat_piel:
+			var et: Texture2D = aux._tex(str(m.get_meta("prefijo")) + "_emi.png")
+			if et:
+				(m as ShaderMaterial).set_shader_parameter("emi_tex", et)
+				(m as ShaderMaterial).set_shader_parameter("emi_col", perfil.grietas)
+	# pelo (humanos): textura horneada; brillo según lo grasiento
+	var pelo := StandardMaterial3D.new()
+	if perfil.has("pelo"):
+		pelo.albedo_texture = aux._tex(str(perfil.pelo) + "_color.png")
+		pelo.normal_enabled = true
+		pelo.normal_texture = aux._tex(str(perfil.pelo) + "_normal.png")
+	pelo.roughness = float(perfil.get("pelo_rug", 0.5))
+	pelo.specular_mode = BaseMaterial3D.SPECULAR_SCHLICK_GGX
+	pelo.rim_enabled = true
+	pelo.rim = 0.25
+	var una := Proc.mat(perfil.get("una", Color(0.62, 0.48, 0.42)), 0.32)
+	una.clearcoat_enabled = true
+	una.clearcoat = 0.4
 	var tunica := StandardMaterial3D.new()
 	tunica.albedo_texture = aux._tex(perfil.ropa + "_color.png")
 	# (ilvari) bajo el foco cálido de la sala un gris oscuro parece crema: tinte azul noche
@@ -388,7 +573,7 @@ func _materiales() -> void:
 	quitina.roughness = 0.28
 	quitina.clearcoat_enabled = true
 	quitina.clearcoat = 0.6
-	var diente := Proc.mat(Color(0.62, 0.56, 0.4), 0.3)
+	var diente := Proc.mat(perfil.get("diente", Color(0.62, 0.56, 0.4)), 0.3)
 	var collar := StandardMaterial3D.new()
 	collar.albedo_color = Color(0.5, 0.52, 0.56)
 	collar.metallic = 1.0
@@ -400,7 +585,8 @@ func _materiales() -> void:
 	_mat_lente.emission_energy_multiplier = 1.5
 	aux.free()
 	var por_nombre := {"piel": piel_mano, "piel_cara": piel_cara, "ojo": _mat_ojo, perfil.ropa_mat: tunica,
-			"collar": collar, "lente": _mat_lente, "quitina": quitina, "diente": diente}
+			"collar": collar, "lente": _mat_lente, "quitina": quitina, "diente": diente,
+			"piel_cuerpo": piel_cuerpo, "pelo": pelo, "una": una}
 	for mi in sk.get_children():
 		if not (mi is MeshInstance3D):
 			continue
@@ -427,6 +613,7 @@ func _piel(prefijo: String, aux, poros: Texture2D) -> ShaderMaterial:
 	m.set_shader_parameter("translucidez", perfil.translucidez)
 	m.set_shader_parameter("rug", perfil.rug)
 	m.set_shader_parameter("desatura", perfil.get("desatura", 0.0))
+	m.set_meta("prefijo", prefijo)
 	_mat_piel.append(m)
 	return m
 
@@ -468,7 +655,8 @@ func _esposas() -> void:
 		var ba := BoneAttachment3D.new()
 		ba.bone_name = "mano" + _suf(lado)
 		sk.add_child(ba)
-		var esposa := Proc.malla(ba, Proc.toro(0.029, 0.04), Vector3(0, -0.028, -0.003), metal)
+		var ke := float(perfil.get("esposa", 1.0))
+		var esposa := Proc.malla(ba, Proc.toro(0.029 * ke, 0.04 * ke), Vector3(0, -0.028, -0.003), metal)
 		esposa.scale = Vector3(1.0, 1.0, 0.78)
 		var w: Vector3 = to_local(sk.global_transform * (_mano_rest[lado] as Transform3D) * Vector3(0, -0.028, -0.012))
 		_cadena_len[lado] = w.distance_to(_anilla) * 1.25 + 0.04
@@ -670,18 +858,18 @@ func _pose_mano(nombre: String, lado: int) -> Transform3D:
 		"boca":
 			# la palma sobre la boca y los dedos (larguísimos) cruzando la cara en diagonal
 			var dd := Vector3(-lado * 0.55, 0.83, 0.05)
-			R = _en_hueso("cabeza", Transform3D(_base_mano(dd, Vector3(0, 0, 1)), Vector3(0, 1.27, 0.2) - dd.normalized() * 0.1))
+			R = _en_hueso("cabeza", Transform3D(_base_mano(dd, Vector3(0, 0, 1)), Vector3(0, 1.27, 0.2) + _off("boca") - dd.normalized() * 0.1))
 		"pecho":
 			# se abraza: cada mano sobre el hombro contrario, los dedos por encima hacia la espalda
 			var dd := Vector3(-lado * 0.55, 0.55, -0.62)
 			var z := 0.15 if lado > 0 else 0.12
-			R = _en_hueso("pecho", Transform3D(_base_mano(dd, Vector3(-lado * 0.3, 0.3, 1)), Vector3(-lado * 0.07, 0.98 + lado * 0.01, z)))
+			R = _en_hueso("pecho", Transform3D(_base_mano(dd, Vector3(-lado * 0.3, 0.3, 1)), Vector3(-lado * 0.07, 0.98 + lado * 0.01, z) + _off("pecho")))
 		"cruzados":
 			# antebrazos cruzados a media altura (el izquierdo por delante) y las manos metidas
 			# bajo el brazo contrario, con los dedos hacia la espalda
 			var dd := Vector3(-lado * 0.35, 0.05, -0.93)
 			var z := 0.2 if lado > 0 else 0.16
-			R = _en_hueso("pecho", Transform3D(_base_mano(dd, Vector3(-lado, 0.2, 0)), Vector3(-lado * 0.17, 0.93 + lado * 0.015, z)))
+			R = _en_hueso("pecho", Transform3D(_base_mano(dd, Vector3(-lado, 0.2, 0)), Vector3(-lado * 0.17, 0.93 + lado * 0.015, z) + _off("cruzados")))
 		"bajo_mesa":
 			R.origin += Vector3(lado * 0.02, -0.2, -0.32)
 		"arriba":
@@ -702,6 +890,10 @@ func _pose_mano(nombre: String, lado: int) -> Transform3D:
 				R.origin += dv.normalized() * 0.1 + Vector3(0, 0.09, 0)
 				R.basis = Basis(Vector3.UP, atan2(dv.x, dv.z)) * Basis(Vector3.RIGHT, -0.25) * R.basis
 	return R
+
+## Desplazamiento de una pose escrita para el ilvari (PERFILES.poses).
+func _off(pose: String) -> Vector3:
+	return _poses.get(pose, Vector3.ZERO)
 
 ## Base del hueso de la mano: su eje Y va a lo largo de los dedos y el Z sale por el dorso.
 func _base_mano(dedos: Vector3, dorso: Vector3) -> Basis:
@@ -803,6 +995,20 @@ func animar(s, delta: float) -> void:
 		if ic >= 0:
 			var ro := sk.get_bone_rest(ic).origin
 			sk.set_bone_pose_position(ic, ro + Vector3(0, -s._cejas * 0.0035, 0))
+	# --- comisuras (humanos): la sonrisa torcida sube y abre las esquinas de la boca
+	for lado in [1, -1]:
+		var icm := _h("comisura" + _suf(lado))
+		if icm >= 0:
+			var g: float = clampf(s._grin, -0.3, 1.5) * (1.0 + 0.25 * lado * sin(t * 0.4))
+			var pg := sk.get_bone_global_rest(sk.get_bone_parent(icm)).basis
+			sk.set_bone_pose_position(icm, sk.get_bone_rest(icm).origin + pg.inverse() * Vector3(lado * 0.0028 * g, 0.0038 * g, -0.0018 * g))
+	# --- grietas de magma (molk): laten despacio, se avivan con la ira y con los nervios
+	if perfil.has("grietas"):
+		var obj_e: float = float(perfil.get("grietas_energia", 2.0)) * (0.55 + 0.45 * s._glow) + nerv * 1.5 + G.luz * 2.0
+		_emi = lerpf(_emi, obj_e, 1.0 - exp(-delta * 3.0))
+		var lat := 0.85 + 0.15 * sin(t * (1.1 + nerv * 2.5))
+		for m in _mat_piel:
+			(m as ShaderMaterial).set_shader_parameter("emi", _emi * lat)
 	# --- el traductor se ilumina al hablar (y con los gestos del collar)
 	if _mat_lente:
 		var lente: float = (4.0 + sin(t * 30.0) * 1.5) if s.hablando > 0.0 else 0.8 + sin(t * 1.3) * 0.3
@@ -877,11 +1083,14 @@ func animar(s, delta: float) -> void:
 	elif _tambor_t <= 0.0 and _tambor < 0.0 and emo in ["calma", "burla", "nervioso"]:
 		_tambor = 0.0
 		_tambor_t = randf_range(2.5, 5.5) if emo != "nervioso" else randf_range(1.0, 2.0)
-	var tap := [0.0, 0.0, 0.0]
+	var tap: Array = []
+	tap.resize(_nd)
+	tap.fill(0.0)
+	var sin_tap := tap.duplicate()
 	if _tambor >= 0.0:
 		_tambor += delta / 0.6
-		for f in 3:
-			var local := _tambor * 4.0 - float(2 - f)
+		for f in _nd:
+			var local := _tambor * float(_nd + 1) - float(_nd - 1 - f)
 			tap[f] = sin(local * PI) if (local > 0.0 and local < 1.0) else 0.0
 		if _tambor >= 1.0:
 			_tambor = -1.0
@@ -889,14 +1098,19 @@ func animar(s, delta: float) -> void:
 	var temblor_dedos: float = nerv * nerv + G.temblor_manos * 0.8
 	var deseado := {}
 	for lado in [1, -1]:
-		deseado[lado] = [_curl, _curl, _curl, _curl]
+		var dl: Array = []
+		dl.resize(_nd + 1)
+		dl.fill(_curl)
 		if lado < 0 and md[0] > 0.0 and str(md[1]) == "senala":
+			# el índice se estira; el resto se cierra (el pulgar, último, casi del todo)
 			var w: float = md[0]
-			deseado[lado] = [lerpf(_curl, -0.05, w), lerpf(_curl, 1.0, w), lerpf(_curl, 1.0, w), lerpf(_curl, 0.9, w)]
+			for j in _nd + 1:
+				dl[j] = lerpf(_curl, -0.05 if j == 0 else (0.9 if j == _nd else 1.0), w)
+		deseado[lado] = dl
 	# los dedos tienen tacto: se paran al tocar la otra mano o la mesa
 	_tacto(delta, deseado)
 	for lado in [1, -1]:
-		_dedos(lado, _curl, tap if lado < 0 else [0.0, 0.0, 0.0], temblor_dedos, _cf[lado])
+		_dedos(lado, _curl, tap if lado < 0 else sin_tap, temblor_dedos, _cf[lado])
 	_cadenas_update(delta)
 
 ## Parpadeo (solo especies que parpadean): lento y raro cuando domina, rápido y seguido con
@@ -989,12 +1203,14 @@ func _brazo(lado: int, T: Transform3D) -> void:
 	sk.set_bone_pose_rotation(i_ab, (G_br.basis.inverse() * G_ab.basis).orthonormalized().get_rotation_quaternion())
 	sk.set_bone_pose_rotation(i_ma, (G_ab.basis.inverse() * T.basis).orthonormalized().get_rotation_quaternion())
 
-## c = flexión de todos los dedos; por_dedo = [índice, medio, anular, pulgar] si cada uno va distinto.
+## c = flexión de todos los dedos; por_dedo = [índice, medio, anular, (meñique), pulgar] si
+## cada uno va distinto (el pulgar siempre el último).
 func _dedos(lado: int, c: float, tap: Array, temblor: float, por_dedo: Array = []) -> void:
 	var s := _suf(lado)
-	for f in range(1, 4):
+	var propio := por_dedo.size() == _nd + 1
+	for f in range(1, _nd + 1):
 		var trem := sin(t * 23.0 + f * 1.7 + lado) * temblor * 0.06
-		var cf: float = float(por_dedo[f - 1]) if por_dedo.size() == 4 else c
+		var cf: float = float(por_dedo[f - 1]) if propio else c
 		for k in 3:
 			var i := _h("dedo%d_%d%s" % [f, k, s])
 			if i < 0:
@@ -1004,7 +1220,7 @@ func _dedos(lado: int, c: float, tap: Array, temblor: float, por_dedo: Array = [
 				obj -= float(tap[f - 1]) * 28.0
 			var r := sk.get_bone_rest(i).basis.get_rotation_quaternion()
 			sk.set_bone_pose_rotation(i, r * Quaternion(Vector3.RIGHT, -deg_to_rad(obj - FLEX_REPOSO[k])))
-	var cp: float = float(por_dedo[3]) if por_dedo.size() == 4 else c
+	var cp: float = float(por_dedo[_nd]) if propio else c
 	for k in 3:
 		var i := _h("dedo0_%d%s" % [k, s])
 		if i < 0:
@@ -1014,22 +1230,20 @@ func _dedos(lado: int, c: float, tap: Array, temblor: float, por_dedo: Array = [
 
 # ------------------------------------------------------------------ tacto
 ## Las manos son sólidas. Palma, falanges y antebrazo se tratan como cápsulas (medidas de
+## la mano de cada especie: PERFILES.r_falange, palma...; por defecto las de
 ## herramientas/mano_ilvari.py) y cada frame:
 ##  1. si una mano se mete en la otra, las dos se separan lo justo para quedar en contacto;
 ##  2. si al cerrar los dedos no caben sobre la mesa (un puño, la mano como una araña), la
 ##     muñeca se levanta y la mano queda apoyada en los nudillos o las yemas;
 ##  3. cada dedo deja de cerrarse (o se abre) cuando toca la otra mano o la mesa.
 ## Sin contacto, los empujes se apagan poco a poco y la pose vuelve a ser la del gesto.
-const R_FALANGE := [0.0088, 0.0074, 0.0066]
-const LARGO_PUNTA := 0.03
-const R_ANTEBRAZO := 0.03
 const HOLGURA := 0.0012           # rozar no es atravesar
 const PASO_DEDO := 0.035          # cuánto puede corregir un dedo por frame
 
 var _T_mano := {1: Transform3D(), -1: Transform3D()}   # objetivo del gesto (sin correcciones)
 var _empuje := {1: Vector3.ZERO, -1: Vector3.ZERO}      # separa una mano de la otra
 var _alza := {1: 0.0, -1: 0.0}                          # levanta la mano de la mesa
-var _cf := {1: [0.15, 0.15, 0.15, 0.15], -1: [0.15, 0.15, 0.15, 0.15]}   # flexión real (índice, medio, anular, pulgar)
+var _cf := {1: [0.15, 0.15, 0.15, 0.15], -1: [0.15, 0.15, 0.15, 0.15]}   # flexión real (dedos..., pulgar); _ready la ajusta a _nd
 var _dedo_hueso := {}             # lado -> [[i0, i1, i2] por dedo en el orden de _cf]
 var _dedo_rest := {}              # lado -> [[[quat, origen] x3] por dedo]
 var _a_mesa := Transform3D()      # espacio del esqueleto -> espacio local (donde está MESA_Y)
@@ -1037,7 +1251,7 @@ func _preparar_tacto() -> void:
 	for lado in [1, -1]:
 		var huesos: Array = []
 		var rests: Array = []
-		for f in [1, 2, 3, 0]:
+		for f in range(1, _nd + 1) + [0]:
 			var ids: Array = []
 			var rr: Array = []
 			for k in 3:
@@ -1057,7 +1271,7 @@ func _colocar(lado: int) -> void:
 	_brazo(lado, T)
 
 ## Articulaciones de un dedo (espacio del esqueleto) para una flexión c, sin tocar el esqueleto.
-## d = índice en _cf (0..2 dedos, 3 pulgar).
+## d = índice en _cf (0.._nd-1 dedos, _nd pulgar).
 func _falanges(lado: int, d: int, c: float) -> PackedVector3Array:
 	var ids: Array = _dedo_hueso[lado][d]
 	var rr: Array = _dedo_rest[lado][d]
@@ -1065,13 +1279,13 @@ func _falanges(lado: int, d: int, c: float) -> PackedVector3Array:
 	var pts := PackedVector3Array()
 	for k in 3:
 		var ang: float
-		if d == 3:
+		if d == _nd:
 			ang = -deg_to_rad([20.0, 28.0, 36.0][k] * c)
 		else:
 			ang = -deg_to_rad(clampf(c, -0.15, 1.15) * FLEX_MAX[k] - FLEX_REPOSO[k])
 		G = G * Transform3D(Basis((rr[k][0] as Quaternion) * Quaternion(Vector3.RIGHT, ang)), rr[k][1])
 		pts.append(G.origin)
-	pts.append(G.origin + G.basis.y.normalized() * LARGO_PUNTA)
+	pts.append(G.origin + G.basis.y.normalized() * _lp)
 	return pts
 
 ## Cápsulas [a, b, radio] de una mano: palma, antebrazo y dedos con las flexiones dadas.
@@ -1079,13 +1293,14 @@ func _capsulas(lado: int, flex: Array) -> Array:
 	var s := _suf(lado)
 	var M := sk.get_bone_global_pose(_h("mano" + s))
 	var caps: Array = []
-	for x in [-0.017, 0.0, 0.017]:
-		caps.append([M * Vector3(x, 0.02, -0.003), M * Vector3(x, 0.09, -0.003), 0.012])
-	caps.append([sk.get_bone_global_pose(_h("antebrazo" + s)).origin.lerp(M.origin, 0.3), M.origin, R_ANTEBRAZO])
-	for d in 4:
+	var py: Array = _palma.get("y", [0.02, 0.09])
+	for x in _palma.get("x", [-0.017, 0.0, 0.017]):
+		caps.append([M * Vector3(x, py[0], -0.003), M * Vector3(x, py[1], -0.003), float(_palma.get("r", 0.012))])
+	caps.append([sk.get_bone_global_pose(_h("antebrazo" + s)).origin.lerp(M.origin, 0.3), M.origin, _ra])
+	for d in _nd + 1:
 		var p := _falanges(lado, d, flex[d])
 		for k in 3:
-			caps.append([p[k], p[k + 1], R_FALANGE[k]])
+			caps.append([p[k], p[k + 1], float(_rf[k])])
 	return caps
 
 ## Puntos más cercanos entre los segmentos p1-q1 y p2-q2 (Ericson, Real-Time Collision Detection).
@@ -1154,9 +1369,9 @@ func _pen_falanges(p: PackedVector3Array, otras: Array, mesa: bool) -> float:
 	var total := 0.0
 	for k in 3:
 		if not otras.is_empty():
-			total += maxf(0.0, float(_choque(p[k], p[k + 1], R_FALANGE[k], otras)[0]) - HOLGURA)
+			total += maxf(0.0, float(_choque(p[k], p[k + 1], float(_rf[k]), otras)[0]) - HOLGURA)
 		if mesa:
-			total += maxf(0.0, _en_mesa(p[k], p[k + 1], R_FALANGE[k]) - HOLGURA * 2.5)
+			total += maxf(0.0, _en_mesa(p[k], p[k + 1], float(_rf[k])) - HOLGURA * 2.5)
 	return total
 
 ## Primera criba: ¿se tocan las cajas que envuelven las dos manos?
@@ -1221,7 +1436,7 @@ func _tacto(delta: float, deseado: Dictionary) -> void:
 	for lado in [1, -1]:
 		var otras: Array = caps[-lado] if cerca else []
 		var cambio := false
-		for d in 4:
+		for d in _nd + 1:
 			var quiere: float = deseado[lado][d]
 			var ahora: float = _cf[lado][d]
 			var mejor := quiere

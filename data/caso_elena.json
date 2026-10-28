@@ -1,0 +1,1732 @@
+{
+  "id": "elena",
+  "nivel": 4,
+  "modo": "arbol",
+  "nombre": "Elena Marsh",
+  "alias": "El Ángel de la Nave Piedad",
+  "especie": "Humana, 41 años, enfermera jefe",
+  "rol": "Enfermera de la nave-hospital Piedad",
+  "genero": "f",
+  "turnos": 16,
+  "intro": "Nave-hospital Piedad. 02:40. Un embajador muere dormido. Es el paciente número doce este año. La enfermera de turno sonríe demasiado.",
+  "briefing": "El embajador T'Kaan, de visita en la nave-hospital Piedad por una gripe sin importancia, murió dormido a las 02:40 por una sobredosis de sedante K-9. Elena Marsh, enfermera jefe, estaba de guardia en las doce muertes 'naturales' de este año. Todas en su turno. Todas a las 02:40. Las negociaciones de paz que T'Kaan presidía se han suspendido.",
+  "pista": "Se cree una santa: la empatía la hace hablar, pero si le das la razón te cuidará a ti. Le gusta que quede constancia de su obra, salvo de una cosa: de quién le encargó al embajador. Para eso tendrás que apagar la grabadora... y una confesión sin grabar no vale nada ante un juez.",
+  "secreto": "Mató a doce pacientes 'para liberarlos'. Helix Corp lo descubrió y, en vez de denunciarla, le encargó el decimotercero: el embajador. Ella aceptó encantada.",
+  "perfil": "Asesina en serie con complejo mesiánico. Tranquila, maternal, meticulosa. Habla de sus víctimas como de niños dormidos.",
+  "antecedentes": [
+    "Sin antecedentes",
+    "12 muertes en su turno (no investigadas)",
+    "Colecciona pulseras de pacientes"
+  ],
+  "rasgos": {
+    "tipo": "humano",
+    "piel": "#CDB9A8",
+    "mancha": "#8A5A5A",
+    "vena": "#4A4A8A",
+    "manchas": 0.35,
+    "venas": 0.85,
+    "suciedad": 0.1,
+    "ropa": "#B04A14",
+    "mancha_ropa": "#3A0A08",
+    "ojos": "#8FB8FF",
+    "esclera": "#E0D9CC",
+    "brillo_ojos": 2.6,
+    "cabeza": [
+      0.94,
+      1.04,
+      0.98
+    ],
+    "cuerpo": [
+      0.88,
+      1.0,
+      0.88
+    ],
+    "dientes": "normal",
+    "dientes_color": "#E6E0D0",
+    "peinado": "moño",
+    "pelo": "#4A3A30",
+    "cicatriz": "mejilla",
+    "puntadas": false,
+    "largo_dedos": 1.2,
+    "grosor_manos": 0.85,
+    "unas": "#8A6060",
+    "labios": "#6A2A30",
+    "placa": "3045-404",
+    "semilla": 18
+  },
+  "grabadora_inicial": true,
+  "tension_inicial": 15,
+  "confianza_inicial": 12,
+  "verdad_inicial": 0,
+  "testigos": [
+    {
+      "id": "reyes",
+      "nombre": "Celadora Reyes",
+      "texto": "Elena entró a la sala del embajador a las 02:40. Siempre a las 02:40. Tarareaba."
+    },
+    {
+      "id": "osei",
+      "nombre": "Dr. Osei",
+      "texto": "Faltan viales de K-9 cada mes desde hace un año. Solo ella y yo tenemos llave."
+    }
+  ],
+  "evidencias": [
+    {
+      "id": "jeringa",
+      "nombre": "Jeringa con sedante K-9",
+      "descripcion": "Triple dosis letal. Restos en su taquilla, junto a doce pulseras de pacientes.",
+      "danio_verdad": 30,
+      "texto_exito": "Mira la jeringa sin parpadear. Casi con cariño. 'Cualquiera pudo tomarla...'"
+    },
+    {
+      "id": "turno",
+      "nombre": "Registros de turno borrados",
+      "descripcion": "Doce accesos a las 02:40, borrados del sistema con su clave.",
+      "danio_verdad": 25,
+      "texto_exito": "'Yo... estaba en la farmacia. Siempre estoy en la farmacia.' Suda. Sonríe."
+    },
+    {
+      "id": "helix",
+      "nombre": "Mensaje de Helix Corp",
+      "descripcion": "'Sabemos lo de tus angelitos. Uno más y lo olvidamos. Te cubrimos.'",
+      "danio_verdad": 30,
+      "texto_exito": "Lee el mensaje y la sonrisa se le rompe. 'Me prometieron... que nadie lo sabría...'"
+    }
+  ],
+  "dialogos": {
+    "victoria": "Se acabó, ¿verdad? Descanse, detective. Tiene cara de necesitarlo. Yo sé mucho de descansar."
+  },
+  "arbol": {
+    "inicio": "n_inicio",
+    "nodos": {
+      "n_inicio": {
+        "dice": "Soy enfermera, detective. Cuido a la gente. ¿Quiere que le tome el pulso? Lo tiene alto.",
+        "accion": "Sonríe. Apoya las manos planas sobre la mesa, como sobre una sábana recién estirada.",
+        "gestos": [
+          "sonrisa",
+          "planas"
+        ],
+        "emocion": "calma",
+        "al_entrar": {
+          "flag": "sin_promesa"
+        },
+        "opciones": [
+          {
+            "tono": "cortes",
+            "texto": "Enfermera jefe Marsh. Gracias por esperar. ¿Cómo se encuentra?",
+            "ir": "n_cansada",
+            "ef": {
+              "confianza": 8
+            }
+          },
+          {
+            "tono": "directo",
+            "texto": "El embajador T'Kaan murió a las 02:40. Usted estaba de guardia.",
+            "ir": "n_ronda",
+            "ef": {
+              "tension": 10
+            }
+          },
+          {
+            "tono": "silencio",
+            "texto": "[No contestar. Dejar que ella llene el silencio.]",
+            "ir": "n_tararea"
+          },
+          {
+            "tono": "presion",
+            "texto": "Doce muertos en su turno este año. Trece con el embajador.",
+            "ir": "n_doce_frio",
+            "ef": {
+              "tension": 14,
+              "confianza": -5
+            }
+          }
+        ]
+      },
+      "n_cansada": {
+        "dice": "¿Cansada? Las enfermeras no nos cansamos, nos gastamos. ¿Y usted, duerme bien? Tiene ojeras de turno de noche.",
+        "accion": "Le estudia la cara con atención profesional. Se inclina un poco hacia usted.",
+        "gestos": [
+          "estudia",
+          "inclina"
+        ],
+        "emocion": "calma",
+        "al_entrar": {
+          "flag": "cuidadora"
+        },
+        "opciones": [
+          {
+            "tono": "empatia",
+            "texto": "Muchos años de guardias, imagino. ¿Cuántos lleva en la Piedad?",
+            "ir": "n_carrera",
+            "ef": {
+              "confianza": 6
+            }
+          },
+          {
+            "tono": "pregunta",
+            "texto": "¿Conocía al embajador?",
+            "ir": "n_embajador"
+          },
+          {
+            "tono": "directo",
+            "texto": "Hablemos de las 02:40.",
+            "ir": "n_ronda",
+            "ef": {
+              "tension": 6
+            }
+          }
+        ]
+      },
+      "n_tararea": {
+        "dice": "Hm-hm-hmm... ¿Perdone? Es una nana. Se me pega. Los pacientes duermen mejor con ella.",
+        "accion": "Tararea sin darse cuenta. Se interrumpe y ladea la cabeza, divertida.",
+        "gestos": [
+          "ladea",
+          "sonrisa"
+        ],
+        "emocion": "calma",
+        "al_entrar": {
+          "flag": "nana"
+        },
+        "opciones": [
+          {
+            "tono": "pregunta",
+            "texto": "¿Se la cantó también al embajador?",
+            "ir": "n_nana_embajador",
+            "ef": {
+              "tension": 8
+            }
+          },
+          {
+            "tono": "testigo",
+            "texto": "La celadora Reyes dice que la tarareaba a las 02:40. Siempre a las 02:40.",
+            "ir": "n_reyes",
+            "testigo": "reyes",
+            "ef": {
+              "tension": 10
+            }
+          },
+          {
+            "tono": "empatia",
+            "texto": "Es bonita. ¿Quién se la enseñó?",
+            "ir": "n_hija",
+            "ef": {
+              "confianza": 10
+            }
+          }
+        ]
+      },
+      "n_doce_frio": {
+        "dice": "Doce. Qué número tan frío dicho así. Eran personas, detective. Yo les sabía el nombre. ¿Usted se sabe alguno?",
+        "accion": "No aparta la vista. Entrelaza los dedos despacio.",
+        "gestos": [
+          "fija",
+          "entrelaza"
+        ],
+        "emocion": "burla",
+        "opciones": [
+          {
+            "tono": "presion",
+            "texto": "Me sé el del embajador. T'Kaan.",
+            "ir": "n_embajador",
+            "ef": {
+              "tension": 6
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "Doce accesos a las 02:40, borrados del sistema con su clave.",
+            "ir": "n_turno",
+            "prueba": "turno",
+            "ef": {
+              "tension": 12
+            }
+          },
+          {
+            "tono": "silencio",
+            "texto": "[Sostenerle la mirada sin decir nada.]",
+            "ir": "n_tararea",
+            "ef": {
+              "tension": -4
+            }
+          }
+        ]
+      },
+      "n_carrera": {
+        "dice": "Diecinueve años. Empecé en pediatría. Luego... luego pedí paliativos. Allí nadie tiene prisa por curarte.",
+        "accion": "Se mira las manos. Se frota un nudillo con el pulgar, como si quitara una mancha.",
+        "gestos": [
+          "mira_manos"
+        ],
+        "emocion": "calma",
+        "opciones": [
+          {
+            "tono": "empatia",
+            "texto": "¿Por qué dejó pediatría?",
+            "ir": "n_hija",
+            "ef": {
+              "confianza": 8
+            }
+          },
+          {
+            "tono": "pregunta",
+            "texto": "Paliativos. Gente que va a morir de todos modos.",
+            "ir": "n_mision",
+            "ef": {
+              "tension": 4
+            }
+          },
+          {
+            "tono": "directo",
+            "texto": "¿Qué hacía en la habitación del embajador?",
+            "ir": "n_ronda"
+          }
+        ]
+      },
+      "n_ronda": {
+        "dice": "Mi ronda. Paso por todas las habitaciones; la del embajador también. Revise el registro de farmacia, cielo.",
+        "accion": "Aparta la mirada hacia la pared, las manos quietas y planas sobre la mesa.",
+        "gestos": [
+          "aparta_mirada",
+          "planas"
+        ],
+        "emocion": "calma",
+        "opciones": [
+          {
+            "tono": "prueba",
+            "texto": "El registro dice otra cosa: doce accesos a las 02:40, borrados con su clave.",
+            "ir": "n_turno",
+            "prueba": "turno",
+            "ef": {
+              "tension": 12
+            }
+          },
+          {
+            "tono": "testigo",
+            "texto": "El doctor Osei dice que faltan viales de K-9. Solo ustedes dos tienen llave.",
+            "ir": "n_osei",
+            "testigo": "osei",
+            "ef": {
+              "tension": 10
+            }
+          },
+          {
+            "tono": "pregunta",
+            "texto": "¿Cómo estaba el embajador a esa hora?",
+            "ir": "n_embajador"
+          },
+          {
+            "tono": "presion",
+            "texto": "Su ronda dura cuatro minutos. En esa habitación estuvo veinte.",
+            "ir": "n_veinte",
+            "ef": {
+              "tension": 14
+            }
+          }
+        ]
+      },
+      "n_embajador": {
+        "dice": "Asustado. Los poderosos se mueren muy asustados, ¿sabe? Me pidió que no apagara la luz. Le dije que yo me quedaba.",
+        "accion": "Baja la voz, como si alguien durmiera en la habitación de al lado.",
+        "gestos": [
+          "baja_voz",
+          "mira_mesa"
+        ],
+        "emocion": "nervioso",
+        "revela": true,
+        "al_entrar": {
+          "flag": "con_embajador",
+          "verdad": 5
+        },
+        "opciones": [
+          {
+            "tono": "empatia",
+            "texto": "Se quedó con él.",
+            "ir": "n_mano",
+            "ef": {
+              "confianza": 8
+            }
+          },
+          {
+            "tono": "presion",
+            "texto": "¿Y se quedó hasta que dejó de respirar?",
+            "ir": "n_veinte",
+            "ef": {
+              "tension": 12
+            }
+          },
+          {
+            "tono": "pregunta",
+            "texto": "¿Alguien le pidió que fuera esa noche a su habitación?",
+            "ir": "n_quien_pidio",
+            "ef": {
+              "tension": 6
+            }
+          }
+        ]
+      },
+      "n_nana_embajador": {
+        "dice": "Claro. A todos se la canto. Al embajador le gustó: en su idioma no existen las nanas, ¿sabía? Qué especie tan triste.",
+        "accion": "Sonríe con los ojos quietos. Ladea la cabeza hacia el otro lado.",
+        "gestos": [
+          "sonrisa",
+          "ladea"
+        ],
+        "emocion": "burla",
+        "al_entrar": {
+          "flag": "nana"
+        },
+        "opciones": [
+          {
+            "tono": "testigo",
+            "texto": "Reyes la oyó a las 02:40. Siempre a las 02:40.",
+            "ir": "n_reyes",
+            "testigo": "reyes",
+            "ef": {
+              "tension": 10
+            }
+          },
+          {
+            "tono": "pregunta",
+            "texto": "¿A todos? ¿También a los otros once?",
+            "ir": "n_doce",
+            "ef": {
+              "tension": 10
+            }
+          },
+          {
+            "tono": "empatia",
+            "texto": "Le acompañó hasta el final.",
+            "ir": "n_mano",
+            "ef": {
+              "confianza": 6
+            }
+          }
+        ]
+      },
+      "n_reyes": {
+        "dice": "Reyes confunde las horas. Pobre. Lleva tres turnos dobles; cualquier día se equivoca con una medicación.",
+        "accion": "Aprieta la mandíbula un instante. Luego vuelve la sonrisa, intacta.",
+        "gestos": [
+          "aprieta_mandibula",
+          "fija"
+        ],
+        "emocion": "burla",
+        "opciones": [
+          {
+            "tono": "presion",
+            "texto": "¿Eso es una amenaza contra una celadora?",
+            "ir": "n_amenaza",
+            "ef": {
+              "tension": 12
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "No confunde nada. Aquí están sus doce accesos de las 02:40.",
+            "ir": "n_turno",
+            "prueba": "turno",
+            "ef": {
+              "tension": 10
+            }
+          },
+          {
+            "tono": "pregunta",
+            "texto": "¿Por qué siempre a las 02:40?",
+            "ir": "n_0240",
+            "ef": {
+              "tension": 6
+            }
+          }
+        ]
+      },
+      "n_amenaza": {
+        "dice": "¿Amenaza? Yo soy enfermera, detective. Yo solo advierto de los riesgos. Es mi trabajo.",
+        "accion": "Se echa hacia atrás en la silla. Las esposas tintinean.",
+        "gestos": [
+          "echa_atras",
+          "sonrisa"
+        ],
+        "emocion": "burla",
+        "opciones": [
+          {
+            "tono": "testigo",
+            "texto": "Otro riesgo: el doctor Osei echa en falta viales de K-9.",
+            "ir": "n_osei",
+            "testigo": "osei",
+            "ef": {
+              "tension": 8
+            }
+          },
+          {
+            "tono": "pregunta",
+            "texto": "¿Por qué siempre a las 02:40?",
+            "ir": "n_0240",
+            "ef": {
+              "tension": 4
+            }
+          },
+          {
+            "tono": "empatia",
+            "texto": "Perdone. Llevo toda la noche despierto. Hábleme del embajador.",
+            "ir": "n_embajador",
+            "ef": {
+              "confianza": 6,
+              "tension": -4
+            }
+          }
+        ]
+      },
+      "n_0240": {
+        "dice": "Es la hora más tranquila. El cuerpo baja la guardia. Hasta las máquinas parecen dormir.",
+        "accion": "Lo dice con dulzura. Después se calla de golpe y mira el reloj de la pared.",
+        "gestos": [
+          "pausa",
+          "mira_reloj"
+        ],
+        "emocion": "nervioso",
+        "revela": true,
+        "al_entrar": {
+          "verdad": 5
+        },
+        "opciones": [
+          {
+            "tono": "pregunta",
+            "texto": "La hora más tranquila... ¿para qué, Elena?",
+            "ir": "n_mision",
+            "ef": {
+              "tension": 6
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "Encontramos esto en su taquilla. Triple dosis de K-9.",
+            "ir": "n_jeringa",
+            "prueba": "jeringa",
+            "ef": {
+              "tension": 12
+            }
+          },
+          {
+            "tono": "empatia",
+            "texto": "Usted también parece necesitar esa calma.",
+            "ir": "n_mano",
+            "ef": {
+              "confianza": 6
+            }
+          }
+        ]
+      },
+      "n_turno": {
+        "dice": "Yo... estaba en la farmacia. Siempre estoy en la farmacia. Alguien usa mi clave; la dejo apuntada, soy un desastre.",
+        "accion": "Respira deprisa. Esconde las manos bajo la mesa y la cadena se tensa.",
+        "gestos": [
+          "respira_rapido",
+          "esconde_manos"
+        ],
+        "emocion": "nervioso",
+        "al_entrar": {
+          "flag": "mintio_clave"
+        },
+        "opciones": [
+          {
+            "tono": "testigo",
+            "texto": "Osei dice que los viales de K-9 desaparecen de su llave o de la suya.",
+            "ir": "n_osei",
+            "testigo": "osei",
+            "ef": {
+              "tension": 8
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "Y en su taquilla estaba esto: una jeringa con triple dosis de K-9.",
+            "ir": "n_jeringa",
+            "prueba": "jeringa",
+            "ef": {
+              "tension": 12
+            }
+          },
+          {
+            "tono": "presion",
+            "texto": "Nadie apunta su clave diecinueve años sin un solo fallo.",
+            "ir": "n_veinte",
+            "ef": {
+              "tension": 10
+            }
+          }
+        ]
+      },
+      "n_osei": {
+        "dice": "¿Osei? Osei debería revisar sus cuentas... y su conciencia. Los viales salen de su llave tanto como de la mía.",
+        "accion": "Vuelve a sacar las manos y se las cruza sobre el pecho. Levanta la barbilla.",
+        "gestos": [
+          "vuelve_manos",
+          "cruza_brazos"
+        ],
+        "emocion": "burla",
+        "al_entrar": {
+          "flag": "culpa_osei"
+        },
+        "opciones": [
+          {
+            "tono": "pregunta",
+            "texto": "¿Insinúa que fue el doctor Osei?",
+            "ir": "n_insinua",
+            "ef": {
+              "tension": 4
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "En la taquilla de Osei no había esto. En la suya, sí.",
+            "ir": "n_jeringa",
+            "prueba": "jeringa",
+            "ef": {
+              "tension": 12
+            }
+          },
+          {
+            "tono": "empatia",
+            "texto": "No he venido a hablar de Osei. He venido a escucharla a usted.",
+            "ir": "n_mano",
+            "ef": {
+              "confianza": 8
+            }
+          }
+        ]
+      },
+      "n_insinua": {
+        "dice": "Yo no insinúo nada, cariño. Pero él tiene deudas. Y el K-9 se paga muy bien en los muelles del puerto.",
+        "accion": "Se inclina hacia usted y baja la voz, cómplice.",
+        "gestos": [
+          "inclina",
+          "baja_voz"
+        ],
+        "emocion": "burla",
+        "opciones": [
+          {
+            "tono": "directo",
+            "texto": "Gracias, enfermera. Que traigan al doctor Osei.",
+            "fin": "d_osei"
+          },
+          {
+            "tono": "presion",
+            "texto": "Las deudas de Osei no estaban a las 02:40 en esa habitación. Usted sí.",
+            "ir": "n_veinte",
+            "ef": {
+              "tension": 10
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "Este mensaje no habla de Osei. Habla de «sus angelitos».",
+            "ir": "n_helix",
+            "prueba": "helix",
+            "ef": {
+              "tension": 14
+            }
+          }
+        ]
+      },
+      "n_veinte": {
+        "dice": "Veinte minutos. Sí. Le cogí la mano. ¿Sabe lo que es morirse solo en una nave que no es la tuya? Yo no dejo que pase.",
+        "accion": "Le tiemblan las manos. Se las mira como si fueran de otra persona.",
+        "gestos": [
+          "manos_tiemblan",
+          "mira_manos"
+        ],
+        "emocion": "asustado",
+        "revela": true,
+        "al_entrar": {
+          "flag": "veinte",
+          "verdad": 5
+        },
+        "opciones": [
+          {
+            "tono": "empatia",
+            "texto": "Usted no lo dejó solo.",
+            "ir": "n_mano",
+            "ef": {
+              "confianza": 8
+            }
+          },
+          {
+            "tono": "presion",
+            "texto": "Una mano le cogía la suya. ¿Y la otra qué hacía, Elena?",
+            "ir": "n_decide",
+            "ef": {
+              "tension": 14
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "Con la otra sostenía esto. Lo encontramos en su taquilla.",
+            "ir": "n_jeringa",
+            "prueba": "jeringa",
+            "ef": {
+              "tension": 12
+            }
+          }
+        ]
+      },
+      "n_mano": {
+        "dice": "Le sostuve la mano. Como a todos. Se van tranquilos si alguien los sostiene. Nadie debería irse con miedo.",
+        "accion": "Pone las palmas hacia arriba sobre la mesa, abiertas, como si le ofreciera algo.",
+        "gestos": [
+          "palmas_arriba",
+          "sonrisa"
+        ],
+        "emocion": "calma",
+        "revela": true,
+        "al_entrar": {
+          "flag": "mano",
+          "verdad": 5
+        },
+        "opciones": [
+          {
+            "tono": "empatia",
+            "texto": "Habla de ellos como si los hubiera ayudado.",
+            "ir": "n_mision",
+            "ef": {
+              "confianza": 6
+            }
+          },
+          {
+            "tono": "pregunta",
+            "texto": "¿A todos? ¿A los doce?",
+            "ir": "n_doce",
+            "ef": {
+              "tension": 8
+            }
+          },
+          {
+            "tono": "cortes",
+            "texto": "Hizo lo correcto. Nadie debería sufrir así.",
+            "ir": "n_complice",
+            "ef": {
+              "confianza": 15
+            }
+          }
+        ]
+      },
+      "n_complice": {
+        "dice": "¿Lo ve? Usted lo entiende. Tiene buenas manos, detective; manos de cuidar. Venga, déjeme tomarle ese pulso.",
+        "accion": "Adelanta la mano hacia la suya por encima de la mesa. La cadena se estira.",
+        "gestos": [
+          "toca_papel",
+          "inclina"
+        ],
+        "emocion": "triunfo",
+        "al_entrar": {
+          "flag": "complice"
+        },
+        "opciones": [
+          {
+            "tono": "silencio",
+            "texto": "[Dejar que le tome el pulso.]",
+            "fin": "d_cuidados"
+          },
+          {
+            "tono": "presion",
+            "texto": "No. Lo que quiero es saber cuántos fueron.",
+            "ir": "n_doce",
+            "ef": {
+              "tension": 10,
+              "confianza": -6
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "Antes de tocarme, lea esto. Es de Helix Corp.",
+            "ir": "n_helix",
+            "prueba": "helix",
+            "ef": {
+              "tension": 10
+            }
+          }
+        ]
+      },
+      "n_hija": {
+        "dice": "Mi hija, Lía. Ocho años. Murió en un pasillo de urgencias esperando cama. Nadie le sostuvo la mano. Yo estaba de guardia en otra planta.",
+        "accion": "Cierra los ojos. Se abraza a sí misma, despacio, como si tuviera frío.",
+        "gestos": [
+          "cierra_ojos",
+          "abraza_pecho"
+        ],
+        "emocion": "quebrado",
+        "revela": true,
+        "al_entrar": {
+          "flag": "hija",
+          "verdad": 5
+        },
+        "opciones": [
+          {
+            "tono": "empatia",
+            "texto": "Lo siento, Elena. De verdad.",
+            "ir": "n_lia",
+            "ef": {
+              "confianza": 12
+            }
+          },
+          {
+            "tono": "pregunta",
+            "texto": "¿Por eso se queda con los que se van?",
+            "ir": "n_mision",
+            "ef": {
+              "confianza": 4
+            }
+          },
+          {
+            "tono": "presion",
+            "texto": "Y desde entonces decide usted quién sufre demasiado.",
+            "ir": "n_decide",
+            "ef": {
+              "tension": 16
+            }
+          }
+        ]
+      },
+      "n_lia": {
+        "dice": "Lía tendría veintitrés años. Sería enfermera, creo. O no. A lo mejor me odiaría.",
+        "accion": "Los hombros se le vienen abajo. Por primera vez la sonrisa no aparece.",
+        "gestos": [
+          "hombros_bajan",
+          "aparta_mirada"
+        ],
+        "emocion": "quebrado",
+        "revela": true,
+        "al_entrar": {
+          "verdad": 5
+        },
+        "opciones": [
+          {
+            "tono": "pregunta",
+            "texto": "¿Qué pensaría Lía de lo que hace en la Piedad?",
+            "ir": "n_mision",
+            "ef": {
+              "tension": 4
+            }
+          },
+          {
+            "tono": "empatia",
+            "texto": "Cuénteme qué pasó la noche del embajador. Sin prisa.",
+            "ir": "n_embajador",
+            "ef": {
+              "confianza": 4
+            }
+          },
+          {
+            "tono": "presion",
+            "texto": "Lía no le pidió que matara a nadie.",
+            "ir": "n_decide",
+            "ef": {
+              "tension": 14
+            }
+          }
+        ]
+      },
+      "n_mision": {
+        "dice": "Hay gente que se aferra, y gente a la que se aferra el dolor. A esos, alguien tiene que ayudarles a soltar. Alguien con buenas manos.",
+        "accion": "Le estudia, paciente. Entrelaza los dedos sobre la mesa.",
+        "gestos": [
+          "estudia",
+          "entrelaza"
+        ],
+        "emocion": "calma",
+        "revela": true,
+        "al_entrar": {
+          "flag": "mision",
+          "verdad": 5
+        },
+        "opciones": [
+          {
+            "tono": "pregunta",
+            "texto": "¿A cuántos ha ayudado a soltar, Elena?",
+            "ir": "n_doce",
+            "ef": {
+              "tension": 6
+            }
+          },
+          {
+            "tono": "presion",
+            "texto": "Eso tiene otro nombre. Asesinato.",
+            "ir": "n_decide",
+            "ef": {
+              "tension": 16
+            }
+          },
+          {
+            "tono": "empatia",
+            "texto": "¿Y a usted quién la ayuda?",
+            "ir": "n_lia",
+            "ef": {
+              "confianza": 10
+            }
+          }
+        ]
+      },
+      "n_decide": {
+        "dice": "¡Yo no decido nada! Me lo piden con los ojos. Usted no ha visto esos ojos, detective. Usted no ha visto nada.",
+        "accion": "Golpea la mesa con la palma. La taza tiembla. Se queda mirando su propia mano, sorprendida.",
+        "gestos": [
+          "golpe_mesa"
+        ],
+        "emocion": "furioso",
+        "al_entrar": {
+          "tension": 6
+        },
+        "opciones": [
+          {
+            "tono": "silencio",
+            "texto": "[Esperar a que se calme.]",
+            "ir": "n_calma",
+            "ef": {
+              "tension": -10
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "Estos ojos no pedían nada. Su jeringa, Elena. Triple dosis.",
+            "ir": "n_jeringa",
+            "prueba": "jeringa",
+            "ef": {
+              "tension": 10
+            }
+          },
+          {
+            "tono": "presion",
+            "texto": "Doce pares de ojos. Y un embajador que solo tenía gripe.",
+            "ir": "n_gripe",
+            "ef": {
+              "tension": 12
+            }
+          }
+        ]
+      },
+      "n_calma": {
+        "dice": "...Perdone. No suelo levantar la voz. Aquí hay gente descansando. Para siempre, algunos.",
+        "accion": "Respira hondo. Vuelve a poner las manos planas, alisando una sábana que no existe.",
+        "gestos": [
+          "respira_hondo",
+          "planas"
+        ],
+        "emocion": "nervioso",
+        "opciones": [
+          {
+            "tono": "empatia",
+            "texto": "Hábleme de ellos. De los doce.",
+            "ir": "n_doce",
+            "ef": {
+              "confianza": 4
+            }
+          },
+          {
+            "tono": "pregunta",
+            "texto": "El embajador no tenía nada terminal, ¿verdad?",
+            "ir": "n_gripe",
+            "ef": {
+              "tension": 6
+            }
+          }
+        ]
+      },
+      "n_gripe": {
+        "dice": "...Una gripe. Una gripe con un nombre muy largo. No le dolía nada.",
+        "accion": "Tarda en volver a mirarle. Cuando lo hace, está rígida, las pupilas muy abiertas.",
+        "gestos": [
+          "tarda_mirar",
+          "rigido"
+        ],
+        "emocion": "asustado",
+        "revela": true,
+        "al_entrar": {
+          "flag": "no_sufria",
+          "verdad": 10
+        },
+        "opciones": [
+          {
+            "tono": "pregunta",
+            "texto": "Entonces no le ayudó a soltar nada. ¿Quién le pidió que fuera?",
+            "ir": "n_quien_pidio",
+            "ef": {
+              "tension": 6
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "Alguien sí quería que soltara. Lea esto.",
+            "ir": "n_helix",
+            "prueba": "helix",
+            "ef": {
+              "tension": 12
+            }
+          },
+          {
+            "tono": "presion",
+            "texto": "Lo mató sin piedad, Elena. Ni siquiera la suya.",
+            "ir": "n_cierra",
+            "ef": {
+              "tension": 14
+            }
+          }
+        ]
+      },
+      "n_quien_pidio": {
+        "dice": "Nadie me pide nada. Yo hago mis rondas.",
+        "accion": "Mira la grabadora mucho rato, como quien mira a un perro que podría morder.",
+        "gestos": [
+          "mira_grabadora_larga"
+        ],
+        "emocion": "nervioso",
+        "al_entrar": {
+          "flag": "teme_grab"
+        },
+        "grabadora": {
+          "off": {
+            "ir": "n_apagada",
+            "ef": {
+              "confianza": 10,
+              "tension": -6,
+              "flag": "off_consentido"
+            }
+          }
+        },
+        "opciones": [
+          {
+            "tono": "cortes",
+            "texto": "Si la grabadora la pone nerviosa, la apago. [Apagar la grabadora]",
+            "ir": "n_apagada",
+            "grabadora": false,
+            "ef": {
+              "confianza": 12,
+              "tension": -6
+            },
+            "si": {
+              "grabadora": true
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "Alguien le escribió esto. «Uno más y lo olvidamos.»",
+            "ir": "n_helix",
+            "prueba": "helix",
+            "ef": {
+              "tension": 12
+            }
+          },
+          {
+            "tono": "presion",
+            "texto": "Alguien la eligió a usted para este paciente. Dígame quién.",
+            "ir": "n_cierra",
+            "ef": {
+              "tension": 14
+            }
+          }
+        ]
+      },
+      "n_cierra": {
+        "dice": "Ya está bien por hoy, ¿no le parece? Llame a quien tenga que llamar. Seguro que alguien viene a buscarme.",
+        "accion": "Se cruza de brazos y mira la pared. La sonrisa ha desaparecido.",
+        "gestos": [
+          "cruza_brazos",
+          "aparta_mirada"
+        ],
+        "emocion": "furioso",
+        "al_entrar": {
+          "tension": 8
+        },
+        "opciones": [
+          {
+            "tono": "prueba",
+            "texto": "¿Ellos? ¿Los que le escribieron esto?",
+            "ir": "n_helix",
+            "prueba": "helix",
+            "ef": {
+              "tension": 8
+            }
+          },
+          {
+            "tono": "empatia",
+            "texto": "Si calla, la dejarán sola. Como dejaron sola a Lía.",
+            "ir": "n_miedo",
+            "ef": {
+              "confianza": 10
+            },
+            "si": {
+              "flag": "hija"
+            }
+          },
+          {
+            "tono": "silencio",
+            "texto": "[Esperar.]",
+            "ir": "n_calma",
+            "ef": {
+              "tension": -6
+            }
+          }
+        ]
+      },
+      "n_helix": {
+        "dice": "«Sabemos lo de tus angelitos. Uno más y lo olvidamos.» ...Me prometieron que nadie lo sabría. Me lo prometieron.",
+        "accion": "Lee el mensaje al revés, sin tocarlo. Le tiemblan las manos y la cadena repiquetea.",
+        "gestos": [
+          "lee_reves",
+          "manos_tiemblan"
+        ],
+        "emocion": "quebrado",
+        "revela": true,
+        "al_entrar": {
+          "flag": "helix_visto",
+          "verdad": 10
+        },
+        "dice_si": [
+          {
+            "si": {
+              "grabadora": true
+            },
+            "dice": "«Uno más y lo olvidamos.» ...¿Eso está grabando? Apáguelo. Ellos lo oyen todo, cielo. Todo."
+          }
+        ],
+        "opciones": [
+          {
+            "tono": "cortes",
+            "texto": "[Apagar la grabadora] Nadie más lo oirá.",
+            "ir": "n_apagada",
+            "grabadora": false,
+            "ef": {
+              "confianza": 10,
+              "tension": -6
+            },
+            "si": {
+              "grabadora": true
+            }
+          },
+          {
+            "tono": "pregunta",
+            "texto": "¿Quién le escribió esto, Elena?",
+            "ir": "n_varga",
+            "si": {
+              "grabadora": false
+            }
+          },
+          {
+            "tono": "empatia",
+            "texto": "La usaron. Igual que a sus pacientes, nadie le preguntó a usted.",
+            "ir": "n_miedo",
+            "ef": {
+              "confianza": 8
+            }
+          },
+          {
+            "tono": "presion",
+            "texto": "Dígalo para la grabadora: ¿quién es «nosotros»?",
+            "ir": "n_cierra",
+            "ef": {
+              "tension": 18
+            },
+            "si": {
+              "grabadora": true
+            }
+          }
+        ]
+      },
+      "n_miedo": {
+        "dice": "Si hablo, mañana habrá otra enfermera en la Piedad. Y nadie le sostendrá la mano a nadie. Ni a mí.",
+        "accion": "Se encoge en la silla, los hombros pegados a las orejas.",
+        "gestos": [
+          "encoge",
+          "abraza_pecho"
+        ],
+        "emocion": "asustado",
+        "al_entrar": {
+          "flag": "teme_helix"
+        },
+        "opciones": [
+          {
+            "tono": "cortes",
+            "texto": "Le doy mi palabra: protección para usted y para su declaración.",
+            "ir": "n_promesa",
+            "ef": {
+              "confianza": 12,
+              "flag": "promesa",
+              "quitar_flag": "sin_promesa"
+            }
+          },
+          {
+            "tono": "cortes",
+            "texto": "Entonces solo entre usted y yo. [Apagar la grabadora]",
+            "ir": "n_apagada",
+            "grabadora": false,
+            "ef": {
+              "confianza": 8
+            },
+            "si": {
+              "grabadora": true
+            }
+          },
+          {
+            "tono": "presion",
+            "texto": "Mañana usted estará en una celda. Hable ahora.",
+            "ir": "n_cierra",
+            "ef": {
+              "tension": 14
+            }
+          }
+        ]
+      },
+      "n_promesa": {
+        "dice": "Palabra de policía. Mi madre decía que valía menos que una receta de urgencias. ...Pero usted tiene buenas manos.",
+        "accion": "Levanta la vista y asiente, muy despacio.",
+        "gestos": [
+          "levanta_vista",
+          "asiente"
+        ],
+        "emocion": "nervioso",
+        "opciones": [
+          {
+            "tono": "directo",
+            "texto": "Entonces dígalo. ¿Quién le pidió al embajador?",
+            "ir": "n_varga",
+            "ir_si": [
+              {
+                "si": {
+                  "grabadora": true
+                },
+                "ir": "n_luz_roja"
+              }
+            ],
+            "si": {
+              "flag": "helix_visto"
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "Empiece por esto. ¿Quién se lo escribió?",
+            "ir": "n_helix",
+            "prueba": "helix",
+            "ef": {
+              "tension": 6
+            }
+          },
+          {
+            "tono": "pregunta",
+            "texto": "Empiece por el principio. Los doce.",
+            "ir": "n_doce",
+            "ef": {
+              "confianza": 2
+            }
+          }
+        ]
+      },
+      "n_luz_roja": {
+        "dice": "Con esa lucecita encendida, no. Apáguela y se lo cuento a usted. Luego, si de verdad me protege, lo repito para su juez.",
+        "accion": "Señala la grabadora con un dedo que tiembla, sin llegar a tocarla.",
+        "gestos": [
+          "senala_grabadora"
+        ],
+        "emocion": "asustado",
+        "grabadora": {
+          "off": {
+            "ir": "n_apagada",
+            "ef": {
+              "confianza": 6,
+              "tension": -4,
+              "flag": "off_consentido"
+            }
+          }
+        },
+        "opciones": [
+          {
+            "tono": "cortes",
+            "texto": "De acuerdo. [Apagar la grabadora]",
+            "ir": "n_apagada",
+            "grabadora": false,
+            "ef": {
+              "confianza": 6,
+              "tension": -4
+            }
+          },
+          {
+            "tono": "presion",
+            "texto": "No hay trato. Lo dice ahora o no lo dice.",
+            "ir": "n_cierra",
+            "ef": {
+              "tension": 16
+            }
+          }
+        ]
+      },
+      "n_apagada": {
+        "dice": "...Gracias. Así se puede hablar como personas. Las máquinas no entienden de cuidados.",
+        "accion": "Respira hondo. Los hombros bajan por fin.",
+        "gestos": [
+          "respira_hondo",
+          "hombros_bajan"
+        ],
+        "emocion": "calma",
+        "al_entrar": {
+          "flag": "off_consentido"
+        },
+        "opciones": [
+          {
+            "tono": "pregunta",
+            "texto": "¿Quién le escribió a usted, Elena?",
+            "ir": "n_quien_off",
+            "ir_si": [
+              {
+                "si": {
+                  "flag": "helix_visto"
+                },
+                "ir": "n_varga"
+              }
+            ]
+          },
+          {
+            "tono": "empatia",
+            "texto": "Hábleme de los doce. Sin máquinas.",
+            "ir": "n_doce",
+            "ef": {
+              "confianza": 4
+            }
+          }
+        ]
+      },
+      "n_quien_off": {
+        "dice": "Hay gente que sabe lo que hago. Gente importante. Me cuidan, como yo cuido. Pero no diré nombres, cariño. Ni sin máquina.",
+        "accion": "Sonríe otra vez, pero los ojos se quedan quietos, fijos en los suyos.",
+        "gestos": [
+          "sonrisa",
+          "fija"
+        ],
+        "emocion": "burla",
+        "revela": true,
+        "al_entrar": {
+          "flag": "protegida",
+          "verdad": 5
+        },
+        "opciones": [
+          {
+            "tono": "prueba",
+            "texto": "¿Esta gente importante? «Uno más y lo olvidamos.»",
+            "ir": "n_helix",
+            "prueba": "helix",
+            "ef": {
+              "tension": 10
+            }
+          },
+          {
+            "tono": "presion",
+            "texto": "La cuidan hasta que deje de serles útil.",
+            "ir": "n_miedo",
+            "ef": {
+              "tension": 8
+            }
+          }
+        ]
+      },
+      "n_varga": {
+        "dice": "Varga. El doctor Ilian Varga, de Helix. Vino a mi taquilla con una bata que no era suya. Sabía los doce nombres. Todos.",
+        "accion": "Habla en un susurro. Mira el espejo, como si Varga estuviera detrás.",
+        "gestos": [
+          "baja_voz",
+          "mira_espejo"
+        ],
+        "emocion": "asustado",
+        "revela": true,
+        "al_entrar": {
+          "flag": "varga",
+          "verdad": 10
+        },
+        "grabadora": {
+          "on": {
+            "si_no_flag": "sin_promesa",
+            "ir": "n_varga_grabado"
+          }
+        },
+        "espera_grabadora": true,
+        "opciones": [
+          {
+            "tono": "pregunta",
+            "texto": "¿Lo repetiría ante un juez? Con protección.",
+            "ir": "n_miedo",
+            "ef": {
+              "confianza": 4
+            },
+            "si": {
+              "no_flag": "promesa"
+            }
+          },
+          {
+            "tono": "cortes",
+            "texto": "[Encender la grabadora] Repítalo, Elena. Para el juez.",
+            "ir": "n_varga_grabado",
+            "grabadora": true,
+            "si": {
+              "flag": "promesa"
+            }
+          },
+          {
+            "tono": "directo",
+            "texto": "Con eso me basta. Cierro el caso.",
+            "fin": "d_sin_grabar"
+          }
+        ]
+      },
+      "n_varga_grabado": {
+        "dice": "Para el juez: el doctor Ilian Varga, de Helix Corp, me encargó al embajador T'Kaan. La paz les arruinaba el negocio. Y yo... acepté.",
+        "accion": "Habla mirando la grabadora, la espalda recta. Después se le hunden los hombros.",
+        "gestos": [
+          "habla_grabadora",
+          "rinde"
+        ],
+        "emocion": "quebrado",
+        "revela": true,
+        "al_entrar": {
+          "flag": "confiesa_helix",
+          "verdad": 15
+        },
+        "opciones": [
+          {
+            "tono": "cortes",
+            "texto": "Gracias, Elena. Ya puede descansar.",
+            "fin": "v_red"
+          },
+          {
+            "tono": "pregunta",
+            "texto": "Y los doce. Dígalo también, para que nadie los olvide.",
+            "ir": "n_confiesa",
+            "si": {
+              "flag": "doce"
+            }
+          }
+        ]
+      },
+      "n_doce": {
+        "dice": "Doce. Le diré sus nombres si quiere. Amira. El señor Kolb. La niña del módulo tres... Ninguno sufrió al final. Ninguno.",
+        "accion": "Recita los nombres sin pestañear, como quien pasa lista.",
+        "gestos": [
+          "fija",
+          "entrelaza"
+        ],
+        "emocion": "calma",
+        "revela": true,
+        "al_entrar": {
+          "flag": "doce",
+          "verdad": 10
+        },
+        "dice_si": [
+          {
+            "si": {
+              "grabadora": true
+            },
+            "dice": "Doce. Que quede grabado, sí: alguien tiene que acordarse. Amira. El señor Kolb. La niña del módulo tres... Ninguno sufrió al final."
+          }
+        ],
+        "opciones": [
+          {
+            "tono": "prueba",
+            "texto": "Ninguno sufrió porque usted les puso esto. Triple dosis.",
+            "ir": "n_jeringa",
+            "prueba": "jeringa",
+            "ef": {
+              "tension": 10
+            }
+          },
+          {
+            "tono": "pregunta",
+            "texto": "¿Y el embajador? ¿También sufría?",
+            "ir": "n_gripe",
+            "ef": {
+              "tension": 6
+            }
+          },
+          {
+            "tono": "directo",
+            "texto": "Dígalo claro, para la grabadora: ¿usted los mató?",
+            "ir": "n_confiesa",
+            "si": {
+              "grabadora": true,
+              "flag": "jeringa",
+              "confianza_min": 30
+            }
+          }
+        ]
+      },
+      "n_jeringa": {
+        "dice": "«Cualquiera pudo tomarla...» No. Nadie más la habría preparado tan bien. Triple dosis: para que no se despierten a medias.",
+        "accion": "Mira la jeringa sin parpadear. Casi con cariño.",
+        "gestos": [
+          "estudia",
+          "sonrisa"
+        ],
+        "emocion": "triunfo",
+        "revela": true,
+        "al_entrar": {
+          "flag": "jeringa",
+          "verdad": 10
+        },
+        "opciones": [
+          {
+            "tono": "directo",
+            "texto": "Lo ha dicho usted: nadie más. ¿Fue usted, Elena?",
+            "ir": "n_confiesa",
+            "si": {
+              "grabadora": true,
+              "flag": "doce",
+              "confianza_min": 30
+            }
+          },
+          {
+            "tono": "pregunta",
+            "texto": "Al lado había doce pulseras de pacientes.",
+            "ir": "n_pulseras",
+            "ef": {
+              "tension": 6
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "Y esto estaba en su mensajería. De Helix Corp.",
+            "ir": "n_helix",
+            "prueba": "helix",
+            "ef": {
+              "tension": 10
+            }
+          }
+        ]
+      },
+      "n_pulseras": {
+        "dice": "Las guardo para acordarme. Alguien tiene que acordarse de ellos. Trece, ahora. La del embajador es de seda: las de su especie no pesan nada.",
+        "accion": "Se mira la muñeca, donde no hay ninguna pulsera, y sonríe.",
+        "gestos": [
+          "mira_manos",
+          "sonrisa"
+        ],
+        "emocion": "calma",
+        "revela": true,
+        "al_entrar": {
+          "flag": "pulseras",
+          "verdad": 10
+        },
+        "opciones": [
+          {
+            "tono": "directo",
+            "texto": "Para la grabadora, Elena: ¿quién les dio la dosis?",
+            "ir": "n_confiesa",
+            "si": {
+              "grabadora": true,
+              "confianza_min": 30
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "Trece. Y el número trece se lo encargaron. Mire esto.",
+            "ir": "n_helix",
+            "prueba": "helix",
+            "ef": {
+              "tension": 10
+            }
+          },
+          {
+            "tono": "pregunta",
+            "texto": "Hábleme de los doce primeros.",
+            "ir": "n_doce",
+            "ef": {
+              "tension": 4
+            }
+          }
+        ]
+      },
+      "n_confiesa": {
+        "dice": "Sí. Fui yo. Los doce, y el embajador. Les sostenía la mano mientras se iban. Grabe eso, detective: que se sepa que nadie se fue solo.",
+        "accion": "Se endereza y habla para la grabadora, con la voz clara de quien da un parte de turno.",
+        "gestos": [
+          "habla_grabadora",
+          "endereza"
+        ],
+        "emocion": "triunfo",
+        "revela": true,
+        "al_entrar": {
+          "flag": "confesion",
+          "verdad": 15
+        },
+        "opciones": [
+          {
+            "tono": "cortes",
+            "texto": "Gracias, Elena. Con esto basta.",
+            "fin": "v_ultima_ronda"
+          },
+          {
+            "tono": "prueba",
+            "texto": "Y esto: «uno más y lo olvidamos». ¿Quién se lo pidió?",
+            "ir": "n_helix",
+            "prueba": "helix",
+            "ef": {
+              "tension": 8
+            }
+          },
+          {
+            "tono": "cortes",
+            "texto": "Ahora Helix. Tiene mi palabra de que la protegeré. Dígalo.",
+            "ir": "n_luz_roja",
+            "ef": {
+              "flag": "promesa",
+              "quitar_flag": "sin_promesa"
+            },
+            "si": {
+              "flag": "helix_visto"
+            }
+          }
+        ]
+      }
+    },
+    "grabadora_defecto": {
+      "off_confia": {
+        "dice": "Gracias. Esas máquinas no entienden de cuidados.",
+        "ef": {
+          "confianza": 8,
+          "tension": -6,
+          "flag": "off_consentido"
+        },
+        "si": {
+          "confianza_min": 40
+        }
+      },
+      "off_sabe": {
+        "dice": "...Sí. Mejor así. Ellos lo oyen todo.",
+        "ef": {
+          "confianza": 10,
+          "tension": -6,
+          "flag": "off_consentido"
+        },
+        "si": {
+          "flag": "teme_helix"
+        }
+      },
+      "off_sospecha": {
+        "dice": "¿La apaga? Qué detalle. ¿Qué piensa hacerme que no deba quedar grabado, cielo?",
+        "ef": {
+          "tension": 10,
+          "confianza": -4
+        }
+      },
+      "on_traicion": {
+        "fin": "d_bata_blanca",
+        "si": {
+          "flag": "hablo_off",
+          "no_flag": "promesa"
+        }
+      },
+      "on_formal": {
+        "dice": "Ah, la lucecita roja. Mejor: que quede constancia. Yo no me escondo de nada.",
+        "ef": {
+          "confianza": 2,
+          "tension": -2
+        }
+      }
+    },
+    "pruebas_defecto": {
+      "jeringa": {
+        "dice": "Una jeringa. En una nave-hospital hay miles, cariño.",
+        "ef": {
+          "tension": 6
+        }
+      },
+      "turno": {
+        "dice": "Fallos del sistema. Pasa cada semana; pregunte a informática.",
+        "ef": {
+          "tension": 6
+        }
+      },
+      "helix": {
+        "dice": "No sé qué es eso. Guárdelo. Guárdelo, por favor.",
+        "ef": {
+          "tension": 10,
+          "flag": "helix_visto"
+        }
+      },
+      "_": {
+        "dice": "Eso no tiene nada que ver con mis pacientes.",
+        "ef": {
+          "tension": 4
+        }
+      }
+    },
+    "testigos_defecto": {
+      "reyes": {
+        "dice": "Reyes confunde las horas. Pobrecita.",
+        "ef": {
+          "tension": 6
+        }
+      },
+      "osei": {
+        "dice": "Osei debería revisar sus cuentas... y su conciencia.",
+        "ef": {
+          "tension": 6,
+          "flag": "culpa_osei"
+        }
+      },
+      "_": {
+        "dice": "No sé qué quiere que le diga a eso, cariño.",
+        "ef": {
+          "tension": 4
+        }
+      }
+    },
+    "tension_max": {
+      "con_flag": {
+        "helix_visto": "d_varga"
+      },
+      "fin": "d_abogado"
+    },
+    "finales": {
+      "v_red": {
+        "tipo": "victoria",
+        "titulo": "LA RED DE HELIX",
+        "texto": "Con la declaración grabada, el doctor Ilian Varga fue detenido en el muelle cuatro con una maleta y trece nombres en un chip. Helix Corp ha perdido su contrato con la Flota. Las negociaciones de paz se reanudaron un mes después, con un minuto de silencio por T'Kaan. Elena Marsh cumple condena en un penal sin enfermería. Pide cada noche que alguien le sostenga la mano. Nadie lo hace."
+      },
+      "v_ultima_ronda": {
+        "tipo": "victoria",
+        "titulo": "LA ÚLTIMA RONDA",
+        "texto": "La confesión grabada bastó: trece cargos de asesinato. Las familias recibieron las pulseras en una caja blanca. Elena Marsh sonrió durante todo el juicio. Del encargo nunca se supo nada; a la semana, Helix Corp donó una planta nueva de cuidados paliativos a la Piedad."
+      },
+      "d_osei": {
+        "tipo": "derrota",
+        "titulo": "CULPABLE EQUIVOCADO",
+        "texto": "El doctor Osei es detenido en su camarote. Tenía deudas, sí. Tres semanas después, a las 02:40, muere dormida una paciente de la planta cuatro. La enfermera de guardia le sostenía la mano."
+      },
+      "d_cuidados": {
+        "tipo": "derrota",
+        "titulo": "EN BUENAS MANOS",
+        "texto": "Sus dedos son tibios y precisos. Te toma el pulso, te dice que estás agotado, que todo irá bien. Cuando quieres darte cuenta, la entrevista ha terminado y tú le has contado a ella más que ella a ti. El abogado de Helix ya espera en el pasillo."
+      },
+      "d_bata_blanca": {
+        "tipo": "derrota",
+        "titulo": "BATA BLANCA",
+        "texto": "Elena ve la luz roja encenderse. Sonríe, se alisa el mono como si fuera un uniforme y no vuelve a decir una palabra que no sea de cortesía. Todo lo que te contó sin grabar no vale nada ante un juez."
+      },
+      "d_sin_grabar": {
+        "tipo": "derrota",
+        "titulo": "PALABRA CONTRA PALABRA",
+        "texto": "Tienes un nombre, Varga, y ninguna prueba. El juez no admite una conversación sin grabar. Helix niega conocer a Elena Marsh y Elena, de pronto, no recuerda nada. Sale en libertad bajo fianza. La paga Helix."
+      },
+      "d_abogado": {
+        "tipo": "derrota",
+        "titulo": "LOS ABOGADOS DE HELIX",
+        "texto": "Dos abogados de traje gris entran sin llamar. Alegan acoso a una sanitaria ejemplar. Elena les da las gracias, les arregla el cuello de la camisa y se va con ellos. El caso se archiva."
+      },
+      "d_varga": {
+        "tipo": "derrota",
+        "titulo": "UNO MÁS",
+        "texto": "Elena se derrumba y pide su llamada. Llama a un número sin nombre. Al amanecer la encuentran dormida en su celda, con una pulsera de seda en la muñeca. Nadie sabe cómo entró la jeringa."
+      },
+      "d_amanecer": {
+        "tipo": "derrota",
+        "titulo": "CAMBIO DE TURNO",
+        "texto": "Se acaba el tiempo legal de custodia. Elena Marsh vuelve a la Piedad para el turno de noche. A las 02:40 pasa por la planta cuatro, tarareando."
+      }
+    }
+  }
+}

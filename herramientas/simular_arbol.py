@@ -1,5 +1,6 @@
 """Valida y explora el árbol de diálogo de un caso (mismas reglas que GameManager.gd).
-Uso: python simular_arbol.py ../data/caso_vehl.json
+Uso: python simular_arbol.py ../data/caso_vehl.json [max_estados]
+Comprueba referencias y gestos, y busca el camino más corto a cada final de tipo victoria.
 """
 import json, sys
 from collections import deque, Counter
@@ -124,6 +125,19 @@ def grabadora(st):
             return comprobar(st, None)
     return comprobar(st, None)
 
+# gestos: deben existir en Ilvari.GESTOS (scripts/Ilvari.gd)
+import os, re
+_gd = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "scripts", "Ilvari.gd")
+if os.path.exists(_gd):
+    _txt = open(_gd, encoding="utf-8").read()
+    _bloque = _txt[_txt.index("const GESTOS := {"):]
+    _bloque = _bloque[:_bloque.index("\n}\n")]
+    _gestos = set(re.findall(r'^\t"([a-z_]+)":', _bloque, re.M))
+    for nid, n in N.items():
+        for g in n.get("gestos", []):
+            if g not in _gestos:
+                errores.append(f"{nid}: gesto desconocido {g}")
+
 print("ERRORES:", len(errores))
 for e in errores: print("  ", e)
 
@@ -180,7 +194,7 @@ print("opciones totales:", opciones)
 print("FINALES (caminos que llegan):")
 for f, c in finales.most_common():
     print(f"  {f:14s} {c:8d}  mínimo {len(mejor[f])} turnos")
-for f in ("v_padre", "v_coro"):
+for f in [k for k, v in FIN.items() if v.get("tipo") == "victoria"]:
     if f in mejor:
         print(f"\nCAMINO MÁS CORTO A {f}:")
         for nodo, txt in mejor[f]:

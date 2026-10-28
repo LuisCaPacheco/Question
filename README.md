@@ -57,3 +57,27 @@ Cada caso en `data/sospechosos.json` tiene un bloque `avatar`. Edítalo y listo:
 Modela tu alien, expórtalo como `.glb` y sigue el paso 3-4 de la opción B.
 La lógica (`react`, `set_emotion`) sigue funcionando si conservas los nombres
 de nodos: `Sospechoso`, ojos y boca.
+
+## Modelos esculpidos (`herramientas/`, Blender 5.2)
+Cada script esculpe con SDF en numpy, malla, hornea texturas (color, normal, AO) en
+`modelos/tex/` y exporta el `.glb` con esqueleto. Los anima `scripts/Ilvari.gd`
+(`PERFILES`); `rasgos.modelo` en la ficha elige el perfil. Si el `.glb` no existe, el
+sospechoso usa el modelo procedural.
+
+| Script | Modelo | Sospechosos |
+|---|---|---|
+| `construir_ilvari.py` | `ilvari.glb` | Vehl |
+| `construir_kthar.py` | `kthar.glb` | Vex'ahl, Yul'Keth (teñido) |
+| `construir_humano.py` | `humano_<id>.glb` (uno por personaje) | Danner, Sara, Elena — en pruebas: sus fichas aún no llevan `modelo` y usan el procedural |
+| `construir_molk.py` | `molk.glb` (+ máscara de grietas `mlk_*_emi.png`) | Gruul |
+
+```
+blender --background --factory-startup --python herramientas/construir_humano.py -- danner sara elena previa
+blender --background --factory-startup --python herramientas/construir_molk.py -- previa
+```
+`CALIDAD=2` construye rápido (texturas a la mitad); `previa` deja renders en `herramientas/_previa/`.
+
+## Casos con árbol de diálogo
+`data/caso_<id>.json` (`"modo": "arbol"`): `caso_vehl.json` y `caso_elena.json`. Si el id ya
+existe en `sospechosos.json`, el árbol sustituye a la versión clásica. Validar:
+`python herramientas/simular_arbol.py data/caso_elena.json 1500000`.

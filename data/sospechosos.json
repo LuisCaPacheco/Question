@@ -396,6 +396,7 @@
       },
       "rasgos": {
         "tipo": "molk",
+        "modelo": "molk",
         "piel": "#3E3833",
         "mancha": "#1E1A18",
         "manchas": 0.9,

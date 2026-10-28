@@ -52,7 +52,7 @@ func _vista_debug(e: Node, pos: Vector3, mira: Vector3, nombre: String) -> void:
 	e.cam.current = true
 	c.queue_free()
 
-## Caso con árbol: juega el camino más corto a "v_padre" (lo da simular_arbol.py).
+## Caso con árbol: juega el camino más corto a una victoria (lo da simular_arbol.py).
 ## "G" = pulsar la grabadora. Guarda una foto por paso.
 const CAMINO_VEHL := [
 	"Una conversación. Soy el agente Ibarra",
@@ -68,6 +68,20 @@ const CAMINO_VEHL := [
 	"Nira entrará en protección",
 	"[Encender la grabadora]",
 ]
+## Elena: el camino a "v_red" (Helix con la grabadora apagada, y luego repetido para el juez).
+const CAMINO_ELENA := [
+	"Enfermera jefe Marsh",
+	"¿Conocía al embajador?",
+	"¿Alguien le pidió que fuera",
+	"Alguien le escribió esto",
+	"La usaron",
+	"Le doy mi palabra",
+	"G",
+	"Entonces dígalo",
+	"[Encender la grabadora] Repítalo",
+	"Gracias, Elena. Ya puede descansar",
+]
+const CAMINOS := {"vehl": CAMINO_VEHL, "elena": CAMINO_ELENA}
 
 func _esperar_libre(g: Node) -> void:
 	var t := 0.0
@@ -89,7 +103,11 @@ func _correr_arbol(g: Node, e: Node) -> void:
 			get_tree().quit()
 			return
 	var paso := 0
-	for p in CAMINO_VEHL:
+	if not CAMINOS.has(caso):
+		print("AUTOTEST ERROR: no hay camino de prueba para el caso con árbol '", caso, "'")
+		get_tree().quit()
+		return
+	for p in CAMINOS[caso]:
 		paso += 1
 		var nombre := "a%02d" % paso
 		if p == "G":
@@ -134,7 +152,7 @@ func _correr_arbol(g: Node, e: Node) -> void:
 			break
 	await _esperar(13.0)
 	await _foto("a99_fin")
-	print("AUTOTEST fin arbol terminado=", g.terminado, " resultado=", g.resultados.get("vehl", ""))
+	print("AUTOTEST fin arbol terminado=", g.terminado, " resultado=", g.resultados.get(caso, ""))
 	get_tree().quit()
 
 ## --gestos: cada gesto de Ilvari.GESTOS, uno a uno, con una foto en su punto más intenso.
@@ -191,9 +209,13 @@ func _correr() -> void:
 	await _esperar(2.5)
 	await _foto("03_juego")
 	if "--retrato" in OS.get_cmdline_user_args():
-		# primeros planos del sospechoso (cara, perfil y manos) antes de jugar
-		await _vista_debug(e, Vector3(0.0, 1.42, -0.5), Vector3(0.0, 1.36, -0.98), "r1_cara")
-		await _vista_debug(e, Vector3(0.55, 1.45, -0.7), Vector3(0.0, 1.34, -1.0), "r2_perfil")
+		# primeros planos del sospechoso (cara, perfil y manos) antes de jugar, a la altura de
+		# su cabeza (los humanos la tienen más baja que el ilvari)
+		var al: float = 1.36
+		if e.sospechoso.esculpido:
+			al = float(e.sospechoso.esculpido.perfil.get("altura_cabeza", 1.36))
+		await _vista_debug(e, Vector3(0.0, al + 0.06, -0.5), Vector3(0.0, al, -0.98), "r1_cara")
+		await _vista_debug(e, Vector3(0.55, al + 0.09, -0.7), Vector3(0.0, al - 0.02, -1.0), "r2_perfil")
 		await _vista_debug(e, Vector3(0.0, 1.25, -0.05), Vector3(0.0, 0.83, -0.4), "r3_manos")
 	if "--gestos" in OS.get_cmdline_user_args():
 		await _correr_gestos(e)

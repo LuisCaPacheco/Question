@@ -104,6 +104,19 @@ def uv_auto(ob, angulo=66.0, margen=0.004):
     bpy.ops.object.mode_set(mode='OBJECT')
 
 
+def uv_desde(ob, fn, nombre="UVMap"):
+    """UV calculadas a partir de la posición de cada vértice: fn(verts (N,3)) -> (N,2).
+    (Para los ojos: proyección frontal que el shader interpreta como iris/pupila.)"""
+    me = ob.data
+    for l in list(me.uv_layers):
+        me.uv_layers.remove(l)
+    uv = me.uv_layers.new(name=nombre)
+    idx = np.empty(len(me.loops), np.int32)
+    me.loops.foreach_get("vertex_index", idx)
+    uvs = np.asarray(fn(verts_np(ob)), np.float32)[idx]
+    uv.data.foreach_set("uv", uvs.ravel())
+
+
 def color_vertices(ob, colores, nombre="Col"):
     """colores: (N,3|4) por vertice (lineal)."""
     me = ob.data
@@ -217,6 +230,19 @@ def hornear(alta, baja, carpeta, prefijo, tam=1024, distancia=0.004, ao=True, co
         res["ao"] = _guardar(img, carpeta, prefijo + "_ao.png")
         sc.cycles.samples = 8
     return res
+
+
+def hornear_mascara(alta, baja, carpeta, nombre, attr, tam=1024, distancia=0.004):
+    """Hornea otro atributo de color de la malla alta (p. ej. 'Emi', las grietas del molk)
+    en la misma UV de la baja. Guarda <nombre>.png (lineal, sin gestión de color)."""
+    _cycles()
+    img = imagen(nombre + "_m", tam, (0, 0, 0, 1), datos=True)
+    _mat_horneo(baja, img)
+    _mat_emision_color(alta, attr)
+    activar(baja, [alta])
+    bpy.ops.object.bake(type='EMIT', use_selected_to_active=True,
+                        cage_extrusion=distancia, max_ray_distance=distancia * 2.5, margin=8)
+    return _guardar(img, carpeta, nombre + ".png")
 
 
 def _guardar(img, carpeta, nombre):

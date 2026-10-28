@@ -81,7 +81,18 @@ const CAMINO_ELENA := [
 	"[Encender la grabadora] Repítalo",
 	"Gracias, Elena. Ya puede descansar",
 ]
-const CAMINOS := {"vehl": CAMINO_VEHL, "elena": CAMINO_ELENA}
+## Danner: el camino a "v_album" (las pruebas lo quiebran y confiesa para la grabadora).
+const CAMINO_DANNER := [
+	"Doscientos mil créditos del cártel Molk",
+	"Flint, el camarero, dice",
+	"¿Y qué celebraba?",
+	"Brindaba por seis agentes",
+	"Mirar. Como en estas fotos",
+	"La letra es la suya",
+	"Lo ha dicho para la grabadora",
+	"Con esto basta. Que se lo lleven",
+]
+const CAMINOS := {"vehl": CAMINO_VEHL, "elena": CAMINO_ELENA, "danner": CAMINO_DANNER}
 
 func _esperar_libre(g: Node) -> void:
 	var t := 0.0

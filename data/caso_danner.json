@@ -1,0 +1,1601 @@
+{
+  "id": "danner",
+  "nivel": 1,
+  "modo": "arbol",
+  "nombre": "Danner 'Rata' Cole",
+  "alias": "La Rata",
+  "especie": "Humano, 38 años",
+  "rol": "Informante del puerto bajo",
+  "genero": "m",
+  "turnos": 16,
+  "intro": "Puerto bajo. Seis agentes encubiertos muertos en una semana. Alguien vendió sus nombres... y guardó recuerdos.",
+  "briefing": "La lista de 40 agentes encubiertos terminó en manos del cártel Molk. Danner Cole nadó en créditos esa misma noche. En su escondite había fotos de los cadáveres, ordenadas por fecha. 34 agentes siguen vivos... por ahora.",
+  "pista": "Es un cobarde que se cree listo: la amabilidad solo le da aire, y las pruebas fuertes lo quiebran. Delante de una grabadora no dará el nombre del comprador... pero un trato que no esté grabado no le vale. Y lo que confiese sin grabar no vale nada ante un juez.",
+  "secreto": "Vendió la lista y pidió al cártel fotos de cada ejecución como 'bono'. La lista era falsa: el cártel sigue matando para encontrar la verdadera.",
+  "perfil": "Narcisista y sádico de bajo nivel. Disfruta del sufrimiento ajeno siempre que no pueda tocarle. Miente con facilidad y se ríe cuando está nervioso.",
+  "antecedentes": [
+    "Extorsión (2 condenas)",
+    "Tráfico de polvo rojo",
+    "Profanación de tumbas"
+  ],
+  "rasgos": {
+    "tipo": "humano",
+    "modelo": "humano_danner",
+    "piel": "#B39A7A",
+    "mancha": "#6E4A3A",
+    "vena": "#4A3F5E",
+    "manchas": 0.75,
+    "venas": 0.45,
+    "suciedad": 0.55,
+    "ropa": "#B5470F",
+    "mancha_ropa": "#2A0C05",
+    "ojos": "#E8C23A",
+    "esclera": "#C9B27A",
+    "brillo_ojos": 1.6,
+    "cabeza": [
+      0.95,
+      1.02,
+      1.0
+    ],
+    "cuerpo": [
+      0.85,
+      1.0,
+      0.9
+    ],
+    "dientes": "podridos",
+    "dientes_color": "#9C8750",
+    "peinado": "grasiento",
+    "pelo": "#1A1510",
+    "cicatriz": "sonrisa",
+    "puntadas": true,
+    "largo_dedos": 1.25,
+    "grosor_manos": 0.9,
+    "unas": "#3A2A18",
+    "placa": "3045-117",
+    "semilla": 5
+  },
+  "grabadora_inicial": true,
+  "tension_inicial": 8,
+  "confianza_inicial": 20,
+  "verdad_inicial": 0,
+  "testigos": [
+    {
+      "id": "flint",
+      "nombre": "Flint (camarero)",
+      "texto": "Danner pagó una ronda para todo el bar con créditos nuevos. Enseñaba fotos en el móvil y se reía."
+    },
+    {
+      "id": "vega",
+      "nombre": "Agente Vega",
+      "texto": "Seis de los nuestros. A uno le arrancaron las uñas antes. La lista es real, detective. Date prisa."
+    }
+  ],
+  "evidencias": [
+    {
+      "id": "transfer",
+      "nombre": "Transferencia de 200.000 créditos",
+      "descripcion": "Del cártel Molk a su cuenta, la noche de la primera ejecución.",
+      "danio_verdad": 30
+    },
+    {
+      "id": "fotos",
+      "nombre": "Álbum de fotos de las víctimas",
+      "descripcion": "Seis fotos impresas bajo su colchón. Cada una con fecha y un corazón dibujado.",
+      "danio_verdad": 30
+    },
+    {
+      "id": "grabacion",
+      "nombre": "Grabación del comprador",
+      "descripcion": "'Si nos mentiste, rata, empezamos por tu hija. -K'.",
+      "danio_verdad": 25
+    }
+  ],
+  "dialogos": {
+    "victoria": "Cuarenta nombres, poli. Treinta y cuatro respiran todavía. Dime que eso cuenta algo."
+  },
+  "arbol": {
+    "inicio": "n_inicio",
+    "nodos": {
+      "n_inicio": {
+        "dice": "¿Café de máquina otra vez? Con lo que os pagan por espiar a la gente, podríais invertir en una cafetera.",
+        "accion": "Se repantinga en la silla. Al sonreír, las puntadas de la cicatriz le tiran de las mejillas.",
+        "gestos": [
+          "sonrisa",
+          "echa_atras"
+        ],
+        "emocion": "burla",
+        "al_entrar": {
+          "flag": [
+            "sin_trato",
+            "sin_lista"
+          ]
+        },
+        "opciones": [
+          {
+            "tono": "cortes",
+            "texto": "Señor Cole. ¿Quiere algo antes de empezar?",
+            "ir": "n_cafe",
+            "ef": {
+              "confianza": 8
+            }
+          },
+          {
+            "tono": "directo",
+            "texto": "Seis agentes muertos. Sus nombres salieron de una lista. Usted la vendió.",
+            "ir": "n_niega",
+            "ef": {
+              "tension": 8
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "Doscientos mil créditos del cártel Molk. La noche del primer muerto.",
+            "ir": "n_transfer",
+            "prueba": "transfer",
+            "ef": {
+              "tension": 14
+            }
+          },
+          {
+            "tono": "silencio",
+            "texto": "[Mirarle sin decir nada.]",
+            "ir": "n_silencio"
+          }
+        ]
+      },
+      "n_cafe": {
+        "dice": "Un bocadillo. De la máquina buena, la del segundo. Y un abogado, ya que pides. Es broma. O no.",
+        "accion": "Se inclina hacia delante, encantado. Se lame un diente roto.",
+        "gestos": [
+          "inclina",
+          "sonrisa"
+        ],
+        "emocion": "burla",
+        "al_entrar": {
+          "flag": "aire"
+        },
+        "opciones": [
+          {
+            "tono": "cortes",
+            "texto": "Le traigo el bocadillo. Mientras, hábleme del puerto.",
+            "ir": "n_puerto",
+            "ef": {
+              "confianza": 8
+            }
+          },
+          {
+            "tono": "directo",
+            "texto": "Ni bocadillo ni abogado. Hablemos de la lista.",
+            "ir": "n_niega",
+            "ef": {
+              "tension": 6
+            }
+          },
+          {
+            "tono": "presion",
+            "texto": "Aquí solo come el que habla.",
+            "ir": "n_hambre",
+            "ef": {
+              "tension": 8
+            }
+          }
+        ]
+      },
+      "n_silencio": {
+        "dice": "¿Qué? ¿Truco de academia? Tú me miras y yo me pongo nervioso. No funciona. ...Je. Un poco.",
+        "accion": "Tarda en sostenerle la mirada. Acaba mirándose las uñas negras.",
+        "gestos": [
+          "tarda_mirar",
+          "mira_manos"
+        ],
+        "emocion": "nervioso",
+        "opciones": [
+          {
+            "tono": "prueba",
+            "texto": "Seis fotos bajo su colchón. Con fecha. Y un corazón en cada una.",
+            "ir": "n_fotos",
+            "prueba": "fotos",
+            "ef": {
+              "tension": 14
+            }
+          },
+          {
+            "tono": "pregunta",
+            "texto": "Si no funciona, ¿por qué se ríe?",
+            "ir": "n_risa",
+            "ef": {
+              "tension": 6
+            }
+          },
+          {
+            "tono": "cortes",
+            "texto": "Tranquilo. Solo quiero entender qué pasó.",
+            "ir": "n_puerto",
+            "ef": {
+              "confianza": 6
+            }
+          }
+        ]
+      },
+      "n_niega": {
+        "dice": "¿Lista? Yo no sé hacer ni la de la compra. Pregunta en el puerto: Danner Cole, más inofensivo que un perro sin dientes.",
+        "accion": "Enseña las palmas, abiertas, inocente. Sus dientes podridos dicen otra cosa.",
+        "gestos": [
+          "palmas_arriba",
+          "sonrisa"
+        ],
+        "emocion": "burla",
+        "opciones": [
+          {
+            "tono": "prueba",
+            "texto": "Un perro sin dientes con doscientos mil créditos del cártel Molk.",
+            "ir": "n_transfer",
+            "prueba": "transfer",
+            "ef": {
+              "tension": 14
+            }
+          },
+          {
+            "tono": "testigo",
+            "texto": "Flint, el camarero, dice que invitó a todo el bar con créditos recién salidos.",
+            "ir": "n_flint",
+            "testigo": "flint",
+            "ef": {
+              "tension": 10
+            }
+          },
+          {
+            "tono": "pregunta",
+            "texto": "Inofensivo. ¿Por eso le llaman la Rata?",
+            "ir": "n_rata",
+            "ef": {
+              "tension": 4
+            }
+          }
+        ]
+      },
+      "n_hambre": {
+        "dice": "Uy, el poli malo. Mi tío pegaba más fuerte, y yo tenía nueve años. Vas a tener que esforzarte.",
+        "accion": "Se cruza de brazos y le clava los ojos amarillos, sin parpadear.",
+        "gestos": [
+          "cruza_brazos",
+          "fija"
+        ],
+        "emocion": "burla",
+        "opciones": [
+          {
+            "tono": "prueba",
+            "texto": "No pienso pegarle. Prefiero enseñarle esto.",
+            "ir": "n_transfer",
+            "prueba": "transfer",
+            "ef": {
+              "tension": 14
+            }
+          },
+          {
+            "tono": "presion",
+            "texto": "Su tío no tenía seis cadáveres en la conciencia. Usted sí.",
+            "ir": "n_niega",
+            "ef": {
+              "tension": 8
+            }
+          },
+          {
+            "tono": "silencio",
+            "texto": "[No contestar.]",
+            "ir": "n_silencio",
+            "ef": {
+              "tension": -4
+            }
+          }
+        ]
+      },
+      "n_puerto": {
+        "dice": "El puerto bajo es un estómago: todo pasa por ahí y nada sale limpio. Yo escucho y vendo lo que oigo. Casi legal.",
+        "accion": "Entrelaza los dedos sobre la mesa, como un comerciante a punto de cerrar una venta.",
+        "gestos": [
+          "entrelaza",
+          "inclina"
+        ],
+        "emocion": "calma",
+        "al_entrar": {
+          "flag": "aire"
+        },
+        "opciones": [
+          {
+            "tono": "cortes",
+            "texto": "Debe de ser muy bueno en lo suyo.",
+            "ir": "n_crecido",
+            "ef": {
+              "confianza": 10
+            }
+          },
+          {
+            "tono": "pregunta",
+            "texto": "¿Y a quién le vendió lo último que oyó?",
+            "ir": "n_quien",
+            "ef": {
+              "tension": 6
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "Esto también lo oyó alguien. Doscientos mil créditos del cártel.",
+            "ir": "n_transfer",
+            "prueba": "transfer",
+            "ef": {
+              "tension": 14
+            }
+          }
+        ]
+      },
+      "n_crecido": {
+        "dice": "¿Bueno? Soy el mejor. Sin mí, la mitad de vuestras redadas serían paseos. Deberíais darme una placa. O un trato.",
+        "accion": "Se echa hacia atrás, crecido. Tamborilea la mesa con los dedos, como si el tiempo fuera suyo.",
+        "gestos": [
+          "echa_atras",
+          "sonrisa"
+        ],
+        "emocion": "triunfo",
+        "al_entrar": {
+          "flag": "crecido"
+        },
+        "opciones": [
+          {
+            "tono": "cortes",
+            "texto": "¿Qué clase de trato?",
+            "ir": "n_trato_humo",
+            "ef": {
+              "confianza": 6
+            }
+          },
+          {
+            "tono": "presion",
+            "texto": "La placa se la pondrán en la lápida si sigue así.",
+            "ir": "n_hambre",
+            "ef": {
+              "tension": 10,
+              "confianza": -8
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "Antes del trato, explíqueme estas fotos.",
+            "ir": "n_fotos",
+            "prueba": "fotos",
+            "ef": {
+              "tension": 18
+            }
+          }
+        ]
+      },
+      "n_trato_humo": {
+        "dice": "Inmunidad total y un billete al anillo exterior. A cambio te doy al que vendió la lista. Un nombre, fresquito.",
+        "accion": "Baja la voz y se inclina, cómplice, como si le estuviera haciendo un favor.",
+        "gestos": [
+          "inclina",
+          "baja_voz"
+        ],
+        "emocion": "triunfo",
+        "opciones": [
+          {
+            "tono": "cortes",
+            "texto": "Trato hecho. Deme ese nombre.",
+            "fin": "d_humo"
+          },
+          {
+            "tono": "prueba",
+            "texto": "No negocio con ratas sin pruebas. Las suyas: estas fotos.",
+            "ir": "n_fotos",
+            "prueba": "fotos",
+            "ef": {
+              "tension": 16
+            }
+          },
+          {
+            "tono": "pregunta",
+            "texto": "¿Y si el nombre es el suyo?",
+            "ir": "n_risa",
+            "ef": {
+              "tension": 8
+            }
+          }
+        ]
+      },
+      "n_risa": {
+        "dice": "Je. Je, je. Me río cuando me aburro, poli. Y tú me aburres un montón.",
+        "accion": "Aprieta la mandíbula entre risa y risa. Mira de reojo a la puerta.",
+        "gestos": [
+          "aprieta_mandibula",
+          "mira_puerta"
+        ],
+        "emocion": "nervioso",
+        "opciones": [
+          {
+            "tono": "prueba",
+            "texto": "A ver si esto le aburre.",
+            "ir": "n_fotos",
+            "prueba": "fotos",
+            "ef": {
+              "tension": 14
+            }
+          },
+          {
+            "tono": "testigo",
+            "texto": "La agente Vega encontró a uno de los seis sin uñas.",
+            "ir": "n_vega",
+            "testigo": "vega",
+            "ef": {
+              "tension": 10
+            }
+          },
+          {
+            "tono": "presion",
+            "texto": "Se ríe cuando miente. Llevo once risas contadas.",
+            "ir": "n_cuenta",
+            "ef": {
+              "tension": 10
+            }
+          }
+        ]
+      },
+      "n_rata": {
+        "dice": "Una rata sobrevive a todo, poli: a los gatos, al veneno y a los barcos que se hunden. Es un elogio.",
+        "accion": "Ladea la cabeza, orgulloso del mote.",
+        "gestos": [
+          "ladea",
+          "sonrisa"
+        ],
+        "emocion": "burla",
+        "opciones": [
+          {
+            "tono": "testigo",
+            "texto": "Las ratas también presumen. Flint dice que invitó a todo el bar.",
+            "ir": "n_flint",
+            "testigo": "flint",
+            "ef": {
+              "tension": 10
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "Y esta rata cobró doscientos mil del cártel Molk.",
+            "ir": "n_transfer",
+            "prueba": "transfer",
+            "ef": {
+              "tension": 14
+            }
+          },
+          {
+            "tono": "cortes",
+            "texto": "Sobrevivir cansa. ¿Cuándo durmió bien por última vez?",
+            "ir": "n_hija_sombra",
+            "ef": {
+              "confianza": 8
+            }
+          }
+        ]
+      },
+      "n_transfer": {
+        "dice": "¿Eso? Una apuesta. El molk gordo en la lucha del muelle tres. Pagaba diez a uno. Tengo buen ojo, poli.",
+        "accion": "Respira deprisa y aparta la mirada hacia la pared.",
+        "gestos": [
+          "respira_rapido",
+          "aparta_mirada"
+        ],
+        "emocion": "nervioso",
+        "al_entrar": {
+          "flag": "mintio_apuesta"
+        },
+        "opciones": [
+          {
+            "tono": "presion",
+            "texto": "No hubo luchas esa semana. El muelle tres estaba en cuarentena.",
+            "ir": "n_cuarentena",
+            "ef": {
+              "tension": 12
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "¿Su buen ojo también eligió estas fotos?",
+            "ir": "n_fotos",
+            "prueba": "fotos",
+            "ef": {
+              "tension": 14
+            }
+          },
+          {
+            "tono": "testigo",
+            "texto": "Flint, el camarero, dice que invitó a todo el bar con créditos recién salidos.",
+            "ir": "n_flint",
+            "testigo": "flint",
+            "ef": {
+              "tension": 10
+            }
+          }
+        ]
+      },
+      "n_flint": {
+        "dice": "¿Flint? Ese cuenta los vasos con los dedos y aun así se equivoca. Invité, sí. Un hombre celebra lo que quiere.",
+        "accion": "Mira la mesa. La sonrisa le dura un segundo de más.",
+        "gestos": [
+          "mira_mesa",
+          "sonrisa"
+        ],
+        "emocion": "burla",
+        "al_entrar": {
+          "flag": "celebro"
+        },
+        "opciones": [
+          {
+            "tono": "pregunta",
+            "texto": "¿Y qué celebraba?",
+            "ir": "n_celebra",
+            "ef": {
+              "tension": 6
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "Celebraba esto: doscientos mil del cártel.",
+            "ir": "n_transfer",
+            "prueba": "transfer",
+            "ef": {
+              "tension": 14
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "¿Celebraba estas fotos?",
+            "ir": "n_fotos",
+            "prueba": "fotos",
+            "ef": {
+              "tension": 14
+            }
+          }
+        ]
+      },
+      "n_celebra": {
+        "dice": "La vida, poli. Que yo sigo aquí y otros no. ¿No es para brindar?",
+        "accion": "Le mira fijamente. Se le escapa una risita aguda.",
+        "gestos": [
+          "fija",
+          "sonrisa"
+        ],
+        "emocion": "burla",
+        "revela": true,
+        "al_entrar": {
+          "flag": "brindis",
+          "verdad": 5
+        },
+        "opciones": [
+          {
+            "tono": "presion",
+            "texto": "Brindaba por seis agentes que ya no siguen aquí.",
+            "ir": "n_cuenta",
+            "ef": {
+              "tension": 10
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "¿Brindaba por estos seis?",
+            "ir": "n_fotos",
+            "prueba": "fotos",
+            "ef": {
+              "tension": 14
+            }
+          },
+          {
+            "tono": "testigo",
+            "texto": "La agente Vega encontró a uno de los seis sin uñas.",
+            "ir": "n_vega",
+            "testigo": "vega",
+            "ef": {
+              "tension": 10
+            }
+          }
+        ]
+      },
+      "n_cuarentena": {
+        "dice": "...Pues sería otra lucha. Otro muelle. Iba borracho, ¿vale? ¿Tú te acuerdas de todo lo que haces borracho?",
+        "accion": "Le tiemblan las manos. Mira la puerta, luego el espejo, luego otra vez la puerta.",
+        "gestos": [
+          "manos_tiemblan",
+          "mira_puerta"
+        ],
+        "emocion": "nervioso",
+        "al_entrar": {
+          "flag": "pillado"
+        },
+        "opciones": [
+          {
+            "tono": "prueba",
+            "texto": "Borracho no se ordenan seis fotos por fecha.",
+            "ir": "n_fotos",
+            "prueba": "fotos",
+            "ef": {
+              "tension": 14
+            }
+          },
+          {
+            "tono": "presion",
+            "texto": "Doscientos mil créditos no se olvidan ni borracho.",
+            "ir": "n_cuenta",
+            "ef": {
+              "tension": 10
+            }
+          },
+          {
+            "tono": "cortes",
+            "texto": "Nadie es tan listo como para no equivocarse nunca.",
+            "ir": "n_hija_sombra",
+            "ef": {
+              "confianza": 6
+            }
+          }
+        ]
+      },
+      "n_cuenta": {
+        "dice": "¡Deja de contar! ...Vale. Vale. No pongas esa cara. Yo no he matado a nadie. Yo no toco a nadie. Nunca.",
+        "accion": "Da un golpe en la mesa y retira la mano enseguida, como si quemara.",
+        "gestos": [
+          "golpe_mesa"
+        ],
+        "emocion": "furioso",
+        "revela": true,
+        "al_entrar": {
+          "flag": "no_toco",
+          "tension": 4,
+          "verdad": 5
+        },
+        "opciones": [
+          {
+            "tono": "pregunta",
+            "texto": "No tocó a nadie. Solo miraba. ¿Verdad?",
+            "ir": "n_mirar",
+            "ef": {
+              "tension": 6
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "Mirar. Como en estas fotos.",
+            "ir": "n_fotos",
+            "prueba": "fotos",
+            "ef": {
+              "tension": 14
+            }
+          },
+          {
+            "tono": "silencio",
+            "texto": "[Esperar.]",
+            "ir": "n_calma",
+            "ef": {
+              "tension": -8
+            }
+          }
+        ]
+      },
+      "n_calma": {
+        "dice": "...Necesito un cigarro. ¿Tenéis? No. Claro. Aquí no se puede ni morir a gusto.",
+        "accion": "Respira hondo. Se mira las manos manchadas.",
+        "gestos": [
+          "respira_hondo",
+          "mira_manos"
+        ],
+        "emocion": "nervioso",
+        "opciones": [
+          {
+            "tono": "prueba",
+            "texto": "Mientras busca el cigarro, mire esto.",
+            "ir": "n_fotos",
+            "prueba": "fotos",
+            "ef": {
+              "tension": 14
+            }
+          },
+          {
+            "tono": "cortes",
+            "texto": "Tómese su tiempo. ¿Tiene a alguien esperándole fuera?",
+            "ir": "n_hija_sombra",
+            "ef": {
+              "confianza": 6
+            }
+          }
+        ]
+      },
+      "n_vega": {
+        "dice": "No conozco a ninguna Vega. ...¿Rubia, cicatriz en la ceja? Esa debe más que yo. Pregúntale a ella por la lista.",
+        "accion": "Se inclina, servicial, como quien da una pista gratis.",
+        "gestos": [
+          "inclina",
+          "sonrisa"
+        ],
+        "emocion": "burla",
+        "al_entrar": {
+          "flag": "culpa_vega"
+        },
+        "opciones": [
+          {
+            "tono": "directo",
+            "texto": "Puede que tenga razón. Que investiguen a Vega.",
+            "fin": "d_vega"
+          },
+          {
+            "tono": "presion",
+            "texto": "Describe muy bien a alguien que no conoce.",
+            "ir": "n_lapsus",
+            "ef": {
+              "tension": 12
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "¿La reconoce también aquí?",
+            "ir": "n_fotos",
+            "prueba": "fotos",
+            "ef": {
+              "tension": 14
+            }
+          }
+        ]
+      },
+      "n_lapsus": {
+        "dice": "...La vi una vez. En una foto. No. En el puerto. En el puerto, he dicho.",
+        "accion": "Se tapa la boca con la mano, demasiado tarde.",
+        "gestos": [
+          "tapa_boca",
+          "tarda_mirar"
+        ],
+        "emocion": "asustado",
+        "revela": true,
+        "al_entrar": {
+          "flag": "lapsus",
+          "verdad": 5
+        },
+        "opciones": [
+          {
+            "tono": "prueba",
+            "texto": "¿En una de estas fotos?",
+            "ir": "n_fotos",
+            "prueba": "fotos",
+            "ef": {
+              "tension": 12
+            }
+          },
+          {
+            "tono": "presion",
+            "texto": "Ha dicho «en una foto». ¿Qué foto, Danner?",
+            "ir": "n_mirar",
+            "ef": {
+              "tension": 10
+            }
+          }
+        ]
+      },
+      "n_mirar": {
+        "dice": "Mirar no es delito. Si alguien me manda una foto, la miro. Como todo el mundo mira las noticias.",
+        "accion": "Ladea la cabeza y le mira fijo, desafiante. Le late una vena en la sien.",
+        "gestos": [
+          "ladea",
+          "fija"
+        ],
+        "emocion": "burla",
+        "revela": true,
+        "al_entrar": {
+          "flag": "mirar",
+          "verdad": 5
+        },
+        "opciones": [
+          {
+            "tono": "prueba",
+            "texto": "Las noticias no llevan corazones dibujados.",
+            "ir": "n_fotos",
+            "prueba": "fotos",
+            "ef": {
+              "tension": 14
+            }
+          },
+          {
+            "tono": "pregunta",
+            "texto": "¿Quién le mandaba esas fotos?",
+            "ir": "n_quien",
+            "ef": {
+              "tension": 8
+            }
+          }
+        ]
+      },
+      "n_fotos": {
+        "dice": "Eso lo habéis puesto vosotros. Bajo mi colchón cabe de todo. ...¿Por qué tienen corazones? Yo no dibujo corazones.",
+        "accion": "Lee las fotos al revés, sin tocarlas. Se queda rígido. La sonrisa ha desaparecido.",
+        "gestos": [
+          "lee_reves",
+          "rigido"
+        ],
+        "emocion": "asustado",
+        "revela": true,
+        "al_entrar": {
+          "flag": "fotos",
+          "tension": 4,
+          "verdad": 10
+        },
+        "opciones": [
+          {
+            "tono": "presion",
+            "texto": "La letra es la suya. Las fechas, las de las ejecuciones.",
+            "ir": "n_bono",
+            "ef": {
+              "tension": 12
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "Y el día de la primera foto le entraron doscientos mil.",
+            "ir": "n_bono",
+            "prueba": "transfer",
+            "ef": {
+              "tension": 10
+            }
+          },
+          {
+            "tono": "cortes",
+            "texto": "Respire. Solo quiero saber quién se las daba.",
+            "ir": "n_quien",
+            "ef": {
+              "confianza": 6
+            }
+          }
+        ]
+      },
+      "n_bono": {
+        "dice": "¡Vale! Me las mandaban, ¿contento? Era un extra. Un bono. Lo pedí yo. Quería verles la cara.",
+        "accion": "Se dobla sobre la mesa. Las manos le tiemblan tanto que la cadena repiquetea.",
+        "gestos": [
+          "dobla",
+          "manos_tiemblan"
+        ],
+        "emocion": "quebrado",
+        "revela": true,
+        "al_entrar": {
+          "flag": "bono",
+          "verdad": 15
+        },
+        "opciones": [
+          {
+            "tono": "pregunta",
+            "texto": "¿Quién se las mandaba?",
+            "ir": "n_k_off",
+            "ir_si": [
+              {
+                "si": {
+                  "grabadora": true
+                },
+                "ir": "n_cinta_k"
+              }
+            ]
+          },
+          {
+            "tono": "directo",
+            "texto": "Lo ha dicho para la grabadora: vendió la lista y pidió las fotos. Firme aquí.",
+            "ir": "n_firma",
+            "si": {
+              "grabadora": true,
+              "flags": [
+                "mintio_apuesta",
+                "celebro",
+                "no_toco"
+              ]
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "Ahora escuche lo que le dejó su cliente.",
+            "ir": "n_hija",
+            "prueba": "grabacion",
+            "ef": {
+              "tension": 12
+            }
+          }
+        ]
+      },
+      "n_firma": {
+        "dice": "Firmo. Vendí la lista. Pedí las fotos. Y me gustaron, ¿vale? Que quede en tu cinta. Ya no tengo nada más.",
+        "accion": "Habla mirando la grabadora, con los hombros hundidos.",
+        "gestos": [
+          "habla_grabadora",
+          "rinde"
+        ],
+        "emocion": "quebrado",
+        "revela": true,
+        "al_entrar": {
+          "flag": "confesion",
+          "verdad": 15
+        },
+        "opciones": [
+          {
+            "tono": "cortes",
+            "texto": "Con esto basta. Que se lo lleven.",
+            "fin": "v_album"
+          },
+          {
+            "tono": "prueba",
+            "texto": "Todavía no. Escuche esto antes.",
+            "ir": "n_hija",
+            "prueba": "grabacion",
+            "ef": {
+              "tension": 12
+            }
+          }
+        ]
+      },
+      "n_quien": {
+        "dice": "¿Quién? El de siempre. Nadie. Uno con guantes que huele a azufre.",
+        "accion": "Aparta la mirada y baja la voz, aunque en la sala no hay nadie más.",
+        "gestos": [
+          "aparta_mirada",
+          "baja_voz"
+        ],
+        "emocion": "nervioso",
+        "al_entrar": {
+          "flag": "azufre"
+        },
+        "opciones": [
+          {
+            "tono": "prueba",
+            "texto": "El de los guantes le mandaba estas fotos.",
+            "ir": "n_fotos",
+            "prueba": "fotos",
+            "ef": {
+              "tension": 14
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "El de los guantes le dejó un mensaje. Escuche.",
+            "ir": "n_hija",
+            "prueba": "grabacion",
+            "ef": {
+              "tension": 14
+            }
+          },
+          {
+            "tono": "pregunta",
+            "texto": "¿Azufre? ¿Un molk?",
+            "ir": "n_k_off",
+            "ir_si": [
+              {
+                "si": {
+                  "grabadora": true
+                },
+                "ir": "n_cinta_k"
+              }
+            ],
+            "ef": {
+              "tension": 4
+            }
+          }
+        ]
+      },
+      "n_cinta_k": {
+        "dice": "Con eso encendido no digo un nombre ni muerto. Bueno, muerto menos. ¿Sabes cuántos de los vuestros venden cintas?",
+        "accion": "Señala la grabadora con un dedo que no para de temblar. Mira la puerta.",
+        "gestos": [
+          "senala_grabadora",
+          "mira_puerta"
+        ],
+        "emocion": "asustado",
+        "al_entrar": {
+          "flag": "teme_cinta"
+        },
+        "grabadora": {
+          "off": {
+            "ir": "n_k_off",
+            "ef": {
+              "confianza": 6,
+              "tension": -6,
+              "flag": "off_consentido"
+            }
+          }
+        },
+        "opciones": [
+          {
+            "tono": "cortes",
+            "texto": "[Apagar la grabadora] Hable.",
+            "ir": "n_k_off",
+            "grabadora": false,
+            "ef": {
+              "confianza": 6,
+              "tension": -6
+            }
+          },
+          {
+            "tono": "presion",
+            "texto": "La cinta se queda encendida. El nombre.",
+            "ir": "n_cierra",
+            "ef": {
+              "tension": 14
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "Su comprador ya habla en cintas. Escuche.",
+            "ir": "n_hija",
+            "prueba": "grabacion",
+            "ef": {
+              "tension": 12
+            }
+          }
+        ]
+      },
+      "n_k_off": {
+        "dice": "K. Karg. Manda en los molk del muelle cuatro. Le vendí la lista y me pagó en créditos y en fotos. Ya. Ya lo he dicho.",
+        "accion": "Habla encogido, casi en un susurro, con los ojos fijos en la luz apagada de la grabadora.",
+        "gestos": [
+          "baja_voz",
+          "encoge"
+        ],
+        "emocion": "asustado",
+        "revela": true,
+        "al_entrar": {
+          "flag": "karg",
+          "verdad": 10
+        },
+        "opciones": [
+          {
+            "tono": "directo",
+            "texto": "Con esto me basta. Cierro el caso.",
+            "fin": "d_sin_grabar"
+          },
+          {
+            "tono": "pregunta",
+            "texto": "¿La lista que le vendió era buena?",
+            "ir": "n_falsa",
+            "ef": {
+              "tension": 6
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "Karg ya ha decidido qué hacer con usted. Escuche.",
+            "ir": "n_hija",
+            "prueba": "grabacion",
+            "ef": {
+              "tension": 12
+            }
+          }
+        ]
+      },
+      "n_falsa": {
+        "dice": "¿Buena? Je. Le vendí humo. Nombres de un listín viejo y seis que conocía de vista. Los seis que ya no están.",
+        "accion": "Sonríe sin querer. Luego le tiemblan las manos y deja de sonreír.",
+        "gestos": [
+          "sonrisa",
+          "manos_tiemblan"
+        ],
+        "emocion": "quebrado",
+        "revela": true,
+        "al_entrar": {
+          "flag": "lista_falsa",
+          "quitar_flag": "sin_lista",
+          "verdad": 15
+        },
+        "opciones": [
+          {
+            "tono": "pregunta",
+            "texto": "Entonces Karg sigue buscando. ¿Usted tiene la buena?",
+            "ir": "n_verdadera",
+            "ef": {
+              "tension": 6
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "Karg ya sabe que le mintió. Escuche.",
+            "ir": "n_hija",
+            "prueba": "grabacion",
+            "ef": {
+              "tension": 12
+            }
+          }
+        ]
+      },
+      "n_verdadera": {
+        "dice": "La buena está donde solo sé yo. Es mi seguro de vida. El mío y el de mi niña.",
+        "accion": "Esconde las manos bajo la mesa. La cadena se tensa.",
+        "gestos": [
+          "esconde_manos",
+          "fija"
+        ],
+        "emocion": "asustado",
+        "revela": true,
+        "al_entrar": {
+          "flag": "seguro",
+          "verdad": 10
+        },
+        "opciones": [
+          {
+            "tono": "cortes",
+            "texto": "Su seguro caduca cuando Karg descubra el engaño. Déjeme protegerlas a las dos.",
+            "ir": "n_trato",
+            "ef": {
+              "confianza": 10
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "Su seguro ya ha caducado. Escuche.",
+            "ir": "n_hija",
+            "prueba": "grabacion",
+            "ef": {
+              "tension": 12
+            }
+          }
+        ]
+      },
+      "n_hija_sombra": {
+        "dice": "Tengo una cría. Mara. No me deja verla; dice que huelo a funeral. ...Bah. Los críos exageran.",
+        "accion": "Se mira las manos. Los hombros le caen un momento, y enseguida vuelve a erguirse.",
+        "gestos": [
+          "mira_manos",
+          "hombros_bajan"
+        ],
+        "emocion": "quebrado",
+        "al_entrar": {
+          "flag": "nombro_hija"
+        },
+        "opciones": [
+          {
+            "tono": "cortes",
+            "texto": "Seguro que ella también le echa de menos.",
+            "ir": "n_crecido",
+            "ef": {
+              "confianza": 8
+            }
+          },
+          {
+            "tono": "prueba",
+            "texto": "Mara. Alguien más sabe cómo se llama. Escuche.",
+            "ir": "n_hija",
+            "prueba": "grabacion",
+            "ef": {
+              "tension": 16
+            }
+          },
+          {
+            "tono": "pregunta",
+            "texto": "¿Sabe Mara a qué se dedica su padre?",
+            "ir": "n_celebra",
+            "ef": {
+              "tension": 4
+            }
+          }
+        ]
+      },
+      "n_hija": {
+        "dice": "«Si nos mentiste, rata, empezamos por tu hija.» ...No. Eso no. Ella no sabe nada. ¡No sabe ni mi apellido nuevo!",
+        "accion": "Tiembla entero. Se tapa la boca con las dos manos esposadas.",
+        "gestos": [
+          "tiembla",
+          "tapa_boca"
+        ],
+        "emocion": "quebrado",
+        "revela": true,
+        "al_entrar": {
+          "flag": "hija",
+          "tension": 8,
+          "verdad": 10
+        },
+        "opciones": [
+          {
+            "tono": "cortes",
+            "texto": "Puedo protegerla. Pero necesito la verdad. Toda.",
+            "ir": "n_trato",
+            "ef": {
+              "confianza": 10
+            }
+          },
+          {
+            "tono": "presion",
+            "texto": "Usted le mintió a Karg. Karg cobra en sangre. Hable.",
+            "ir": "n_panico",
+            "ef": {
+              "tension": 14
+            }
+          },
+          {
+            "tono": "silencio",
+            "texto": "[Dejar que se derrumbe.]",
+            "ir": "n_derrumbe",
+            "ef": {
+              "tension": -6
+            }
+          }
+        ]
+      },
+      "n_derrumbe": {
+        "dice": "Seis. Les vi la cara a los seis. Creía que me iba a gustar más.",
+        "accion": "Cierra los ojos y se dobla sobre la mesa, sin hacer ruido.",
+        "gestos": [
+          "cierra_ojos",
+          "dobla"
+        ],
+        "emocion": "quebrado",
+        "revela": true,
+        "al_entrar": {
+          "flag": "remordimiento",
+          "verdad": 10
+        },
+        "opciones": [
+          {
+            "tono": "cortes",
+            "texto": "Ayúdeme a que no haya un séptimo.",
+            "ir": "n_trato",
+            "ef": {
+              "confianza": 8
+            }
+          },
+          {
+            "tono": "presion",
+            "texto": "¿Cuánto le gustó?",
+            "ir": "n_panico",
+            "ef": {
+              "tension": 14
+            }
+          }
+        ]
+      },
+      "n_panico": {
+        "dice": "¡No puedo respirar! ¡Sacadme de aquí! ¡Quiero un abogado, ya, un abogado!",
+        "accion": "Respira a bocanadas y golpea la mesa con las esposas.",
+        "gestos": [
+          "respira_rapido",
+          "golpe_mesa"
+        ],
+        "emocion": "furioso",
+        "al_entrar": {
+          "tension": 10
+        },
+        "opciones": [
+          {
+            "tono": "silencio",
+            "texto": "[Esperar a que respire.]",
+            "ir": "n_respira",
+            "ef": {
+              "tension": -14
+            }
+          },
+          {
+            "tono": "presion",
+            "texto": "Aquí no hay abogado para usted. Hable.",
+            "ir": "n_cierra",
+            "ef": {
+              "tension": 12
+            }
+          }
+        ]
+      },
+      "n_respira": {
+        "dice": "...Perdón. Perdón. Ya. Ya respiro.",
+        "accion": "Respira hondo y deja las manos planas sobre la mesa, temblando aún.",
+        "gestos": [
+          "respira_hondo",
+          "planas"
+        ],
+        "emocion": "asustado",
+        "opciones": [
+          {
+            "tono": "cortes",
+            "texto": "Hablemos de cómo proteger a Mara.",
+            "ir": "n_trato",
+            "ef": {
+              "confianza": 8
+            },
+            "si": {
+              "flag": "hija"
+            }
+          },
+          {
+            "tono": "pregunta",
+            "texto": "Empiece por el principio. ¿Quién compró la lista?",
+            "ir": "n_k_off",
+            "ir_si": [
+              {
+                "si": {
+                  "grabadora": true
+                },
+                "ir": "n_cinta_k"
+              }
+            ]
+          }
+        ]
+      },
+      "n_cierra": {
+        "dice": "Se acabó. Me quedo quietecito como un mueble. Los muebles no van a juicio.",
+        "accion": "Se cruza de brazos y mira la pared. No volverá a sonreír en un rato.",
+        "gestos": [
+          "cruza_brazos",
+          "aparta_mirada"
+        ],
+        "emocion": "furioso",
+        "al_entrar": {
+          "tension": 8
+        },
+        "opciones": [
+          {
+            "tono": "prueba",
+            "texto": "Los muebles no tienen hijas. Usted sí. Escuche.",
+            "ir": "n_hija",
+            "prueba": "grabacion",
+            "ef": {
+              "tension": 12
+            }
+          },
+          {
+            "tono": "silencio",
+            "texto": "[Esperar.]",
+            "ir": "n_calma",
+            "ef": {
+              "tension": -8
+            }
+          }
+        ]
+      },
+      "n_trato": {
+        "dice": "Protección para Mara: otro nombre, lejos del anillo. Y para mí una celda sin ventanas. Pero dilo en la cinta. Si no está grabado, no existe.",
+        "accion": "Señala la grabadora. Por primera vez la mira como a una amiga.",
+        "gestos": [
+          "senala_grabadora",
+          "fija"
+        ],
+        "emocion": "nervioso",
+        "al_entrar": {
+          "flag": "pide_trato"
+        },
+        "grabadora": {
+          "on": {
+            "si_no_flag": "sin_lista",
+            "ir": "n_trato_grabado",
+            "ef": {
+              "flag": "trato",
+              "quitar_flag": "sin_trato"
+            }
+          }
+        },
+        "opciones": [
+          {
+            "tono": "pregunta",
+            "texto": "¿Protegerla de quién? Necesito un nombre y la lista buena.",
+            "ir": "n_k_off",
+            "ir_si": [
+              {
+                "si": {
+                  "grabadora": true
+                },
+                "ir": "n_cinta_k"
+              }
+            ],
+            "si": {
+              "flag": "sin_lista"
+            }
+          },
+          {
+            "tono": "cortes",
+            "texto": "Queda grabado: protección para usted y para Mara a cambio de la lista buena.",
+            "ir": "n_trato_grabado",
+            "ef": {
+              "flag": "trato",
+              "quitar_flag": "sin_trato"
+            },
+            "si": {
+              "grabadora": true,
+              "no_flag": "sin_lista"
+            }
+          },
+          {
+            "tono": "cortes",
+            "texto": "[Encender la grabadora] Para la cinta: protección a cambio de la lista buena.",
+            "ir": "n_trato_grabado",
+            "grabadora": true,
+            "ef": {
+              "flag": "trato",
+              "quitar_flag": "sin_trato"
+            },
+            "si": {
+              "grabadora": false,
+              "no_flag": "sin_lista"
+            }
+          },
+          {
+            "tono": "presion",
+            "texto": "Ni trato ni nada. Usted no está en posición de pedir.",
+            "ir": "n_cierra",
+            "ef": {
+              "tension": 16
+            }
+          }
+        ]
+      },
+      "n_trato_grabado": {
+        "dice": "Grabado. Ya no te puedes echar atrás. ...Los treinta y cuatro están en una tarjeta cosida al forro de mi chaqueta. Consigna del muelle dos, taquilla diecisiete.",
+        "accion": "Habla hacia la grabadora, despacio, deletreando. Después se le hunden los hombros.",
+        "gestos": [
+          "habla_grabadora",
+          "rinde"
+        ],
+        "emocion": "quebrado",
+        "revela": true,
+        "al_entrar": {
+          "flag": "tarjeta",
+          "verdad": 20
+        },
+        "opciones": [
+          {
+            "tono": "cortes",
+            "texto": "Gracias, Danner. Vamos a por esa tarjeta.",
+            "fin": "v_lista"
+          },
+          {
+            "tono": "directo",
+            "texto": "Y la venta. Dígala también, para que conste.",
+            "ir": "n_firma",
+            "si": {
+              "flags": [
+                "mintio_apuesta",
+                "celebro",
+                "no_toco"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "grabadora_defecto": {
+      "off_confia": {
+        "dice": "¿La apagas? Je. Ya me vas cayendo mejor.",
+        "ef": {
+          "confianza": 6,
+          "tension": -6,
+          "flag": "off_consentido"
+        },
+        "si": {
+          "confianza_min": 45
+        }
+      },
+      "off_sabe": {
+        "dice": "Así sí. Aquí las paredes tienen orejas, y las orejas cobran.",
+        "ef": {
+          "confianza": 8,
+          "tension": -8,
+          "flag": "off_consentido"
+        },
+        "si": {
+          "flag": "teme_cinta"
+        }
+      },
+      "off_sospecha": {
+        "dice": "¿Por qué la apagas? ¿Qué me vas a hacer? ¡Que conste que no me has tocado!",
+        "ef": {
+          "tension": 10
+        }
+      },
+      "on_traicion": {
+        "fin": "d_mudo",
+        "si": {
+          "flag": "hablo_off",
+          "no_flag": "trato"
+        }
+      },
+      "on_formal": {
+        "dice": "La lucecita roja. Saluda, Danner. Hola, mamá.",
+        "ef": {
+          "confianza": -2,
+          "tension": 2
+        }
+      }
+    },
+    "pruebas_defecto": {
+      "transfer": {
+        "dice": "Suerte, ya te lo he dicho. Hay gente que nace con ella.",
+        "ef": {
+          "tension": 6
+        }
+      },
+      "fotos": {
+        "dice": "Guarda eso. No me gusta... no me gusta que me miren.",
+        "ef": {
+          "tension": 10
+        }
+      },
+      "grabacion": {
+        "dice": "Apaga eso. ¡Apágalo! ¿Quién te ha dado eso?",
+        "ef": {
+          "tension": 14,
+          "flag": "hija"
+        }
+      },
+      "_": {
+        "dice": "¿Y eso qué tiene que ver conmigo? Nada. Siguiente.",
+        "ef": {
+          "tension": 4
+        }
+      }
+    },
+    "testigos_defecto": {
+      "flint": {
+        "dice": "Flint ve doble desde el año pasado.",
+        "ef": {
+          "tension": 6,
+          "flag": "celebro"
+        }
+      },
+      "vega": {
+        "dice": "Vega, Vega... no me suena. Suena a nombre falso.",
+        "ef": {
+          "tension": 6
+        }
+      },
+      "_": {
+        "dice": "La gente habla mucho, poli. Más que yo, fíjate.",
+        "ef": {
+          "tension": 4
+        }
+      }
+    },
+    "tension_max": {
+      "con_flag": {
+        "hija": "d_crisis"
+      },
+      "fin": "d_abogado"
+    },
+    "finales": {
+      "v_lista": {
+        "tipo": "victoria",
+        "titulo": "LOS TREINTA Y CUATRO",
+        "texto": "La tarjeta estaba en el forro, en la taquilla diecisiete. Esa misma noche se retiró a los treinta y cuatro agentes. Los hombres de Karg asaltaron seis pisos vacíos. Mara Cole vive con otro apellido en una colonia agrícola y no sabe nada. Danner pide cada semana una foto de ella. Nadie se la manda."
+      },
+      "v_album": {
+        "tipo": "victoria",
+        "titulo": "EL ÁLBUM",
+        "texto": "La confesión grabada bastó para la condena y para tirar del hilo de la transferencia hasta el muelle cuatro: Karg y cuatro de los suyos, detenidos. Las seis fotos se archivaron como prueba. Nunca se supo si existía una lista buena, y Danner se llevó el secreto a una celda donde nadie quiere mirarle."
+      },
+      "d_humo": {
+        "tipo": "derrota",
+        "titulo": "TRATO DE HUMO",
+        "texto": "Te da un nombre: un estibador muerto hace dos años. Para cuando lo compruebas, el fiscal ya ha firmado la inmunidad. Danner sale por la puerta principal, silbando. Esa noche muere el séptimo."
+      },
+      "d_vega": {
+        "tipo": "derrota",
+        "titulo": "CULPABLE EQUIVOCADO",
+        "texto": "Suspenden a la agente Vega y le congelan las cuentas. Para cuando se aclara que era inocente, el cártel ya ha ido a por ella. Danner se entera por las noticias. Dicen que se rió."
+      },
+      "d_mudo": {
+        "tipo": "derrota",
+        "titulo": "LA LUCECITA ROJA",
+        "texto": "Ve encenderse la grabadora y se echa a reír. «¿Qué cinta? Yo no he dicho nada.» No vuelve a abrir la boca. Lo que te contó a oscuras no vale nada ante un juez."
+      },
+      "d_sin_grabar": {
+        "tipo": "derrota",
+        "titulo": "PALABRA DE RATA",
+        "texto": "Tienes un nombre, Karg, y ninguna prueba. El juez no admite una conversación sin grabar y Danner, de pronto, no recuerda nada. Sale con una fianza que paga alguien con guantes que huele a azufre."
+      },
+      "d_abogado": {
+        "tipo": "derrota",
+        "titulo": "EL ABOGADO DEL PUERTO",
+        "texto": "Un abogado con anillos en todos los dedos entra sin llamar. Danner le guiña un ojo a la cámara. El caso se archiva por coacción y la Rata vuelve a su agujero."
+      },
+      "d_crisis": {
+        "tipo": "derrota",
+        "titulo": "CRISIS",
+        "texto": "Danner se desploma entre convulsiones y se lo llevan a la enfermería de la comisaría. A las tres horas la enfermería está vacía. Alguien del puerto pagó un turno de noche muy caro."
+      },
+      "d_amanecer": {
+        "tipo": "derrota",
+        "titulo": "EL SÉPTIMO",
+        "texto": "Se acaba el tiempo de custodia. Mientras firmas su puesta en libertad, suena el teléfono: un séptimo agente en el muelle cuatro. Danner lo oye y se le escapa una risita."
+      }
+    }
+  }
+}

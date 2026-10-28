@@ -108,6 +108,10 @@ func construir(r: Dictionary) -> void:
 	tipo = str(r.get("tipo", "humano"))
 	# modelo esculpido: el ilvari siempre; los demás si el caso trae "modelo" y el .glb existe
 	var especie := str(r.get("modelo", "ilvari" if tipo == "ilvari" else ""))
+	# pruebas: --modelo=<perfil> fuerza un modelo esculpido (p. ej. humano_danner)
+	for a in OS.get_cmdline_user_args():
+		if a.begins_with("--modelo="):
+			especie = a.substr(9)
 	if especie != "" and IlvariScript.PERFILES.has(especie) and ResourceLoader.exists(IlvariScript.PERFILES[especie].escena):
 		_silla()
 		esculpido = IlvariScript.new()

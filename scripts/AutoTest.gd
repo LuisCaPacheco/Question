@@ -217,6 +217,9 @@ func _correr() -> void:
 		await _vista_debug(e, Vector3(0.0, al + 0.06, -0.5), Vector3(0.0, al, -0.98), "r1_cara")
 		await _vista_debug(e, Vector3(0.55, al + 0.09, -0.7), Vector3(0.0, al - 0.02, -1.0), "r2_perfil")
 		await _vista_debug(e, Vector3(0.0, 1.25, -0.05), Vector3(0.0, 0.83, -0.4), "r3_manos")
+		if "--solo_retrato" in OS.get_cmdline_user_args():
+			get_tree().quit()
+			return
 	if "--gestos" in OS.get_cmdline_user_args():
 		await _correr_gestos(e)
 		return

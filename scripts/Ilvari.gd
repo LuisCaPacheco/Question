@@ -33,6 +33,10 @@ uniform float rug = 0.42;
 uniform float humedad = 0.0;
 uniform float poros_esc = 40.0;
 uniform float desatura = 0.0;
+uniform float especular = 0.45;
+uniform float rim = 0.12;
+uniform float relieve = 1.0;
+uniform float poros_k = 0.18;
 // grietas incandescentes (molk): máscara horneada <prefijo>_emi.png
 uniform sampler2D emi_tex : hint_default_black, filter_linear_mipmap;
 uniform vec4 emi_col : source_color = vec4(1.0, 0.35, 0.06, 1.0);
@@ -45,13 +49,14 @@ void fragment() {
 	AO_LIGHT_AFFECT = 0.3;
 	vec3 n1 = texture(normal_tex, UV).rgb * 2.0 - 1.0;
 	vec3 n2 = texture(poros, UV * poros_esc).rgb * 2.0 - 1.0;
-	n1.xy += n2.xy * 0.18;
+	n1.xy += n2.xy * poros_k;
 	NORMAL_MAP = normalize(n1) * 0.5 + 0.5;
+	NORMAL_MAP_DEPTH = relieve;
 	ROUGHNESS = clamp(mix(rug, 0.16, humedad), 0.08, 1.0);
-	SPECULAR = 0.45;
+	SPECULAR = especular;
 	SSS_STRENGTH = 0.5;
 	BACKLIGHT = luz_interior.rgb * translucidez;
-	RIM = 0.12;
+	RIM = rim;
 	RIM_TINT = 0.8;
 	EMISSION = emi_col.rgb * texture(emi_tex, UV).r * emi;
 }
@@ -184,19 +189,24 @@ const PERFILES := {
 	},
 	# Humanos: un modelo por personaje (pelo, cicatriz y dientes propios, colores de su ficha
 	# ya horneados). Comparten la base "humano"; los colores de los ojos salen de rasgos.
+	# El iris de la ficha es el del modelo procedural (brilla y es exagerado); el esculpido lleva
+	# uno natural, del mismo tono, y apenas emite.
 	"humano_danner": {
 		"base": "humano", "escena": "res://modelos/humano_danner.glb", "prefijo": "hum_danner",
-		"pelo_rug": 0.42, "iris_emi": 0.5, "venas_ojo": 0.6,
+		"pelo_rug": 0.6, "iris_emi": 0.06, "venas_ojo": 0.55,
+		"ojo_iris_a": Color("#9A7A36"), "ojo_iris_b": Color("#3E2C12"), "ojo_esclera": Color("#CDBF9E"),
 	},
 	"humano_sara": {
 		"base": "humano", "escena": "res://modelos/humano_sara.glb", "prefijo": "hum_sara",
-		"pelo_rug": 0.42, "iris_emi": 0.7, "venas_ojo": 0.15,
+		"pelo_rug": 0.66, "iris_emi": 0.1, "venas_ojo": 0.15,
+		"ojo_iris_a": Color("#9DB7C6"), "ojo_iris_b": Color("#3E5260"), "ojo_esclera": Color("#DAD6CE"),
 		# sonríe con los ojos quietos: casi no parpadea y apenas mueve la pupila
 		"pupila": {"calma": 0.3, "burla": 0.28, "nervioso": 0.34, "asustado": 0.5, "furioso": 0.25, "quebrado": 0.45, "triunfo": 0.26},
 	},
 	"humano_elena": {
 		"base": "humano", "escena": "res://modelos/humano_elena.glb", "prefijo": "hum_elena",
-		"pelo_rug": 0.55, "iris_emi": 0.8, "venas_ojo": 0.1,
+		"pelo_rug": 0.72, "iris_emi": 0.08, "venas_ojo": 0.1,
+		"ojo_iris_a": Color("#6F8FB8"), "ojo_iris_b": Color("#26364E"), "ojo_esclera": Color("#E2DDD3"),
 	},
 	# Gruul, el molk: roca viva con grietas de magma (emisión que sigue a la ira y los nervios),
 	# ojos de brasa, manos de tres dedos enormes. Brazos de piedra al aire (material piel_cuerpo).
@@ -219,8 +229,11 @@ const PERFILES := {
 const BASES := {
 	"humano": {
 		"ropa_mat": "ropa", "ropa_tinte": Color(1, 1, 1), "ropa_rug": 0.9,
-		"tinte": Color(0.55, 0.54, 0.54), "luz_interior": Color(0.55, 0.14, 0.08), "translucidez": 0.12, "rug": 0.5,
-		"ojo": "uv", "parpadea": true, "altura_cabeza": 1.265, "abierto": 0.3,
+		# piel: mate y poco especular (con 0.45 y rug 0.5 parecía bronce bajo el foco cálido)
+		"tinte": Color(0.8, 0.8, 0.82), "luz_interior": Color(0.55, 0.14, 0.08), "translucidez": 0.18, "rug": 0.64,
+		"especular": 0.28, "rim": 0.05, "relieve": 0.55, "poros_k": 0.07,
+		# iris algo mayor y párpado más bajo: con 0.47 / 0.3 se veía blanco alrededor (mirada de susto)
+		"ojo": "uv", "parpadea": true, "altura_cabeza": 1.265, "abierto": 0.2, "iris_r": 0.55, "pelo_spec": 0.25,
 		"pupila": {"calma": 0.35, "burla": 0.3, "nervioso": 0.5, "asustado": 0.8, "furioso": 0.22, "quebrado": 0.6, "triunfo": 0.28},
 		# mano humana (herramientas/mano.py): cuatro dedos y el pulgar
 		"dedos": 4, "r_falange": [0.0094, 0.0085, 0.0077], "largo_punta": 0.021, "r_antebrazo": 0.032,
@@ -526,7 +539,7 @@ func _materiales() -> void:
 		for par in [["ojo_iris_a", "iris_a"], ["ojo_iris_b", "iris_b"], ["ojo_esclera", "esclera"], ["ojo_piel", "piel"]]:
 			if perfil.has(par[0]):
 				_mat_ojo.set_shader_parameter(par[1], lin.call(perfil[par[0]]))
-		for par in [["venas_ojo", "venas"], ["esclera_emi", "esclera_emi"], ["abierto", "abierto"], ["pestanas", "pestanas"]]:
+		for par in [["venas_ojo", "venas"], ["esclera_emi", "esclera_emi"], ["abierto", "abierto"], ["pestanas", "pestanas"], ["iris_r", "iris_r"]]:
 			if perfil.has(par[0]):
 				_mat_ojo.set_shader_parameter(par[1], float(perfil[par[0]]))
 	for k in ["iris_a", "iris_b"]:
@@ -552,9 +565,10 @@ func _materiales() -> void:
 		pelo.normal_enabled = true
 		pelo.normal_texture = aux._tex(str(perfil.pelo) + "_normal.png")
 	pelo.roughness = float(perfil.get("pelo_rug", 0.5))
+	pelo.metallic_specular = float(perfil.get("pelo_spec", 0.5))
 	pelo.specular_mode = BaseMaterial3D.SPECULAR_SCHLICK_GGX
 	pelo.rim_enabled = true
-	pelo.rim = 0.25
+	pelo.rim = 0.25 if not perfil.has("pelo_spec") else 0.1
 	var una := Proc.mat(perfil.get("una", Color(0.62, 0.48, 0.42)), 0.32)
 	una.clearcoat_enabled = true
 	una.clearcoat = 0.4
@@ -618,6 +632,10 @@ func _piel(prefijo: String, aux, poros: Texture2D) -> ShaderMaterial:
 	m.set_shader_parameter("translucidez", perfil.translucidez)
 	m.set_shader_parameter("rug", perfil.rug)
 	m.set_shader_parameter("desatura", perfil.get("desatura", 0.0))
+	m.set_shader_parameter("especular", perfil.get("especular", 0.45))
+	m.set_shader_parameter("rim", perfil.get("rim", 0.12))
+	m.set_shader_parameter("relieve", perfil.get("relieve", 1.0))
+	m.set_shader_parameter("poros_k", perfil.get("poros_k", 0.18))
 	m.set_meta("prefijo", prefijo)
 	_mat_piel.append(m)
 	return m

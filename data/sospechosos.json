@@ -15,6 +15,7 @@
       },
       "rasgos": {
         "tipo": "humano",
+        "modelo": "humano_danner",
         "piel": "#B39A7A",
         "mancha": "#6E4A3A",
         "vena": "#4A3F5E",
@@ -111,6 +112,7 @@
       },
       "rasgos": {
         "tipo": "humano",
+        "modelo": "humano_sara",
         "piel": "#A8A39C",
         "mancha": "#5C4B55",
         "vena": "#3A3F6A",
@@ -300,6 +302,7 @@
       },
       "rasgos": {
         "tipo": "humano",
+        "modelo": "humano_elena",
         "piel": "#CDB9A8",
         "mancha": "#8A5A5A",
         "vena": "#4A4A8A",

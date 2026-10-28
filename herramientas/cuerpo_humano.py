@@ -65,7 +65,7 @@ VARIANTES = {
     # 41 años, enfermera jefe: cara suave y maternal, moño, una cicatriz vieja en la mejilla
     # derecha y una sonrisa demasiado fácil.
     "elena": dict(genero="f", hombro=0.162, cadera=1.1, cuello=0.88, flaco=0.0, mandibula=0.86, nariz=0.9,
-                  labios=1.05, pecho=1.1, edad=0.7, ojeras=0.3, barba=0.0, mano=0.92,
+                  labios=0.95, pecho=1.1, edad=0.7, ojeras=0.3, barba=0.0, mano=0.92,
                   cara=0.97, pelo="moño", cicatriz="mejilla", dientes="normal"),
 }
 
@@ -300,21 +300,27 @@ def _forma(S, V):
     S.add(Elipsoide(h(0, -0.05, 0.022), (0.06 * cx, 0.045, 0.056), R_CABEZA), 0.03)
     # tercio inferior de la cara, mejillas y hocico
     ca = V["cara"]
-    S.add(Elipsoide(h(0, -0.045, -0.058), (0.056 * ca, 0.058, 0.062), R_CABEZA), 0.035)
-    S.add(Elipsoide(h(0, -0.081, -0.068), (0.03, 0.026, 0.027), R_CABEZA), 0.02)
+    # (más alto y estrecho que antes: si baja hasta el cuello no hay ángulo de mandíbula)
+    S.add(Elipsoide(h(0, -0.047, -0.05), (0.052 * ca, 0.054, 0.052), R_CABEZA), 0.03)
+    S.add(Elipsoide(h(0, -0.08, -0.072), (0.028, 0.026, 0.031), R_CABEZA), 0.018)
     for s in (-1, 1):
         # pómulo y arco cigomático
         S.add(Elipsoide(h(0.046 * s * ca, -0.07, -0.033 + 0.004 * (1 - ca) / 0.08), (0.015, 0.018, 0.0105 + 0.0015 * fl), R_CABEZA, rot=rot_euler(0, 0, 0.5 * s)), 0.02)
-        S.add(ConoRedondo(h(0.05 * s, -0.062, -0.034), h(0.062 * s, -0.012, -0.038), 0.0052, 0.0045, R_CABEZA), 0.014)
+        S.add(ConoRedondo(h(0.05 * s, -0.062, -0.034), h(0.062 * s, -0.012, -0.036), 0.0042, 0.0036, R_CABEZA), 0.016)
         # almohadilla de la mejilla (cara llena; se pierde en las caras chupadas)
         if fl < 0.9:
             S.add(Elipsoide(h(0.04 * s, -0.072, -0.056), tuple(_v([0.016, 0.013, 0.016]) * (1.0 - 0.4 * fl)), R_CABEZA), 0.022)
+        # carrillo: rellena entre el pómulo, la comisura y la mandíbula (sin él queda un hoyo)
+        k = 0.7 - 0.03 * fl
+        S.add(Elipsoide(h(0.042 * s, -0.05, -0.067), (0.021 * k, 0.034, 0.028), R_CABEZA, rot=rot_euler(0, 0, 0.35 * s)), 0.028)
+        # puente entre el carrillo y el cuerpo de la mandíbula (si no, la mejilla cuelga sobre ella)
+        S.add(ConoRedondo(h(0.047 * s, -0.025, -0.082), h(0.029 * s, -0.072, -0.098), 0.012 * (0.85 + 0.15 * k), 0.011, R_CABEZA), 0.022)
         # mandíbula: rama y cuerpo hasta el mentón
         ang = h(0.055 * m * s, -0.006, -0.088 + 0.004 * (1 - m))
-        S.add(ConoRedondo(h(0.058 * s, 0.004, -0.04), ang, 0.011, 0.012 * m, R_MANDIBULA), 0.02)
-        S.add(ConoRedondo(ang, h(0.021 * s, -0.078, -0.115), 0.012 * m, 0.0105, R_MANDIBULA), 0.02)
+        S.add(ConoRedondo(h(0.058 * s, 0.004, -0.04), ang, 0.011, 0.013, R_MANDIBULA), 0.02)
+        S.add(ConoRedondo(ang, h(0.021 * s, -0.078, -0.115), 0.013, 0.012, R_MANDIBULA), 0.024)
         # masetero: rellena el hueco entre el pómulo y el ángulo de la mandíbula
-        S.add(ConoRedondo(h(0.054 * s, -0.035, -0.042), h(0.054 * m * s, -0.02, -0.084), 0.012, 0.0125, R_CABEZA), 0.02)
+        S.add(ConoRedondo(h(0.052 * s, -0.035, -0.044), h(0.052 * m * s, -0.018, -0.08), 0.009, 0.01, R_CABEZA), 0.018)
         # arco superciliar (más marcado en él)
         S.add(ConoRedondo(h(0.008 * s, -0.093, -0.001), h(0.051 * s, -0.078, 0.004), 0.0095 if not fem else 0.0066, 0.0068 if not fem else 0.0058, R_CEJA), 0.014)
         # oreja: pabellón aplastado, lóbulo y trago
@@ -323,19 +329,21 @@ def _forma(S, V):
         S.add(Esfera(h(0.07 * s, -0.012, -0.034), 0.0042, R_OREJA), 0.004)
         # nariz: aletas
         S.add(Elipsoide(h(0.0104 * s * n, -0.106, -0.062), (0.0064 * n, 0.0082, 0.0062), R_CABEZA), 0.006)
-    S.add(Elipsoide(h(0, -0.088, -0.112), (0.0195 * (0.88 if fem else 1.0), 0.014, 0.016), R_MANDIBULA), 0.014)
+    S.add(Elipsoide(h(0, -0.09, -0.111), (0.0195 * (0.88 if fem else 1.0), 0.014, 0.016), R_MANDIBULA), 0.014)
     S.add(Esfera(h(0, -0.093, -0.005), 0.0098, R_CEJA), 0.012)
     # nariz: tabique y punta
     S.add(ConoRedondo(h(0, -0.097, -0.014), h(0, -0.114 - 0.004 * n, -0.054), 0.0062 * n, 0.0082 * n, R_CABEZA), 0.012)
     S.add(Elipsoide(h(0, -0.115 - 0.004 * n, -0.057), (0.0088 * n, 0.0095, 0.0092), R_CABEZA), 0.006)
     # labios
     lb = V["labios"]
-    S.add(Elipsoide(h(0, -0.1005, BOCA_Z + 0.0052), (0.0215 * lb, 0.0082, 0.0052 * lb), R_LABIO, rot=rot_euler(-0.25, 0, 0)), 0.004)
-    S.add(Elipsoide(h(0, -0.0985, BOCA_Z - 0.0066), (0.0195 * lb, 0.0085, 0.0062 * lb), R_LABIO, rot=rot_euler(0.3, 0, 0)), 0.004)
-    # mejillas chupadas
+    S.add(Elipsoide(h(0, -0.0985, BOCA_Z + 0.005), (0.0205 * lb, 0.0072, 0.0048 * lb), R_LABIO, rot=rot_euler(-0.25, 0, 0)), 0.006)
+    S.add(Elipsoide(h(0, -0.0955, BOCA_Z - 0.0062), (0.0185 * lb, 0.0072, 0.0056 * lb), R_LABIO, rot=rot_euler(0.3, 0, 0)), 0.006)
+    # mejillas chupadas (un hueco poco profundo y ancho: si no, deja bultos arriba y abajo)
     if fl > 0:
         for s in (-1, 1):
-            S.sub(Esfera(h(0.086 * s, -0.066, -0.071), 0.03 - 0.003 * fl), 0.02)
+            S.sub(Elipsoide(h(0.087 * s, -0.06, -0.072), (0.03, 0.03, 0.022), rot=rot_euler(0, 0, 0.4 * s)), 0.022 * (0.6 + 0.4 * fl))
+    # bajo la mandíbula: el cuello entra por detrás del mentón (ángulo cervicomentoniano)
+    S.sub(Elipsoide(h(0, -0.07, -0.165), (0.05, 0.045, 0.036)), 0.022)
 
 
 def _ojos_y_boca(S, V):
@@ -356,7 +364,8 @@ def _ojos_y_boca(S, V):
 
 
 def cavidad_boca():
-    return Elipsoide(h(0, -0.087, BOCA_Z - 0.004), (0.021, 0.022, 0.011))
+    # queda detrás de los labios: en reposo la boca está cerrada y se abre con la mandíbula
+    return Elipsoide(h(0, -0.08, BOCA_Z - 0.004), (0.02, 0.016, 0.01))
 
 
 def cabeza(V):
@@ -381,7 +390,27 @@ def forma(V):
 
 # --- cicatrices: polilíneas sobre la piel (relativas a H)
 
+_CIC = {}
+
+
 def cicatriz(V):
+    """Polilíneas de la cicatriz pegadas a la piel: cada punto se proyecta sobre la forma de la
+    cabeza (si la cara cambia, la cicatriz la sigue)."""
+    if V["id"] not in _CIC:
+        S0 = forma(V)
+        out = []
+        for pts in _cicatriz_base(V):
+            lin = []
+            for p in pts:
+                q = p - H
+                o = H + _v([q[0] * 0.3, q[1] * 0.3, q[2]])
+                lin.append(superficie(S0, o, p - o, 0.2, 0.001))
+            out.append(lin)
+        _CIC[V["id"]] = out
+    return _CIC[V["id"]]
+
+
+def _cicatriz_base(V):
     t = V["cicatriz"]
     if t == "sonrisa":
         return [[h(0.024 * s, -0.103, BOCA_Z + 0.001), h(0.037 * s, -0.096, -0.075), h(0.05 * s, -0.082, -0.063),
@@ -437,7 +466,7 @@ def _detalle_piel(V):
             out -= 0.00045 * np.exp(-((r - 1.0) / 0.08) ** 2) * (o[:, 2] > 0.004)
             # bolsas bajo los ojos y patas de gallo
             bol = np.exp(-(((o[:, 2] + 0.016) / 0.005) ** 2 + ((o[:, 0] * s - 0.002) / 0.012) ** 2)) * (o[:, 1] < -0.004)
-            out += 0.0005 * (0.4 + V["ojeras"]) * bol
+            out += 0.0003 * (0.4 + V["ojeras"]) * bol
             out -= 0.0003 * (0.4 + V["ojeras"]) * np.exp(-((o[:, 2] + 0.0225) / 0.0022) ** 2) * smoothstep(0.016, 0.006, np.abs(o[:, 0] * s - 0.002)) * (o[:, 1] < -0.004)
             pata = smoothstep(0.012, 0.018, o[:, 0] * s) * smoothstep(0.03, 0.02, o[:, 0] * s) * smoothstep(0.016, 0.0, np.abs(o[:, 2]))
             out -= 0.00025 * edad * pata * np.maximum(np.sin(np.arctan2(o[:, 2], o[:, 0] * s) * 30.0), 0) ** 3
@@ -592,7 +621,7 @@ def dientes(V):
                 xc = x + w * 0.5
                 x += w
                 u = xc / 0.0175
-                y = -0.099 + 0.0095 * u * u
+                y = -0.0955 + 0.0095 * u * u
                 if sentido > 0:
                     y += 0.0012
                 largo = (0.0098 if i < 3 else 0.0082) * (0.85 if sentido > 0 else 1.0)
@@ -640,20 +669,19 @@ def pelo(V):
     def casco(p):
         q = p - H
         dc = S0.evaluar(p)
+        # el grosor crece desde la línea del pelo (sin borde de casco) y hay más volumen arriba
+        sobre = q[:, 2] - linea_pelo(V, q)
+        gg = g * (0.15 + 0.85 * smoothstep(0.0, 0.025, sobre)) + 0.003 * smoothstep(0.03, 0.09, q[:, 2])
         # cáscara (no un sólido): si no, el corte de la línea del pelo deja una tapa dentro del cráneo
-        d = smax(dc - g, -(dc + 0.003), 0.0)
-        d = smax(d, linea_pelo(V, q) - q[:, 2], 0.004)
+        d = smax(dc - gg, -(dc + 0.003), 0.0)
+        d = smax(d, -sobre, 0.002)
         # las orejas quedan fuera
         for s in (-1, 1):
             d = smax(d, 0.024 - np.linalg.norm((q - _v([0.074 * s, 0.003, -0.03])) / _v([1.0, 1.0, 1.3]), axis=1), 0.004)
         return d
     S.add(Funcion(casco), 0.0)
     if est == "grasiento":
-        # mechones sueltos que caen sobre la frente
-        for x, dx in ((-0.012, 0.008), (0.012, 0.005)):
-            pts = [superficie(S0, h(x + dx * t, 0.0, 0.05 - 0.034 * t), (0, -1, 0.1)) + _v([0, -0.0016, 0]) for t in (0.0, 0.5, 1.0)]
-            S.add(ConoRedondo(pts[0] + _v([0, 0.002, 0.004]), pts[1], 0.0036, 0.0028), 0.004)
-            S.add(ConoRedondo(pts[1], pts[2], 0.0028, 0.0016), 0.003)
+        pass
     elif est == "largo":
         # melena: cae por la espalda y por detrás de los hombros
         S.add(ConoRedondo(h(0, 0.06, -0.02), _v([0, 0.13, 0.99]), 0.072, 0.085, aplastar=(1.0, 0.32), arriba=(0, 1, 0)), 0.03)
@@ -672,23 +700,25 @@ def _mechones(V):
     def fn(p, d, reg):
         q = p - H
         if est == "grasiento":
-            # peinado hacia atrás con grasa: surcos que van de la frente a la nuca, en mazos
-            a = q[:, 0] * 520.0 + ruido(p * 60.0, 4) * 2.0
-            out = 0.0006 * np.sin(a) + 0.0003 * np.sin(a * 2.7 + 1.0)
+            # peinado hacia atrás con grasa: mazos anchos y suaves que van de la frente a la nuca,
+            # con mechones finos encima (si son regulares parece un casco ondulado)
+            a = q[:, 0] * 260.0 + ruido(p * _v([40.0, 12.0, 12.0]), 4) * 3.0
+            fino = q[:, 0] * 1300.0 + ruido(p * _v([150.0, 30.0, 30.0]), 8) * 4.0
+            out = 0.00028 * np.sin(a) + 0.00012 * np.sin(fino)
         elif est == "largo":
             # raya en medio; mechones que caen
             raya = -0.0012 * np.exp(-(q[:, 0] / 0.0025) ** 2) * smoothstep(0.03, 0.06, q[:, 2]) * (q[:, 1] < 0.02)
             ang = np.arctan2(q[:, 0], -q[:, 1])
-            out = raya + 0.00035 * np.sin(ang * 110.0 + q[:, 2] * 40.0 + ruido(p * 40.0, 4) * 2.5) \
-                + 0.0007 * np.sin(ang * 23.0 + q[:, 2] * 15.0 + ruido(p * 12.0, 7) * 3.0)
+            out = raya + 0.00015 * np.sin(ang * 140.0 + q[:, 2] * 40.0 + ruido(p * _v([60.0, 60.0, 15.0]), 4) * 4.0) \
+                + 0.0004 * np.sin(ang * 23.0 + q[:, 2] * 15.0 + ruido(p * 12.0, 7) * 3.0)
         else:
             # recogido hacia el moño: surcos que convergen en él, y vueltas en el moño
             r = p - MONO
             ang = np.arctan2(r[:, 0], r[:, 2])
             en_mono = np.linalg.norm(r, axis=1) < 0.04
-            out = np.where(en_mono, 0.0007 * np.sin(np.arctan2(r[:, 0], -r[:, 2]) * 7.0 + np.linalg.norm(r, axis=1) * 600.0),
-                           0.0003 * np.sin(ang * 90.0 + ruido(p * 50.0, 4) * 1.5) + 0.0005 * np.sin(ang * 21.0 + ruido(p * 14.0, 7) * 2.5))
-        return out + 0.0004 * fbm(p * 80.0, 2, 5)
+            out = np.where(en_mono, 0.0005 * np.sin(np.arctan2(r[:, 0], -r[:, 2]) * 7.0 + np.linalg.norm(r, axis=1) * 600.0),
+                           0.00013 * np.sin(ang * 130.0 + ruido(p * 50.0, 4) * 3.0) + 0.00028 * np.sin(ang * 21.0 + ruido(p * 14.0, 7) * 2.5))
+        return out + 0.00025 * fbm(p * 80.0, 2, 5)
     return fn
 
 
@@ -697,12 +727,13 @@ def colores_pelo(V, v):
     base = np.tile(V["PELO"], (len(v), 1))
     # mechones claros y oscuros siguiendo el peinado
     if V["pelo"] == "grasiento":
-        f = np.sin(q[:, 0] * 520.0 + ruido(v * 60.0, 4) * 2.0)
+        f = 0.6 * np.sin(q[:, 0] * 260.0 + ruido(v * _v([40.0, 12.0, 12.0]), 4) * 3.0) \
+            + 0.4 * np.sin(q[:, 0] * 1300.0 + ruido(v * _v([150.0, 30.0, 30.0]), 8) * 4.0)
     elif V["pelo"] == "largo":
         f = np.sin(np.arctan2(q[:, 0], -q[:, 1]) * 90.0 + q[:, 2] * 40.0 + ruido(v * 40.0, 4) * 2.5)
     else:
         f = np.sin(np.arctan2((v - MONO)[:, 0], (v - MONO)[:, 2]) * 70.0)
-    base = base * (1.0 + 0.35 * f[:, None]) + 0.012 * smoothstep(0.3, 1.0, f)[:, None]
+    base = base * (1.0 + 0.22 * f[:, None]) + 0.008 * smoothstep(0.3, 1.0, f)[:, None]
     # canas (Elena)
     if V["edad"] > 0.6:
         cana = smoothstep(0.82, 0.9, ruido(v * _v([400.0, 400.0, 60.0]), 91))[:, None] * 0.6

@@ -68,7 +68,7 @@ sospechoso usa el modelo procedural.
 |---|---|---|
 | `construir_ilvari.py` | `ilvari.glb` | Vehl |
 | `construir_kthar.py` | `kthar.glb` | Vex'ahl, Yul'Keth (teñido) |
-| `construir_humano.py` | `humano_<id>.glb` (uno por personaje) | Danner, Sara, Elena |
+| `construir_humano.py` | `humano_<id>.glb` (uno por personaje) | Danner, Sara, Elena — en pruebas: sus fichas aún no llevan `modelo` y usan el procedural |
 | `construir_molk.py` | `molk.glb` (+ máscara de grietas `mlk_*_emi.png`) | Gruul |
 
 ```
